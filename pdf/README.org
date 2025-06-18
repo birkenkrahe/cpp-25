@@ -1,0 +1,2 @@
+The first chapter of the textbook was downloaded from [[https://www.wiley.com/en-us/Data+Structures+and+Algorithms+in+C%2B%2B%2C+2nd+Edition-p-9781118136638][Wiley.com]] where
+it is available as a free excerpt.
