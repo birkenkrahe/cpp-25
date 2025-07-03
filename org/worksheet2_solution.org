@@ -1,6 +1,7 @@
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 240 Data Structures Lyon College Fall 2025
 #+STARTUP: overview hideblocks indent entitiespretty:
-
-* C++ Command-Line Practice Worksheet (No Answers)
+* C++ Command-Line Practice Worksheet (with solutions)
 
 Follow each instruction exactly. Ask if anything is unclear.
 
