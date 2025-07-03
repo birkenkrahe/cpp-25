@@ -1,0 +1,102 @@
+#+STARTUP: overview hideblocks indent entitiespretty:
+
+* C++ Command-Line Practice Worksheet (No Answers)
+
+Follow each instruction exactly. Ask if anything is unclear.
+
+* Step 1: Write a C++ program
+Write a C++ code block that:
+- Reads two integers from input
+- Computes and prints their sum
+- Tangles to a file named `add.cpp`
+
+#+begin_src C++ :tangle add.cpp
+  #include <iostream>
+  using namespace std;
+  int main()
+  {
+    int x,y;
+    cout << "Enter two integers: ";
+    cin >> x >> y;
+    cout << "Their sum is = " << x + y;
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Enter two integers: Their sum is = 597883541
+
+* Step 2: Tangle the code
+- Place your cursor inside the code block
+- Tangle it into `add.cpp`
+
+* Step 3: Check that the file exists
+Create a shell block that lists the file `add.cpp`.
+
+#+begin_src bash :results output 
+  ls add.cpp
+#+end_src
+
+#+RESULTS:
+: add.cpp
+
+* Step 4: Compile the program using g++
+Write a shell block that compiles the code into an executable called `add`.
+
+#+begin_src bash :results output :exports both
+  g++ add.cpp -o add
+#+end_src
+
+#+RESULTS:
+
+* Step 5: Create an input file
+- Create a file called `input.txt` with two numbers in it
+
+#+begin_src bash :results output 
+  echo "2 3" > input.txt
+#+end_src
+
+#+RESULTS:
+
+* Step 6: Run the program with redirected input
+Create a shell block that runs `./add < input.txt`.
+
+#+begin_src bash :results output :exports both
+  ./add < input.txt
+#+end_src
+
+#+RESULTS:
+: Enter two integers: Their sum is = 5
+
+* Step 7: Modify the program
+- Change it to multiply the two numbers instead of adding
+- Tangle, compile, and test again with the same input file
+
+#+begin_src C++ :tangle mult.cpp
+  #include <iostream>
+  using namespace std;
+  int main()
+  {
+    int x,y;
+    cout << "Enter two integers: ";
+    cin >> x >> y;
+    cout << "Their sum is = " << x * y;
+    return 0;
+  }
+#+end_src
+
+#+begin_src bash :results output :exports both
+  ls -lt mult.cpp
+  g++ mult.cpp -o mult
+  ./mult < input.txt
+#+end_src
+
+#+RESULTS:
+: -rw-rw-r-- 1 aletheia aletheia 168 Jul  3 10:51 mult.cpp
+: Enter two integers: Their sum is = 6
+
+* Step 8: Reflection
+Answer these in plain text:
+1. What part of this was hardest?
+2. What part are you most confident about?
+3. What do you want to practice next?
