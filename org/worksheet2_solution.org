@@ -25,7 +25,7 @@ Write a C++ code block that:
 #+end_src
 
 #+RESULTS:
-: Enter two integers: Their sum is = 597883541
+: Enter two integers: Their sum is = 1612905528
 
 * Step 2: Tangle the code
 - Place your cursor inside the code block
