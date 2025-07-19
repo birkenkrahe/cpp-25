@@ -1,0 +1,305 @@
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objective
+
+Demonstrate how to write and test C++ source code spread out over
+multiple files with the help of ~make~.
+
+- [ ] The file in one chunk (=hello.cpp=)
+- [ ] Create the interface file (=Hello.h=)
+- [ ] Create the implementation file (=Hello.cpp=)
+- [ ] Create the test file (=HelloTest.cpp=)
+- [ ] Create the =Makefile=
+- [ ] Run the =Makefile= with ~make~
+- [ ] Run the test file =Hello=
+
+* The file in one chunk
+
+We have one C++ file that includes:
+1) Interface with class declaration (=Hello.h=)
+2) Implementation with class member function definitions and header
+   files (=Hello.cpp=)
+3) Test file with ~main~ function, =Hello= object creation and calls to
+   the ~public~ member functions to tell us the name and say hello
+   (=HelloTest.cpp=)
+
+You can run this file with C-c C-c or you can tangle it with C-c C-v t
+(cursor in the code block), compile and run it on the command line.
+
+#+name: HELLO
+#+begin_src C++ :main no :includes :results output :tangle ../src/hello.cpp :exports both
+  #include <iostream>  // I/O header file
+  #include <string>    // string class
+  using namespace std; // std namespace
+
+  // Interface
+  class Hello {
+  public:
+    Hello(const string& n=""); // constructor
+    string getName() const; // accessor
+    void sayHello() const; // accessor
+  private:
+    string name;
+  };
+
+  // Implementation
+  Hello::Hello(const string& n)
+    : name(n) {}
+  string Hello::getName() const { return name; }
+  void Hello::sayHello() const { cout << "Hello, " << name << "!\n"; }
+
+  // Test function
+  void testHello()
+  {
+    Hello hi("Dr. Birkenkrahe");
+    cout << "You are: " << hi.getName() << endl;
+    hi.sayHello();
+  }
+
+  // main program
+  int main()
+  {
+    testHello();
+    return 0;
+  }
+#+end_src
+
+#+RESULTS: HELLO
+: You are: Dr. Birkenkrahe
+: Hello, Dr. Birkenkrahe!
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  ls -lt hello.cpp
+  g++ hello.cpp -o hello
+  ./hello
+#+end_src
+
+#+RESULTS:
+: -rw-rw-r-- 1 aletheia aletheia 670 Jul 18 21:02 hello.cpp
+: You are: Dr. Birkenkrahe
+: Hello, Dr. Birkenkrahe!
+
+* Create the interface file and save it to =Hello.h=
+
+None of these files will compile
+
+#+name: HELLO_H
+#+begin_src C++ :noeval :tangle ../src/Hello.h :main no :includes
+  #ifndef HELLO_H
+  #define HELLO_H
+
+  #include <string>
+  #include <iostream>
+
+  class Hello {
+  public:
+    Hello(const std::string& n = "");
+    std::string getName() const;
+    void sayHello() const;
+  private:
+    std::string name;
+  };
+
+  #endif
+#+end_src
+
+Tangle it with (org-babel-tangle)
+#+begin_src bash :results output :exports both
+  cd ../src
+  ls -lt Hello*
+#+end_src
+
+#+RESULTS:
+: -rw-rw-r-- 1 aletheia aletheia 226 Jul 18 21:58 Hello.h
+
+* Create the implementation file =Hello.cpp=
+
+- Include ="Hello.h"= in this file.
+- Use the header argument =:flags "-I ../src"= to find =Hello.h=
+
+#+name: HELLO_CPP
+#+begin_src C++ :noeval :flags -I ../src :tangle ../src/Hello.cpp :main no :includes
+  #include "Hello.h"
+  #include <iostream>
+  #include <string>
+  using namespace std;
+
+  Hello::Hello(const string& n) : name(n) {}
+
+  string Hello::getName() const { return name; }
+
+  void Hello::sayHello() const { cout << "Hello, " << name << "!\n"; }
+#+end_src
+
+Tangle it with (org-babel-tangle)
+#+begin_src bash :results output :exports both
+  cd ../src
+  ls -lt Hello*
+#+end_src
+
+#+RESULTS:
+: -rw-rw-r-- 1 aletheia aletheia 240 Jul 18 21:59 Hello.cpp
+: -rw-rw-r-- 1 aletheia aletheia 226 Jul 18 21:58 Hello.h
+
+* Create the test file
+
+#+name: HELLO_TEST_CPP
+#+begin_src C++ :tangle ../src/HelloTest.cpp :flags -I ../src :main no :includes :results none
+  #include <iostream>
+  #include <string>
+  #include "Hello.h"
+  using namespace std;
+
+  void testHello() {
+    Hello hi("Dr. Birkenkrahe");
+    cout << "You are: " << hi.getName() << endl;
+    hi.sayHello();
+  }
+
+  int main() {
+    testHello();
+    return 0;
+  }
+#+end_src
+
+* Run the tangled files
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  ls -lt Hello*
+#+end_src
+
+#+RESULTS:
+: -rw-rw-r-- 1 aletheia aletheia  238 Jul 18 22:00 HelloTest.cpp
+: -rw-rw-r-- 1 aletheia aletheia 3376 Jul 18 21:59 Hello.o
+: -rw-rw-r-- 1 aletheia aletheia  240 Jul 18 21:59 Hello.cpp
+: -rw-rw-r-- 1 aletheia aletheia  226 Jul 18 21:58 Hello.h
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  g++ -c Hello.cpp -o Hello.o
+  ls -lt Hello*
+#+end_src
+
+#+RESULTS:
+: -rw-rw-r-- 1 aletheia aletheia 3376 Jul 18 22:02 Hello.o
+: -rw-rw-r-- 1 aletheia aletheia  238 Jul 18 22:00 HelloTest.cpp
+: -rw-rw-r-- 1 aletheia aletheia  240 Jul 18 21:59 Hello.cpp
+: -rw-rw-r-- 1 aletheia aletheia  226 Jul 18 21:58 Hello.h
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  g++ HelloTest.cpp Hello.o -o Hello
+  ls -lt Hello*
+#+end_src
+
+#+RESULTS:
+: -rwxrwxr-x 1 aletheia aletheia 24248 Jul 18 22:04 Hello
+: -rw-rw-r-- 1 aletheia aletheia 12696 Jul 18 22:02 HelloTest.o
+: -rw-rw-r-- 1 aletheia aletheia  3376 Jul 18 22:02 Hello.o
+: -rw-rw-r-- 1 aletheia aletheia   238 Jul 18 22:00 HelloTest.cpp
+: -rw-rw-r-- 1 aletheia aletheia   240 Jul 18 21:59 Hello.cpp
+: -rw-rw-r-- 1 aletheia aletheia   226 Jul 18 21:58 Hello.h
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  ./Hello
+#+end_src
+
+#+RESULTS:
+: You are: Dr. Birkenkrahe
+: Hello, Dr. Birkenkrahe!
+
+* Create the Makefile
+
+The action line after the target line needs to be indented: In Emacs,
+that works with C-q TAB.
+
+#+begin_src sh :tangle ../src/Makefile
+  # Makefile for Hello class and test
+  Hello: Hello.o HelloTest.o
+  	g++ -o Hello Hello.o HelloTest.o
+
+  Hello.o: Hello.cpp Hello.h
+  	g++ -c Hello.cpp -o Hello.o
+  	
+  HelloTest.o: HelloTest.cpp Hello.h
+  	g++ -c HelloTest.cpp
+
+  clean:
+  	rm -f *.o Hello
+#+end_src
+
+Here is a more generic version: You can test it with ~make -f Makefile2~
+after tangling the Makefile.
+#+begin_src sh :tangle ../src/Makefile2
+  # Makefile for CreditCard class and test
+  CXX      = g++
+  CXXFLAGS = -std=c++17 -Wall -Wextra -g
+
+  TARGET   = Hello
+  OBJS     = Hello.o HelloTest.o
+
+  $(TARGET): $(OBJS)
+  	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+
+  Hello.o: Hello.cpp Hello.h
+  	$(CXX) $(CXXFLAGS) -c Hello.cpp
+
+  HelloTest.o: HelloTest.cpp Hello.h
+  	$(CXX) $(CXXFLAGS) -c HelloTest.cpp
+
+  clean:
+  	rm -f *.o $(TARGET)
+#+end_src
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  ls -lt Make*
+  make -f Makefile2 clean
+  ls -lt Hello*
+  make -f Makefile2
+  ./Hello
+#+end_src
+
+#+RESULTS:
+#+begin_example
+-rw-rw-r-- 1 aletheia aletheia 368 Jul 19 07:03 Makefile2
+-rw-rw-r-- 1 aletheia aletheia 234 Jul 18 22:10 Makefile
+rm -f *.o Hello
+-rw-rw-r-- 1 aletheia aletheia 238 Jul 18 22:00 HelloTest.cpp
+-rw-rw-r-- 1 aletheia aletheia 240 Jul 18 21:59 Hello.cpp
+-rw-rw-r-- 1 aletheia aletheia 226 Jul 18 21:58 Hello.h
+g++ -std=c++17 -Wall -Wextra -g -c Hello.cpp
+g++ -std=c++17 -Wall -Wextra -g -c HelloTest.cpp
+g++ -std=c++17 -Wall -Wextra -g -o Hello Hello.o HelloTest.o
+You are: Dr. Birkenkrahe
+Hello, Dr. Birkenkrahe!
+#+end_example
+
+* Run the Makefile
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  ls -lt Makefile
+  make
+#+end_src
+
+#+RESULTS:
+: -rw-rw-r-- 1 aletheia aletheia 234 Jul 18 22:10 Makefile
+: g++ -c Hello.cpp -o Hello.o
+: g++ -c HelloTest.cpp
+: g++ -o Hello Hello.o HelloTest.o
+
+* Run the executable
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  ./Hello
+  make -f Makefile2 clean
+#+end_src
+
+#+RESULTS:
+: You are: Dr. Birkenkrahe
+: Hello, Dr. Birkenkrahe!
+: rm -f *.o Hello
