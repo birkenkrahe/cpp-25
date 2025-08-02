@@ -1,0 +1,7 @@
+rectangle: Rectangle.o RectangleTest.o
+	g++ RectangleTest.o Rectangle.o -o rectangle
+Rectangle.o: Rectangle.cpp Rectangle.h
+	g++ -c Rectangle.cpp
+RectangleTest.o
+clean:
+	rm *.o rectangle
