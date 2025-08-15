@@ -1,0 +1,201 @@
+#+title: Data structures with C++
+#+author: Marcus Birkenkrahe
+#+startup: overview hideblocks indent
+#+subtitle: CSC 240 - Data structures with C++ - Syllabus - Fall 2025
+* General Course Information
+#+attr_html: :width 400px:
+[[../img/poster.png]]
+
+- Course title: Data structures with C++
+- Course number and section: CSC 240.01
+- Meeting Times: Tue-Thu 9:30-10.45 AM
+- Meeting place: Lyon Building Computer Lab Room 104
+- Professor: Marcus Birkenkrahe
+- Professor's Office: Derby Science Building 210
+- Phone: (870) 307-7254
+- Office hours: [[https://tinyurl.com/fa25-booking][by appointment]] (tinyurl.com/fa25-booking) on
+  Monday-Wednesday-Friday 4-4.30 pm and 4.30-5 pm.
+- Textbooks (optional/recommended): Gaddis, Starting out with C++
+  Control Structures (10th ed., Pearson 2021); Weiss, Data Structures
+  and Algorithm Analysis in C++ (4th ed., Pearson 2014);
+  Goodrich/Tamassia/Mount, Data Structures & Algorithms in C++ (Wiley,
+  2011); Helfrich, C++ Data Structures (Kendall Hunt, 2023); Morin,
+  Open Data Structures, opendatastructure.org.
+  
+* Objectives
+
+This course on "Data Structures with C++" offers an in-depth
+exploration into the theory and application of data structures using
+the C++ programming language. It aims to equip students with the
+knowledge to efficiently store, process, and retrieve data using
+various data structures such as arrays, linked lists, stacks, queues,
+trees, and graphs. The curriculum emphasizes the importance of
+algorithmic thinking and optimization techniques, providing a solid
+foundation for understanding the complexities and capabilities of
+modern computing systems.
+
+* Target audience
+
+ Ideal participants are those who have a basic understanding of
+ programming concepts and are interested in advancing their knowledge
+ in data structuring to improve software efficiency and performance.
+
+* Student Learning Outcomes
+
+Students who complete this course will be able to:
+- Demonstrate a thorough understanding of major data structures and
+  their applications.
+- Implement various data structures in C++, including arrays, linked
+  lists, stacks, queues, trees, and graphs.
+- Analyze the efficiency of data structures and algorithms in terms of
+  time and space complexity.
+- Apply algorithmic thinking to solve complex problems using
+  appropriate data structures.
+- Design and develop efficient software solutions for real-world
+  applications.
+- Critically evaluate the choice of data structures in software
+  development projects.
+- Employ advanced C++ features and object-oriented programming
+  techniques in the context of data structures.
+- Enhance problem-solving skills through the design and analysis of
+  algorithms for data manipulation.
+- Prepare to contribute effectively to technology-driven environments
+  with a strong foundation in data structuring.
+
+Students, who complete CSC 240 will have fulfilled the prerequisites
+for CSC 265 Algorithms.
+
+* Course requirements
+
+Formal prerequisites: Introduction to Programming (either CSC100 or
+CSC115 or CSC109, and MTH101 (College Algebra).
+
+Course requirements include a foundational knowledge of programming
+principles and familiarity with any programming language. Students
+are expected to have completed introductory courses in computer
+science or possess equivalent practical experience. A willingness to
+engage in complex problem-solving and the ability to think critically
+about algorithm design and data manipulation are essential for success
+in this course.
+
+* Grading
+
+| WHEN   | DESCRIPTION                    | IMPACT |
+|--------+--------------------------------+--------|
+| Weekly | Programming assignments (home) |    25% |
+| Weekly | Practice assignments (class)   |    25% |
+| Weekly | Multiple choice tests          |    25% |
+| TBD    | Final exam (oral, optional)    |    25% |
+
+- Programming assignments are given for home completion
+- Tests are open-book multiple choice exams for home
+- The final exam is optional if you want to improve your grade. If you
+  choose to take the exam, it will be an oral, in-person exam of (at
+  most) 30 minutes length based on all the content taught.
+
+* Rubric
+
+| Component                    | Weight | Excellent                                                                              | Good                                                            | Satisfactory                                                         | Needs Improvement                                                             | Unsatisfactory                                                        |
+|------------------------------+--------+----------------------------------------------------------------------------------------+-----------------------------------------------------------------+----------------------------------------------------------------------+-------------------------------------------------------------------------------+-----------------------------------------------------------------------|
+| Participation and Attendance |    25% | Consistently attends and actively participates in all classes.                         | Attends most classes and participates in discussions.           | Attends classes but participation is minimal.                        | Frequently absent and rarely participates.                                    | Rarely attends classes and does not participate.                      |
+| Programming assignments      |    25% | Completes all assignments on time with high accuracy (90-100%).                        | Completes most assignments on time with good accuracy (80-89%). | Completes assignments but with some inaccuracies or delays (70-79%). | Frequently late or incomplete assignments with several inaccuracies (60-69%). | Rarely completes assignments and shows minimal understanding (0-59%). |
+| Tests                        |    25% | Demonstrates thorough understanding and application of concepts (90-100%).             | Shows good understanding with minor errors (80-89%).            | Displays basic understanding with some errors (70-79%).              | Limited understanding with several errors (60-69%).                           | Minimal understanding and many errors (0-59%).                        |
+| Final Exam (Optional)        |    25% | Demonstrates comprehensive understanding and application of course concepts (90-100%). | Shows strong understanding with minor errors (80-89%).          | Displays adequate understanding with some errors (70-79%).           | Limited understanding with several errors (60-69%).                           | Minimal understanding and many errors (0-59%).                        |
+
+* Learning management system
+
+- We use Lyon's Canvas installation for this course.
+- The home page contains: assignments, grades, pages, people,
+  syllabus, quizzes, Google Drive, Course evaluation and Zoom.
+- The Zoom page includes cloud recordings of all past sessions.
+- Recorded sessions will be deleted after the last class.
+
+* GitHub
+
+All course materials are available in a public GitHub repository
+([[https://github.com/birkenkrahe/cpp-25][github.com/birkenkrahe/cpp-25]]). Registration for students includes a
+free subscription to GitHub codespaces with the AI coding assistant
+Copilot. GitHub is the worldwide largest online platform for software
+development.
+
+* Lyon College Standard Policies
+
+Standard Lyon College Policies are incorporated into this syllabus and
+can be found at the following link:
+http://www.lyon.edu/standard-course-policies.
+
+Note the amended attendance policy (from Fall 2025):
+https://catalog.lyon.edu/class-attendance
+
+* Weekly schedule
+
+| Week | Content                        | Dates         | Assignment | Test |
+|------+--------------------------------+---------------+------------+------|
+|    0 | Course introduction, dev tools | Aug 21        | Entry test |    - |
+|------+--------------------------------+---------------+------------+------|
+|    1 | Data structures & C++  review  | Aug 26, 28    | Program 1  |    1 |
+|------+--------------------------------+---------------+------------+------|
+|    2 | C-style arrays & STL vectors   | Sep 2, 4      | Program 2  |    2 |
+|------+--------------------------------+---------------+------------+------|
+|    3 | Time & space complexity        | Sep 9, 11     | Program 3  |    3 |
+|------+--------------------------------+---------------+------------+------|
+|    4 | Pointers & memory allocation   | Sep 16, 18    | Program 4  |    4 |
+|------+--------------------------------+---------------+------------+------|
+|    5 | Introduction to classes        | Sep 23, 25    | Programs 5 |    5 |
+|------+--------------------------------+---------------+------------+------|
+|    6 | More about classes             | Sep 30, Oct 2 | Program 6  |    6 |
+|------+--------------------------------+---------------+------------+------|
+|    7 | STL Containers & iterators     | Oct 7, 9      | Program 7  |    7 |
+|------+--------------------------------+---------------+------------+------|
+|    8 | Vectors and Maps               | Oct 14, 16    | Program 8  |    8 |
+|------+--------------------------------+---------------+------------+------|
+|    9 | Linked lists                   | Oct 21, 23    | Program 9  |    9 |
+|------+--------------------------------+---------------+------------+------|
+|   10 | Stacks                         | Oct 28, 30    | Program 10 |   10 |
+|------+--------------------------------+---------------+------------+------|
+|   11 | Queues                         | Nov 4, 6      | Program 11 |   11 |
+|------+--------------------------------+---------------+------------+------|
+|   12 | Recursion                      | Nov 11, 13    | Program 12 |   12 |
+|------+--------------------------------+---------------+------------+------|
+|   13 | Trees                          | Nov 18, 20    | Program 13 |   13 |
+|------+--------------------------------+---------------+------------+------|
+|   14 | Hash tables (optional)         | Nov 25, 27    | Program 14 |   14 |
+|------+--------------------------------+---------------+------------+------|
+|   15 | Graphs (optional)              | Dec 2, 5      | Program 15 |   15 |
+|------+--------------------------------+---------------+------------+------|
+|   16 | Summary & Outlook & Projects   | Dec 9, 11     | -          |    - |
+|------+--------------------------------+---------------+------------+------|
+
+* A note on using AI to write code for you or debug your code
+
+[[https://github.com/birkenkrahe/org/blob/master/fall24/UsingAItoCode.pdf][See full PDF on GitHub.]]
+
+*Short summary:* For students, using AI is a waste of time at best, and
+a crime against your ability to learn at worst. Learning never comes
+without pain and (temporary) desperation. AI is like a pill but one
+that only works some of the time, and you'll never know when. Instead:
+join Lyon's Programming Student Club and experience the pain of not
+knowing first hand every week!
+
+*Will you be punished for using AI in my class?* Not directly because
+nobody can tell if you used AI or not but indirectly by turning in
+suboptimal results, by learning less, and by having less time for
+other, more productive activities.
+
+*Are there any data on this?* Not much on coding as such but a 2024
+paper titled "Generative AI Can Harm Learning"), based on a very
+carefully conducted field experiment with a large (1000) sample of
+high school students concluded: "Our results suggest that students
+attempt to use [AI] as a "crutch" during practice problem sessions,
+and when successful, perform worse on their own. Thus, to maintain
+long-term productivity, we must be cautious when deploying generative
+AI to ensure humans continue to learn critical skills."  ([[https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4895486&s=03][Bastani et
+al, 2024]]).
+
+*References*
+
+Bastani, Hamsa and Bastani, Osbert and Sungu, Alp and Ge, Haosen and
+Kabakcı, Özge and Mariman, Rei, Generative AI Can Harm Learning
+(July 15, 2024). [[https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4895486&s=03#][Available at ssrn.com]].
+
+
