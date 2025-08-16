@@ -13,12 +13,12 @@ int main()
   box2.setWidth(8.5);
   box2.setLength(29.3);
   cout << "Box 2: "
-       << box2.getWidth() << " x " << box2.getLength() 
+       << box2.getWidth() << " x " << box2.getLength()
        << endl;
   // Test getArea()
   if (box1.getArea() < box2.getArea())
     cout << "Box 1 is smaller.\n";
   else
-    cout << "Box 2 is smaller.\n";		 
+    cout << "Box 2 is smaller.\n";
   return 0;
 }
