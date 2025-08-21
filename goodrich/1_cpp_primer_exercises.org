@@ -1,0 +1,910 @@
+#+title: Data Structures - C++ Primer (Exercises)
+#+author: Marcus Birkenkrahe
+#+subtitle: Based on Goodrich, Tamassian, Mount (2e) 2012#
+#+STARTUP: overview hideblocks indent entitiespretty:
+
+* R-1.2 - min and max in array
+
+- Write a pseudo-code description of a method for finding the smallest
+  and largest numbers in an array of integers and compare that to a
+  C++ function that would do the same thing.
+
+- Algorithm to find the smallest number: Set =min= to A[0]; starting at
+  i=0 go through the array and replace =min= with A[i] whenever A[i] <
+  =min=.
+
+- Algorithm to find the largest number: Set =max= to A[0]; starting at
+  i=0 go through the array and replace =max= with A[i] whenever A[i] >
+  =max=.
+
+- Solution:
+  #+begin_example
+
+  A[N] <- integers  // initialize N-element array A
+  min  <- A[0]      // initialize min = A[0]
+  max  <- A[0]      // initialize max = A[0]
+  FOR i=0 to N-1 DO      // loop from 0 to N-1
+     IF A[i] < min THEN  // A[i] < min
+        min <- A[i]      // replace min
+     IF A[i] > max THEN  // A[i] > max
+        max <- A[i]      // replace max
+  END FOR
+
+  PRINT min, max  // print results
+  #+end_example
+
+- Code v1: Smallest number, all array elements different
+  #+name: ex_min
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int a[5] = {1,5,2,3,4};
+    int min = a[0];
+    for (int i=0;i<5;i++)
+      if (a[i]<min) min = a[i];
+    cout << min;
+  #+end_src
+
+  #+RESULTS:
+  : 1
+
+- Code v2: Smallest and largest  number, all array elements different
+  #+name: ex_min_max
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int a[5] = {1,5,2,3,4};
+    int min = a[0], max = a[0];
+    for (int i=0;i<5;i++) {
+      if (a[i]<min) min = a[i];
+      if (a[i]>max) max = a[i];
+     }
+    cout << "Min = " << min << '\n'
+    << "Max = " << max << endl;
+  #+end_src
+
+  #+RESULTS: ex_min_max
+  : Min = 1
+  : Max = 5
+
+- Code v3: testing edge cases
+
+  Input:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "0 0 0 0 0 " > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : 0 0 0 0 0
+
+  Test: zero length, one element only, array elements identical
+  #+name: ex_min_max_input
+  #+begin_src C++ :cmdline < ../data/input :main yes :includes <iostream> <cstdlib> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<int> a;
+
+    for (int j=0;j<5;j++) {
+      int x;
+      if (cin >> x) {
+        a.push_back(x);
+      } else {
+        cerr << "Invalid input. Exiting.\n";
+        return EXIT_FAILURE;
+      }
+     }
+
+    if (a.empty()) {
+      cout << "A is empty";
+      return EXIT_FAILURE;
+     }
+
+    int min = a[0], max = a[0];
+    for (int i=0;i<a.size();i++) {
+      if (a[i]<min) min = a[i];
+      if (a[i]>max) max = a[i];
+     }
+    cout << "Min = " << min << '\n'
+    << "Max = " << max << endl;
+  #+end_src
+
+  #+RESULTS: ex_min_max_input
+  : Min = 0
+  : Max = 0
+
+* R-1.3 - struct
+
+- Give a C++ definition of a ~struct~ called =Pair= that consists of two
+  members. The first is an integer called =first=, and the second is a
+  =double= called =second=;
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    struct Pair {
+      int first;
+      double second;
+    };
+  #+end_src
+
+  #+RESULTS:
+
+* R-1.4 - string concatenation + 
+
+What are the contents of =string s= after executing:
+#+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+  string s = "abc";
+  string t = "cde";
+  s += s + t[1] + s;
+  cout << s;
+#+end_src
+
+#+RESULTS:
+: abcabcdabc
+
+* R-1.5 - operator precedence
+
+Consider the expression =y + 2 * z ++ < 3 - w / 5=.
+
+Add parentheses to show the precise order of evaluation given the C++
+rules for operator precedence.
+
+Answer:
+#+begin_example
+(y + (2 * (z++))) < (3 - (w/5))
+#+end_example
+
+#+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+  int y = 1, z = 1, w = 1;
+  cout << boolalpha << ((y + (2 * (z++))) < (3 - (w/5)));
+#+end_src
+
+#+RESULTS:
+: false
+
+* R-1.6 - allocation with new
+
+- Consider the following attempt to allocate a 10-element array of
+  pointers to doubles and initialize the associated double values to
+  0.0. Rewrite the following (*incorrect*) code to do this correctly.
+
+- Hint: Storage for the doubles needs to be allocated.
+
+- Code with errors:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    double* dp[10];
+    for (int i=0; i<10; i++) dp[i] = 0.0;
+  #+end_src
+
+  Error message:
+  #+begin_example
+  Cannot convert `double` to `double*` in assignment `dp[i]=0.0`
+  #+end_example
+
+- *Solution:* Each pointer =dp[i]= points to a variable that first needs
+  to be allocated before it can be initialized. Once allocated, you
+  can use =*dp[i]= to dereference and access the ~double~.
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    double* dp[10]; // pointers point at nothing
+
+    for (int i=0;i<10;i++) {
+      dp[i] = new double; // pointers point at doubles (any value)
+      (*dp[i]) = 0.0; // initialize value in pointed at cell
+      cout << *dp[i] << " ";
+     }
+  #+end_src
+
+  #+RESULTS:
+  : 0 0 0 0 0 0 0 0 0 0
+
+- *Other solutions.*
+
+  1) First possibility:
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       double* dp = new double[10](); // value initialization with ()
+       for (int i=0; i<10; i++) {
+         cout << dp[i] << " ";
+        }
+       delete [] dp;
+     #+end_src
+
+     Use the loop to initialize for a different number:
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       double* dp = new double[10](); // value initialization with ()
+       for (int i=0; i<10; i++) {
+         dp[i] = 1.0;
+         cout << dp[i] << " ";
+        }
+       delete [] dp;
+     #+end_src
+
+  2) Second possibility: assign the null pointer
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       double* dp[10];
+       for (int i=0; i<10; i++) {
+         dp[i] = nullptr;
+         cout << dp[i] << " ";
+        }
+     #+end_src
+
+* R-1.6 followup exercises
+
+1) Dynamically allocate an array of 5 doubles, initialize them to 1.5, print them, and then deallocate the array.
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+     double* a = new double[5];
+     for (int i=0;i<5;i++) {
+       a[i]=1.5;
+       cout << a[i] << ", ";
+      }
+     delete [] a;
+   #+end_src
+
+   #+RESULTS:
+   : 1.5, 1.5, 1.5, 1.5, 1.5,
+
+2) Allocate an array of 5 pointers to doubles. Initialize the values
+   of the doubles to 1.5 in the free store, print and deallocate them.
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+     double* a[5];
+     for (int i=0;i<5;i++) {
+       a[i] = new double;
+       (*a[i]) = 1.5;
+       cout << *a[i] << " ";
+       delete a[i];
+      }
+   #+end_src
+
+   #+RESULTS:
+   : 1.5 1.5 1.5 1.5 1.5
+
+3) Allocate and initialize an array of 5 dynamically allocated arrays
+   of 4 ints, such that every value is initialized to -1. Print
+   the result as a 5×4 matrix. Then deallocate all memory.
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+     int* matrix[5]; // array of five integer pointers
+
+     for (int i=0;i<5;i++) { // for each pointer
+       matrix[i] = new int[4]; // points at array of 4 elements
+       for (int j=0;j<4;j++) {
+         cout << (matrix[i][j]=-1) << " "; // initialize jth array
+       }
+       cout << '\n';
+      }
+
+     // deallocate memory
+     for (int i=0;i<5;i++)  // for each pointer
+       delete [] matrix[i];
+   #+end_src
+
+   #+RESULTS:
+   : -1 -1 -1 -1
+   : -1 -1 -1 -1
+   : -1 -1 -1 -1
+   : -1 -1 -1 -1
+   : -1 -1 -1 -1
+
+* R-1.7 - integer sum
+
+- *Task:* Write a short C++ function, =sum=, that takes an integer =n= and
+  returns the sum of all the integers smaller than =n=.
+
+- *Solution:*
+
+  #+begin_src C++ :main no :includes :results output
+    #include <iostream>
+    using namespace std;
+
+    int sum(int n) {
+      int sum = 0;
+      for (int i=1; i<n; i++)
+        sum+=i;
+      return sum;
+    }
+
+    int main()
+    {
+      int n = 1000000;
+      cout << sum(n);
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 1783293664
+
+* R-1.8 - inline modulo return bool
+
+- *Task:* Write a short C++ function, =isMultiple=, that takes two
+  positive *long* values, =n= and =m=, and returns ~true~ if and only if =n= is
+  a multiple of =m=, that is =n = mi= for some integer =i=.
+
+- *Understanding:* If =n= is a multiple of =m=, then =n % m = 0=
+
+- *Solution*:
+
+  #+begin_src C++ :cmdline < ../data/input :results output
+    #include <iostream>
+    using namespace std;
+
+    bool isMultiple(long n, long m) {
+      if (n % m == 0)
+        return true;
+      else
+        return false;
+    }
+
+    int main()
+    {
+      long n,m;
+      cin >> n >> m;
+      cout << boolalpha << isMultiple(n,m);
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : true
+
+- *Input:*
+
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "12 5" > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : 12 5
+
+* R-1.9 - double pointers
+
+- *Task:* Write a C++ function =printArray(A,m,n)= that prints an m x n
+  two-dimensional array =A= of integers, declared to be =int** A= to the
+  standard output. Each of the =m= rows should appear on a separate
+  line.
+
+- *Understanding:* =int** A= is a double pointer - a scalar variable that
+  holds the address of another pointer to an =int=. This second pointer
+  can point to one ore more =int= values like the start of an array. If
+  =A= is used like a 2D array (=A[i][j]=) then:
+
+  1. =A= points to an array of pointers,
+  2. =A[i]= is a pointer to an array of =int=,
+  3. =A[i][j]= accesses the actual =int= value.
+
+- *Review* of ~new~ and ~delete~:
+
+  1) Scalars
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       int* p = new int; // allocates a new int on the heap
+       (*p) = 42; // assign a value to the int
+       cout << *p; // print value
+       delete p; // deallocate memory
+     #+end_src
+
+     #+RESULTS:
+     : 42
+
+  2) Arrays
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       int size = 5; // array length
+       int* arr = new int[size]; // allocate an array of size ints on the heap
+       for (int i=0; i<size; i++)
+         cout << (arr[i] = i) << " "; // assign value to array element
+       delete [] arr; // deallocate memory
+     #+end_src
+
+     #+RESULTS:
+     : 0 1 2 3 4
+
+  3) Vectors
+     #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       int size = 5; // vector length
+       vector<int> arr(size); // allocate vector of size
+       for (int i=0; i<size; i++)
+         cout << (arr[i] = i) << " "; // assign value to array element
+       // no need to deallocate - vector handles it
+     #+end_src
+
+     #+RESULTS:
+     : 0 1 2 3 4
+
+  4) 2D array
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       int const rows=3;
+       int const cols=4;
+       int** A = new int*[rows]; // allocate array pointers to rows
+       for (int i=0; i < rows; i++)
+         A[i] = new int[cols]; // allocate each row (columns)
+
+       for (int i=0; i < rows; i++)
+         for (int j=0; j < cols; j++)
+           cout << (A[i][j] = (i+1) * (i+1)) << " "; // initialize & print
+
+       delete [] A; // deallocate array
+     #+end_src
+
+     #+RESULTS:
+     : 1 1 1 1 4 4 4 4 9 9 9 9
+
+  5) 2d vector
+     #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       int const rows=3;
+       int const cols=4;
+       vector<vector<int>> A(rows, vector<int>(cols)); // allocate array pointers to rows
+
+       for (int i=0; i < rows; i++)
+         for (int j=0; j < cols; j++)
+           cout << (A[i][j] = (i+1) * (i+1)) << " "; // initialize & print
+
+       // no need to deallocate array
+     #+end_src
+
+     #+RESULTS:
+     : 1 1 1 1 4 4 4 4 9 9 9 9
+
+- *Solution*:
+  #+begin_src C++ :results output
+    #include <iostream>
+    #include <cstdlib>
+
+    using namespace std;
+
+    // print array
+    void printArray(int**,int,int);
+
+    int main()
+    {
+      // matrix dimensions
+      int const rows = 4;
+      int const cols = 4;
+
+      // array memory allocation on the heap
+      int** mat = new int* [rows]; // allocate `rows` int pointers on the heap
+      for (int i=0; i<rows; i++)
+        mat[i] = new int[cols]; // allocate `cols` integers for each row
+
+      // initialize values
+      for (int i=0; i<rows; i++) {
+        for (int j=0; j<cols; j++) {
+          if (i==j) mat[i][j]=1;
+        }
+      }
+
+      // print result
+      printArray(mat,rows,cols);
+
+      // deallocate array
+      delete [] mat;
+      return 0;
+    }
+
+    // print array
+    void printArray(int** A, int m, int n) {
+      for (int i=0; i<m; i++) {
+        cout << '\n';
+        for (int j=0; j<n; j++)
+          cout << A[i][j] << " ";
+      }
+    }
+  #+end_src
+
+  #+RESULTS:
+  :
+  : 1 0 0 0
+  : 0 1 0 0
+  : 0 0 1 0
+  : 0 0 0 1
+
+* R-1.10 - call by value vs reference
+
+- *Task:* What (if anything) is different about the behavior of the
+  following two functions =f= and =g= that increment a variable =x= and
+  print its value?
+
+  #+begin_example C++
+  void f(int x) {
+    cout << ++x;
+  }
+
+  void g(int& x) {
+    cout << ++x;
+  }
+  #+end_example
+
+- *Answer:*
+  1) =f= copies the value of the integer =x=, increments it by 1, and
+     prints the result. The value of =x= in the calling program does not
+     change.
+  2) =g= takes the address of the integer =x=, increments it by 1, and
+     prints the result. =x= is now incremented in the calling program
+     also.
+
+- *Implementation*:
+  #+begin_src C++ :main no :includes <iostream> :namespaces std :results output
+    void f(int x) {
+      cout << ++x;
+    }
+
+    void g(int& x) {
+      cout << ++x;
+    }
+
+    int main()
+    {
+      int x = 1;
+      cout << "\nx = " << x << " f(" << x << ") = ";
+      f(x);
+      cout << "\nx = " << x << endl;
+      cout << "\nx = " << x << " g(" << x << ") = ";
+      g(x);
+      cout << "\nx = " << x << endl;
+      return 0;
+    }
+
+  #+end_src
+
+  #+RESULTS:
+  :
+  : x = 1 f(1) = 2
+  : x = 1
+  :
+  : x = 1 g(1) = 2
+  : x = 2
+
+* R-1.11 - class with constructor, getter, updater
+
+- *Task:* Write a C++ ~class~ called =Flower= that has three member
+  variables of type ~string~, ~int~, and ~float~: The flower's =name=, number
+  of =petals=, and =price=. Include a constructor that initializes each
+  variable to an appropriate value, and functiosn for setting the
+  value of each type, and for getting the value of each type.
+
+- Member functions:
+  1) The default constructor =Flower()= creates a flower wit no name,
+     zero petals and zero price.
+  2) The update member functions are =setName=, =setPetals= and =setPrice= -
+     they set ~private~ data, they are ~void~, and they have reference
+     arguments.
+  3) The getter member functions are =getName=, =getPetals= and =getPrice= -
+     they are ~void~ and print ~private~ data.
+  4) All member functions are short and can be defined inline.
+
+- Code (use =<cpp TAB= for the code block to test the syntax):
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both
+    class Flower {
+    public:
+      Flower() : name("NONE"), petals(0), price(0.) {} // constructor
+      // update functions
+      void setName(const string& nm) { name = nm; }
+      void setPetals(int pt) { petals = pt; }
+      void setPrice(float pr) { price = pr; }
+      // getter functions
+      const void getName() { cout << "Flower name = " << name << endl; }
+      const void getPetals() { cout << "No. of petals = " << petals << endl; }
+      const void getPrice() { cout << "Price = " << price << endl; }
+    private:
+      string name;
+      int petals;
+      float price;
+    };
+
+    // Test class
+    int main()
+    {
+      Flower f;
+
+      f.getName();
+      f.getPetals();
+      f.getPrice();
+
+      Flower iris;
+      iris.setName("Bearded Iris");
+      iris.getName();
+      iris.setPetals(6);
+      iris.getPetals();
+      iris.setPrice(15);
+      iris.getPrice();
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Flower name = NONE
+  : No. of petals = 0
+  : Price = 0
+  : Flower name = Bearded Iris
+  : No. of petals = 6
+  : Price = 15
+
+- *Notes:*
+  1) Member data can only be initialized with lists in constructors.
+  2) Use ~const~ refs only when needed (pass ~int~ and ~float~ by value).
+  3) Mark getter functions ~const~.
+
+* TODO R-1.12
+
+- Modify the =CreditCard= class (Code Fragment 1.3) to check that the
+  =price= argument passed to =chargeIt= and the =payment= argument passed to
+  =makePayment= are positive.
+
+  To recap: =CreditCard= was split up among different files:
+
+  1) =CreditCard.h= with standard header files ~<string>~ and ~<iostream>~,
+     and the ~class~ declaration and the output operator that write the
+     =CreditCard= information to ~ostream~. The class declares:
+     - A constructor to assign ~private~ data: card =number=, account
+       =name=, card =limit= and current =balance= (initially set to zero)
+     - Accessor functions to get the ~private~ data.
+     - Update functions =makePayment= to make a =payment= (and charge the
+       card), and =chargeIt= to charge the card with =price=.
+     - A function (not a class member) to print =CreditCard=
+       information by overloading the =operator <<=.
+
+  2) =CreditCard.cpp= with the definitions for the member functions.
+
+  3) =CreditCardTest.cpp= with a ~main~ program that calls a =testCard=
+     function. The test function:
+     - declares a =wallet= as a vector of 10 =CreditCard= pointers
+     - allocates 3 new cards manually with ~new~
+     - tests the update member functions
+     - deallocates storage with ~delete~.
+
+  4) A =Makefile= to produce an executable =CreditCardTest= and clean the
+     target and the intermediate object files.
+
+- Solution:
+  #+begin_example C++
+    // update functions
+    bool CreditCard::chargelt(double price) { // make a charge
+      if ( price <= 0 || (price + balance > double(limit)))
+        return false;
+      balance += price;
+      return true;
+    }
+    void CreditCard::makePayment(double payment) { // make a payment
+      if (payment <= 0) return; // don't go negative
+      balance -= payment;
+    }
+  #+end_example
+
+* TODO R-1.13
+
+- Modify the =CreditCard= class (Code Fragment 1.2) to charge interest
+  on each payment.
+
+* TODO R-1.14
+
+- Modify the =CreditCard= class (Code Fragment 1.2) to charge a late fee
+  for any payment that is past its due date.
+
+* TODO R-1.15
+
+- Modify the =CreditCard= class (Code Fragment 1.2) to include *modifier
+  functions* that allow a user to modify internal variables in a
+  =CreditCard= class in a controlled manner.
+
+* TODO R-1.16
+
+- Modify the declaration of the first ~for~ loop in the =Test= class for
+  the =CreditCard= class (Code Fragment 1.4) so that its charges will
+  eventually cause exactly one of the three credit cards to go over
+  its credit limit. Which credit card is it?
+
+* TODO R-1.17
+
+- Write a C++ ~class~, =AllKinds=, that has three member variables of type
+  ~int~, ~long~, and ~float~, respectively. Include a constructor function
+  that initializes each variable to a nonzero value, and include
+  functions for setting the value of each type, getting the value of
+  each type, and computing and returning the sum of each possible
+  combination of types.
+
+* R-1.18 (same as R-1.8) - Modulo
+
+- Write a short C++ function, =isMultiple=, that takes two ~long~ values,
+  =n= and =m=, and returns ~true~ if and only if =n= is a multiple of =m=, that
+  is =n = m * i= for some integer =i=.
+
+- Solution:
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    bool isMultiple(long n, long m) {
+      return ((n%m==0)?true:false);
+    }
+
+    int main() {
+      double n = 10, m = 2;
+      cout << boolalpha << isMultiple(n,m);
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : true
+
+* R-1.19 - Binary representation
+
+- Write a short C++ function, =isTwoPower=, that takes an =int i= and
+  returns ~true~ if and only if =i= is a power of 2. Do not use
+  multiplication or division, however.
+
+- Could do this with ~log2~ from ~<cmath>~.
+  1) Compute =log2(i)= and store in =x=
+  2) Subtract the integer part of =x= from =x=
+  3) If it is 0 then k = log2(i) is an integer and i is a power of 2.
+
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    #include <cmath>
+    int main() {
+      int i=300;
+      double x = log2(i);
+      cout << boolalpha << (x - static_cast<int>(x) == 0) << endl;
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : false
+
+- How about a solution without logarithms, multiplication or division?
+  The binary representation of i = 2^k is a 1-bit followed by k
+  0-bits. And the binary representation of (i-1) is a 0-bit followed
+  by k 1-bits:
+  #+begin_example
+  8 = 2^3 = 0b1000
+  7       = 0b0111 
+  #+end_example
+  Therefore, the bitwise "AND" conjunction (~&~) of =i= and of =(i-1)=
+  is 0. Testing against 0 and excluding the special case i = 0 (which
+  is not a power of 2) will solve the problem.
+
+- In code:
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    bool isTwoPower(int i) {
+      return (i!=0) && (((i-1) & i) == 0);
+    }
+
+    int main() {
+      cout << boolalpha << isTwoPower(1023);
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : false
+  
+* R-1.20 == R-1.7
+
+- (R-1.7) Write a short C++ function =intSum= that takes an integer =n=
+  and returns the =sum= of all integers smaller than =n=.
+
+* TODO R-1.21 - sum and modulo
+
+- Write another function =intSum2= that takes an integer =n= and returns
+  the sum of all the *odd* integers smaller than =n=.
+
+* TODO R-1.22 - counter
+
+- Write a short C++ function that takes a positive ~double~ value =x= and
+  returns the number of times we can divide =x= by 2 before we get a
+  number less than 2.
+
+* TODO C-1.1 - pseudocode to reverse array of integers
+
+Write a pseudo-code description of a method that reverses an array of n
+integers, so that the numbers are listed in the opposite order than they were
+before, and compare this method to an equivalent C++ method for doing
+the same thing.
+
+* TODO C-1.2 - find pair of array elements whose product is even
+
+Write a short C++ function that takes an array of int values and determines
+if there is a pair of numbers in the array whose product is even.
+
+* TODO C-1.3 - distinct vectors
+
+Write a C++ function that takes an STL vector of int values and deter-
+mines if all the numbers are different from each other (that is, they are
+distinct).
+
+* TODO C-1.4 - print odd vector values
+
+Write a C++ function that takes an STL vector of int values and prints all
+the odd values in the vector.
+
+* TODO C-1.5 - shuffle deck of cards
+
+Write a C++ function that takes an array containing the set of all
+integers in the range 1 to 52 and shuffles it into random order. Use
+the built-in function ~rand~, which returns a pseudo-random integer each
+time it is called.  Your function should output each possible order
+with equal probability.
+
+* TODO C-1.6 - permutations
+
+Write a short C++ program that outputs all possible strings formed by
+using each of the characters ’a’, ’b’, ’c’, ’d’, ’e’, and ’f’ exactly
+once.
+
+* TODO C-1.7 - reverse order of lines
+
+Write a short C++ program that takes all the lines input to standard
+input and writes them to standard output in reverse order. That is,
+each line is output in the correct order, but the ordering of the
+lines is reversed.
+
+* TODO C-1.8 - vector product
+
+Write a short C++ program that takes two arguments of type STL vec-
+tor<double>, a and b, and returns the element-by-element product of a
+and b. That is, it returns a vector c of the same length such that c[i] =
+a[i] · b[i].
+
+* TODO C-1.9 - overload vector operations
+
+Write a C++ class Vector2, that stores the (x, y) coordinates of a
+two-dimensional vector, where x and y are of type double. Show how to
+override various C++ operators in order to implement the addition of
+two vectors (producing a vector result), the multiplication of a
+scalar times a vector (producing a vector result), and the dot product
+of two vectors (producing a double result).
+
+* TODO C-1.10 - fast power of 2
+
+Write an efficient C++ function that takes any integer value i and
+returns 2^i , as a long value. Your function should not multiply 2 by
+itself i times; there are much faster ways of computing 2^i .
+
+* TODO C-1.11 - greatest common divisor (Euclid)
+
+The greatest common divisor, or GCD, of two positive integers n and m is
+the largest number j, such that n and m are both multiples of j. Euclid pro-
+posed a simple algorithm for computing GCD(n, m), where n > m, which
+is based on a concept known as the Chinese Remainder Theorem. The
+main idea of the algorithm is to repeatedly perform modulo computations
+of consecutive pairs of the sequence that starts (n, m, . . .), until reaching
+zero. The last nonzero number in this sequence is the GCD of n and m.
+For example, for n = 80, 844 and m = 25, 320, the sequence is as
+follows:
+#+begin_example
+80, 844 mod 25, 320 = 4, 884
+25, 320 mod 4, 884 = 900
+4, 884 mod 900 = 384
+900 mod 384 = 132
+384 mod 132 = 120
+132 mod 120 = 12
+120 mod 12 = 0
+#+end_example
+
+So, GCD of 80, 844 and 25, 320 is 12. Write a short C++ function to
+compute GCD(n, m) for two integers n and m.
+
+* TODO P-1.1 - random punishment
+
+A common punishment for school children is to write out the same sen-
+tence multiple times. Write a C++ stand-alone program that will write
+out the following sentence one hundred times: “I will always use
+object- oriented design.” Your program should number each of the
+sentences and it should “accidentally” make eight different
+random-looking typos at various points in the listing, so that it
+looks like a human typed it all by hand.
+
+* TODO P-1.2 - calendar for the year
+
+Write a C++ program that, when given a starting day (Sunday through
+Saturday) as a string, and a four-digit year, prints a calendar for that year.
+Each month should contain the name of the month, centered over the dates
+for that month and a line containing the names of the days of the week,
+running from Sunday to Saturday. Each week should be printed on a sep-
+arate line. Be careful to check for a leap year.
+
+* TODO P-1.3 - birthday paradox
+
+The birthday paradox says that the probability that two people in a
+room will have the same birthday is more than half as long as the
+number of people in the room (n), is more than 23. This property is
+not really a paradox, but many people find it surprising. Design a C++
+program that can test this paradox by a series of experiments on
+randomly generated birth- days, which test this paradox for n = 5, 10,
+15, 20,..., 100. You should run at least 10 experiments for each value
+of n and it should output, for each n, the number of experiments for
+that n, such that two people in that test have the same birthday.

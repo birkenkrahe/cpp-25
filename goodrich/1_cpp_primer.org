@@ -1,0 +1,4785 @@
+#+title: Data Structures - C++ Primer
+#+author: Marcus Birkenkrahe
+#+subtitle: Based on Goodrich, Tamassian, Mount (2e) 2012#
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+This review is based on chapter 1 of Goodrich et al (2e), pp.1-65.
+- C++ basic syntax, variables, control flow, functions, classes
+- I/O streams: ~cin~, ~cout~, ~ifstream~, ~ofstream~
+- Functions and parameter passing
+- Makefiles and compilation units
+
+* Basic C++ Programming Elements
+
+- C++ is a superset of the C programming language.
+- It deals efficiently with hardware at the level of addresses.
+- Its principal enhancement is the object-oriented ~class~ concept.
+- Classes are user-defined types with:
+  + Guaranteed initialization
+  + Implicit type conversion
+  + Control of memory management
+  + Operator overloading
+  + Polymorphism.
+- A ~class~ can hide its underlying data to conceal implementation.
+- Users can conceptualize the ~class~ through a well-defined interface.
+- Classes enable programmers to break an application up into objects.
+- The resulting programs are easier to understand and to maintain.
+
+* PROJECT History of C++ according to Stroustrup (YouTube)
+
+This project requires that you watch an almost 2 hour-long podcast
+with the creator of C++, and summarize your insights and findings.
+
+- What do we know about the history of C++? See 2019 conversation
+  between Bjarne Stroustrup (creator of C++) and Lex Fridman (MIT).
+
+- Assignment: Watch the [[https://youtu.be/uTxRF5ag27A?si=rjk_43nlGfHme4Xb][podcast on YouTube]] (1.1 mio views, 1'50'').
+
+- Visual summary:
+  #+attr_html: :width 400px :float nil:
+  #+caption: Source: ChatGPT
+  [[../img/cpp_evolution.png]]
+
+- In the image, *RAII* stands for:
+  #+begin_quote
+  Resource Acquisition Is Initialization - it's a programming idiom
+  introduced by Stroustrup that connects the lifetime of an object
+  with the lifetime of a resource (like memory, file handles, sockets,
+  etc.) When you create an object, you acquire the resources in the
+  constructor. When the object goes out of scope, you automatically
+  release the resource in the destructor.
+  #+end_quote
+
+- Programming example:
+  #+begin_src C++ :main yes :includes <iostream> :results none :exports both :comments both :tangle yes :noweb yes
+    class File {
+    public:
+      File(const std::string& name) {
+        file = fopen(name.c_str(),"r");
+      }
+      ~File() {
+        if(file) fclose(file); // happens automatically when File object
+        // goes out of scope
+      }
+    private:
+      FILE* file;
+    };
+  #+end_src
+
+- Comparison of RAII (C++) to garbage collection (Python, Java):
+  #+attr_html: :width 400px:
+  [[../img/raii_vs_gc.png]]
+
+- A minimal working RAII example:
+  #+begin_src C++ :main no :includes :results output :exports both :comments both :tangle yes :noweb yes
+    #include <iostream>
+
+    class SayHello {
+    public:
+      SayHello() { // constructor
+        std::cout << "Hello!\n";
+      }
+      ~SayHello() {
+        std::cout << "Goodbye!\n";
+      }
+    };
+
+    int main() {
+      SayHello greeter;
+      std::cout << "Doing something...\n";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Hello!
+  : Doing something...
+  : Goodbye!
+
+- *Summary (ChatGPT):*
+  #+name: Fridman-Stroustrup 2019 podcast
+  | Category              | Key Points                                         |
+  |-----------------------+----------------------------------------------------|
+  | Origin & Influences   | Inspired by Algol 60, Simula; disliked Pascal.     |
+  |                       | Simula introduced OOP concepts.                    |
+  | Design Philosophy     | Efficiency + Abstraction. Control hardware while   |
+  |                       | managing complexity.                               |
+  | Key Principles        | Zero-Overhead Principle: No runtime cost for       |
+  |                       | abstractions.                                      |
+  | Type System           | User-defined types (classes) as efficient as       |
+  |                       | built-ins. RAII via constructors/destructors.      |
+  | Generic Programming   | Templates generate fast code at compile time.      |
+  |                       | Concepts (C++20) define constraints.               |
+  | Reliability           | Mission-critical systems need robust code          |
+  |                       | (e.g., cars, banking).                             |
+  | Static Analysis       | Static analysis finds issues early. Supports       |
+  |                       | C++ Core Guidelines.                               |
+  | Standardization       | ISO-led process since 1989. New standards every 3  |
+  |                       | years (e.g., C++11, 14, 17, 20).                   |
+  | Use in Real-World     | Used by Google, Adobe, automotive & aerospace      |
+  |                       | sectors. Compilers: GCC, Clang, MSVC.              |
+  | AI & ML Perspective   | ML is fuzzy; C++ is for precision. Skeptical of    |
+  |                       | fuzzy logic in safety-critical areas.              |
+  | Legacy Features       | Favorite feature: RAII. Efficient abstractions via |
+  |                       | virtual functions and templates.                   |
+  | Philosophical Outlook | Programming language design must follow coherent   |
+  |                       | principles. Shared values = convergence.           |
+
+- *Anecdote:* In 1992 or so, I became maintainer of the Stanford
+  U. virtual library for C++ because I had taught the first online
+  course on C++ using the Web (and a virtual world
+  environment). Later, I wrote an article for the C++ report, edited
+  by Stan Lippman (who later wrote the "C++ Primer", one of the first
+  full-length textbooks for C++).
+
+* A Simple C++ Program
+
+- *Steps:*
+  1) Create a C++ source file with an editor and save it (.cpp)
+  2) Run a compiler to create a machine code interpretation (.o)
+  3) Run a linker to include libraries and produce an executable.
+  4) Run the executable to complete the task programmed.
+
+- *How can you visualize the linker?* Normally, the compiler invokes the
+  linker automatically, and you don't see the object code.
+  #+begin_quote
+  Check the compiler's *man* page, ~gcc(1)~: "When you invoke GCC, it
+  normally does preprocessing, compilation, assembly and linking.  The
+  'overall options' allow you to stop this process at an intermediate
+  stage.  For example, the ~-c~ option says not to run the linker.  Then
+  the output consists of object files output by the assembler."
+  #+end_quote
+
+- *Example:* Minimal C++ program
+  #+begin_src bash :results output :exports both
+    echo "int main(){}" > main.cpp
+    cat main.cpp
+    g++ main.cpp -c
+    ls -l main*
+    file main.o
+    g++ main.o -o main
+    ./main
+    echo $? # exit status of the most recently executed command
+  #+end_src
+
+  #+RESULTS:
+  : int main(){}
+  : -rwxrwxr-x 1 aletheia aletheia 15776 May 10 15:48 main
+  : -rw-rw-r-- 1 aletheia aletheia    13 May 10 15:48 main.cpp
+  : -rw-rw-r-- 1 aletheia aletheia  1224 May 10 15:48 main.o
+  : main.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+  : 0
+
+- There is also a separate linker, ~ld(1~), the GNU linker (check the
+  ~man~ page). To use it on =main.o= to get an executable =main=, you'd have
+  to explicitly name all relevant libraries. This is how to see them:
+  #+begin_src bash :results output :exports both
+    g++ -v main.o -o main
+  #+end_src
+
+- *Example*: Code along using Emacs.
+
+  #+begin_src C++ :cmdline < input :results output :tangle ./src/hello.cpp
+    #include <cstdlib>
+    #include <iostream>
+    /* This program inputs two numbers x and y and outputs their sum */
+    int main() {
+      int x,y;
+      std::cout << "Please enter two numbers: ";
+      std::cin >> x >> y; // input x and y
+      std::cout << x << ' ' << y << '\n';
+      int sum = x + y;   // compute their sum
+      std::cout << "Their sum is " << sum << std::endl;
+      return EXIT_SUCCESS; // terminate successfully
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Please enter two numbers: 2 2
+  : Their sum is 4
+
+- Input file:
+  #+begin_src bash :results output :exports both
+    echo 2 2 > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : 2 2
+
+* Program elements
+
+1) Two *header* files are included. Their location is in the
+   ~$PATH~. Where are these files located? What do they do?
+   #+begin_src bash :results output :exports both
+     find /usr/include /usr/local/include \
+          -type f \( -name 'cstdlib' -o -name 'iostream' \) | xargs file
+   #+end_src
+   #+begin_quote
+   - ~iostream~ provides definitions for input (~cin~) and output
+     (~cout~).
+   - ~cstdlib~ provides some standard system definitions like
+     ~EXIT_SUCCESS~, a macro that usually expands to ~0~.
+   #+end_quote
+
+2) The initial entry point for C++ programs is the *function*
+   ~main~. In this case ~int main()~ is a function that takes no
+   (~void~) arguments and has an integer (~int~) ~return~.
+
+   The general ~main~ function may be called with command-line
+   arguments: ~main(int argc, char *argv[])~.
+
+3) The *function body* is enclosed in curly braces ~{ }~. They define
+   a *scope*, or a region of memory: Variables go into and out of
+   scope.
+
+4) The program terminates when the ~return~ statement is
+   executed. The constant (macro) ~EXIT_SUCCESS~ is defined to be 0
+   in ~cstdlib~.
+
+5) The output operator ~<<~ prints a string to the standard output
+   stream (~stdout)~, for example the screen.
+
+6) The input operator ~>>~ obtains the variables from standard input
+   (~stdin)~, for example the keyboard. There is also standard error
+   (~stderr~) where error output is written.
+
+7) These data streams are denoted ~std::cout~, ~std::cin~, and ~std:cerr~,
+   respectively. The prefix ~std::~ indicates that they come from the
+   standard library.
+
+8) To inform the compiler that we wish to use objects from the
+   standard library, we can write ~using namespace std~ at the top
+   instead:
+
+   #+begin_src C++
+     #include <iostream>
+     using namespace std;
+
+     int main() {
+       cout << "Hello" << endl; // `std::` is not needed
+     }
+   #+end_src
+
+   #+RESULTS:
+   : Hello
+
+9) You can put most of the previous code into the Org-mode code block
+   header (and define it as a macro in ~org-structure-template-alist~).
+
+   #+begin_src C++ :main yes :includes <iostream> :namespaces std
+     cout << "Hello" << endl; // `std::` is not needed
+   #+end_src
+
+   #+RESULTS:
+   : Hello
+
+10) The output statement does not produce a new line. It can be added
+    either with ~std::endl~, or with C's ~'\n'~.
+
+* Fundamental Types
+
+The fundamental types are the basic building blocks from which more
+complex types are constructed:
+#+name: fundamental types
+| KEYWORD | TYPE                            | EXAMPLE    |
+|---------+---------------------------------+------------|
+| ~bool~    | Boolean value                   | ~true~       |
+| ~char~    | character                       | ~'a'~        |
+| ~short~   | short integer                   | ~32767~      |
+| ~int~     | integer                         | ~2147483647~ |
+| ~long~    | long integer                    | ~2^63-1~     |
+| ~float~   | single-precision floating-point | ~3.4E38~     |
+| ~double~  | double-precision floating-point | 1.8E308    |
+| ~enum~    | set of discrete values          | ~{1,2,3,4}~  |
+| ~void~    | absence of any type information |            |
+
+* Characters
+
+- A ~char~ is typically 8-bits (1 byte, 1 word)
+
+- A *literal* is a constant value. Character literals are enclosed in
+  single quotes: ~'a'~, '+'~ etc.
+
+- There is a number of special character literals:
+  #+name: special characters
+  | ~'\0'~ | null                 |
+  | ~'\b'~ | backspace            |
+  | ~'\t'~ | tab                  |
+  | ~'\n'~ | newline              |
+  | ~'\r'~ | carriage return (CR) |
+  | ~'\"'~ | double quote         |
+  | ~'\''~ | single quote         |
+  | ~'\\'~ | backslash            |
+
+- The null character ~'\0'~ is used to indicate the end of a string of
+  characters.
+
+- The function =int(c)= returns the (ASCII) integer value associated
+  with a character variable =c=.
+
+- The function =char(a)= returns the character literal associated with
+  an ASCII number =a=.
+
+* PRACTICE Print out ASCII and special character literals
+
+- *Task:* Print out the ASCII numbers for the [[special characters]] in the
+  table above:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    cout << int('\0') << endl
+    << int('\b') << endl
+    << int('\t') << endl
+    << int('\n') << endl
+    << int('\r') << endl
+    << int('\"') << endl
+    << int('\'') << endl
+    << int('\\') << endl;
+  #+end_src
+
+- *Task:* Print out the character literals associated with the following
+  ASCII numbers: 0,8,9,10,13,34,39,92.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int ascii[] = {0,8,9,10,13,34,39,92};
+    for (int i=0; i<sizeof(ascii)/sizeof(ascii[0]);i++) {
+      cout << char(ascii[i]) << endl;
+     }
+  #+end_src
+
+  #+RESULTS:
+  :  
+  : 
+  :
+  :
+  :
+  :
+  : "
+  : '
+  : \
+
+* Integers
+
+- Integers come in three sizes: ~short [int]~, ~int~, and ~long [int]~.
+
+- The suffix ~l~ or ~L~ can be added to indicate a ~long~ integer.
+
+- Octal (base 8) constants are prefixed with ~0~.
+
+- Hexadecimal (base 16) constants are prefixed with ~0x~.
+
+- When declaring a variable, you can define it (give it a name), or
+  assign (~=~) an initial value. If no initial value is given, the value
+  is unpredictable/undefined.
+
+- Variable names may not have a digit as first character, and contain
+  only ~_~ (underscore) as special character. In C++, you will see more
+  "camelCase" variables rather than "under_score" as in C.
+
+- Examples:
+  #+name: variables
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    short n; // undefined initial value
+    int octalNumber = 0400; // 400 (base 8) = 256 (base 10) = 4 * 8^2
+    char newlineChar = '\n';
+    long BIGnumber = 31459265L;
+    short _aSTRANGE__1234_variABlE_NaMe = 42;
+  #+end_src
+
+- C++ does not specify the exact number of bits in each type but a
+  ~short~ is at least 16 bits, and a ~long~ is at least 32 bits long.
+
+- How can you find out how long the numbers on your computer are?
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    cout << sizeof(short)   << endl // byte length
+    << sizeof(int)     << endl
+    << sizeof(char)    << endl
+    << sizeof(long)    << endl;
+  #+end_src
+
+  #+RESULTS:
+  : 2
+  : 4
+  : 1
+  : 8
+
+- The ~CHAR_BIT~ macro in ~climits~ shows the number of bits:
+  #+begin_src C++ :main no :includes :namespaces std :results output :exports both :noweb yes
+    #include <iostream>
+    #include <climits>   // for CHAR_BIT
+    #include <cstddef>   // for std::size_t
+
+    int main() {
+      cout << "CHAR_BIT (bits per byte): " << CHAR_BIT << "\n\n";
+
+      cout << "Size of types:\n";
+      cout << "char       : " << sizeof(char) << " bytes, "
+           << sizeof(char) * CHAR_BIT << " bits\n";
+      cout << "short      : " << sizeof(short) << " bytes, "
+           << sizeof(short) * CHAR_BIT << " bits\n";
+      cout << "int        : " << sizeof(int) << " bytes, "
+           << sizeof(int) * CHAR_BIT << " bits\n";
+      cout << "long       : " << sizeof(long) << " bytes, "
+           << sizeof(long) * CHAR_BIT << " bits\n";
+      cout << "long long  : " << sizeof(long long) << " bytes, "
+           << sizeof(long long) * CHAR_BIT << " bits\n";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : CHAR_BIT (bits per byte): 8
+  :
+  : Size of types:
+  : char       : 1 bytes, 8 bits
+  : short      : 2 bytes, 16 bits
+  : int        : 4 bytes, 32 bits
+  : long       : 8 bytes, 64 bits
+  : long long  : 8 bytes, 64 bits
+
+* PRACTICE Stream and print integer values
+
+- *Task*: Print the values of the [[variables]] defined above using first
+  ~cout~, and then ~printf~!
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<variables>>
+     // print variables using stdout stream
+
+     // print variables using printf
+
+  #+end_src
+
+- What if you can't remember a format (aka conversion) specifier?
+  #+begin_quote
+  Open the manual page for ~printf(3)~ with =M-x man RET printf(3)=.
+  #+end_quote
+
+- What about C++ references?
+  #+begin_quote
+  Use ~cppreference.com~ or ~cplusplus.com~. Try that for ~cout~.
+  #+end_quote
+
+* Enumerations
+
+- An ~enum~ is a user-defined type that can hold any of a set of
+  discrete values.
+
+- Each value of an ~enum~ is associated with an integer value (starting
+  from 0 by default, but you can redefine them).
+
+- Enumeration names and other constants should be capitalized
+  (convention).
+
+- Example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    // define enumeration
+    enum Day { SUN, MON, TUE, WED, THU, FRI, SAT };
+    // test enumeration in main
+    Day today = THU; // today may be any of SUN...SAT
+
+    cout << "Today is " << today;
+  #+end_src
+
+  #+RESULTS:
+  : Today is 4
+
+- Example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    // define enumeration
+    enum Mood { HAPPY=3, SAD=1, ANXIOUS=4, SLEEPY=2 };
+    // test enumeration in main
+    Mood myMood = SLEEPY; // myMood may be HAPPY...SLEEPY
+
+    cout << "My mood is: " << myMood;
+  #+end_src
+
+  #+RESULTS:
+  : My mood is: 2
+
+* PRACTICE Calendar with ~enum~ (~static_cast~)
+
+- *Task:* Write a program that uses an enumeration to decide if the current
+  day is a weekday or a weekend day.
+
+- *Input:* Get the day from the user in the form 1...7 for the seven
+  days of the week starting with Sunday (1).
+
+- *Tip:* Remember control flow commands (~if~), relational operators (~>)~
+  and logical operators (~&&~).
+
+- *Sample output:*
+  #+begin_example
+  : Enter today's date as a number 1-7: 5
+  : It's a weekday.
+
+  : Enter today's date as a number 1-7: 1
+  : It's the weekend.
+  #+end_example
+
+- *Pseudocode*:
+  #+begin_src C++ :cmdline < input :main no :includes  :results output :exports both :noweb yes
+    // include input output stream functions
+    // use standard namespace
+
+    // declare enumeration Day for every day of the week
+
+    // BEGIN main
+    // declare input variable
+    // PRINT "Enter today's date as a number 1-7: "
+    // GET input
+    // PRINT input
+
+    //  declare today as a Day
+
+    // IF today is a weekday
+    // PRINT "It's a weekday."
+    // ELSE
+    // PRINT "It's the weekend."
+
+    // END main
+  #+end_src
+
+- *Solution:*
+  #+begin_src C++ :cmdline < input :main no :includes  :results output :exports both :noweb yes
+    #include <iostream>
+    using namespace std;
+
+    enum Day {SUN=1,MON=2,TUE=3,WED=4,THU=5,FRI=6,SAT=7};
+
+    int main()
+    {
+      int input;
+      cout << "Enter today's date as a number 1-7: ";
+      cin >> input;
+      cout << input << endl;
+
+      Day today = static_cast<Day>(input);
+
+      if (today >= MON && today <= FRI)
+        cout << "It's a weekday." << endl;
+      else
+        cout << "It's the weekend." << endl;
+
+      return 0;
+    }
+  #+end_src
+
+- Bonus: How can you make the program safe against wrong input?
+  #+begin_src C++ :tangle enum.cpp :cmdline < input :main no :includes  :results output :exports both :noweb yes
+    #include <iostream>
+    using namespace std;
+
+    enum Day {SUN=1,MON=2,TUE=3,WED=4,THU=5,FRI=6,SAT=7};
+
+    int main()
+    {
+      int input;
+      cout << "Enter today's date as a number 1-7: ";
+      cin >> input;
+      cout << input << endl;
+
+      if (input < SUN || input > SAT) {
+        cerr << "Invalid input. Enter number between 1..7" << endl;
+        return 1;
+      }
+
+      Day today = static_cast<Day>(input);
+
+      if (today >= MON && today <= FRI)
+        cout << "It's a weekday." << endl;
+      else
+        cout << "It's the weekend." << endl;
+
+      return 0;
+    }
+  #+end_src
+
+- Input file:
+  #+begin_src bash :results output :exports both
+    echo 5 > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : 5
+
+- Explanation:
+  #+begin_quote
+  ~static_cast~ is a compile-time cast in C++. It converts between types
+  in a type-safe and explicit way: =static_cast<Day>(input)= converts
+  the ~int~ (user input from ~cin~) to the custom ~enum~ =Day=.
+
+  C++ will not implicitly convert ~int~ to ~enum~ to avoid silently
+  assigning an invalid or out-of-range value.
+
+  =static_cast<Day>(input)= tells the compiler: "I understand the risk,
+  go ahead." The shorter =Day today = input= is not allowed.
+  #+end_quote
+
+- Is this allowed in Python?
+  #+begin_quote
+  Python is not statically but dynamically typed. You can just call
+  =Day(input)= or =Day['THU']= and Python enforces validity.
+  #+end_quote
+
+  #+begin_example python
+  from enum import Enum
+
+  class Day(Enum):
+      SUN = 1
+      MON = 2
+      TUE = 3
+      WED = 4
+      THU = 5
+      FRI = 6
+      SAT = 7
+
+  val = input("Enter today's day (SUN, MON, ..., SAT): ").upper()
+  try:
+      today = Day[val]
+      if today in (Day.SAT, Day.SUN):
+          print("It's the weekend!")
+      else:
+          print("It's a weekday.")
+  except KeyError:
+      print("Invalid day name.")
+  #+end_example
+
+* Floating-point
+
+- Single-precision (32-bit) and double-precision (64-bit) are stored
+  in ~float~ and ~double~ variables.
+
+- The exact number of bits in each of these types is left undefined
+  (down to machine architecture). By default, floating point literals
+  like ~3.1459~ are of type ~double~.
+
+- Scientific exponential notation can be specified using ~e~ or ~E~ to
+  separate the mantissa (the leading numbers) from the exponent:
+  =3.14E5= is 3.14 \times 10^{5}.
+
+- To force a literal to be a ~float~, add the suffix ~f~ or ~F~ as in =2.0f=.
+
+* PRACTICE Single vs. double precision
+
+- Write a short C++ program that
+  1) Declares a ~float~ and a ~double~, both initialized to =1/3=.
+  2) Prints both values to 20 decimal places precision.
+  3) Compares whether the ~float~ and ~double~ values are equal.
+
+- Pseudocode:
+  #+begin_src C++ :main no :includes :results output :exports both :comments both :tangle yes :noweb yes
+    // include iostream
+    // include iomanip
+
+    // BEGIN main
+    // declare and initialize float to 1/3
+    // declare and initialize double to 1/3
+
+    // fix precision at 20 decimal digits
+    // PRINT "float value"
+    // PRINT "double value"
+
+    // IF f is equal d
+    // PRINT "The values are equal."
+    // ELSE
+    // PRINT "The values are not equal."
+    // END main
+  #+end_src
+
+- Solution:
+  #+begin_src C++ :main no :includes :results output :exports both :comments both :tangle yes :noweb yes
+    #include <iostream>
+    #include <iomanip>
+
+    int main() {
+      float f = 1.0f / 3.0f;
+      double d = 1.0 / 3.0;
+
+      std::cout << std::fixed << std::setprecision(20);
+      std::cout << "float value: " << f << std::endl;
+      std::cout << "double value: " << d << std::endl;
+
+      if (f == d) {
+        std::cout << "The values are equal.\n";
+      } else {
+        std::cout << "The values are not equal.\n";
+      }
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : float value: 0.33333334326744079590
+  : double value: 0.33333333333333331483
+  : The values are not equal.
+
+* Complex types
+
+The complex types provide a lot more control over access to memory,
+collection of types, and collection of objects.
+
+#+name: fundamental types
+| KEYWORD   | TYPE                               | EXAMPLE        |
+|-----------+------------------------------------+----------------|
+| Pointer   | Address value                      | ~int* p~         |
+| Array     | Collection of values of one type   | ~array[]~        |
+| Structure | Collection of heterogeneous data   | ~struct S~       |
+| Union     | One value from multiple data types | ~union U~        |
+| Typedef   | Type alias for readability/reuse   | ~typedef int ID~ |
+
+The last two, ~union~ and ~typedef~, are less relevant to the focus on
+abstract data types (ADT) in C++, and more relevant to C and systems
+programming.
+
+* Pointers
+
+- What is a *pointer*?
+  #+begin_quote
+  A pointer is a *variable* =p= that holds the value of an *address* to
+  another variable =x=: =x = *p= and =p = &x=. This other variable can also
+  be a pointer (then the original pointer is a double pointer).
+  #+end_quote
+
+- Two operators are used to manipulate pointers:
+  1) The *address-of* operator ~&~: =int* p = &x= points to the address of =x=
+     in memory.
+  2) The *dereferencing* or *indirection* operator ~*~: =*p = *(&x) = x=
+     contains the value of =x=.
+
+- Pointer manipulation is powerful because it grants direct control
+  over memory. This leads to very efficient, dynamic data structures.
+
+- Pointer-based structures can grow and shrink at run-time, while
+  arrays are fixed-size (though there are variable-length arrays).
+
+- Size determination at run-time means that larger datasets can be
+  accommodated when the program is executed. Their size does not have
+  to be anticipated when the program is written.
+
+* PRACTICE Use =char*= pointers
+
+- Analyze the code - anticipate the output and comment each line:
+  #+begin_example C++
+    char ch = 'Q';
+    char* p = &ch;
+    cout << *p;
+
+    ch = 'Z';
+    cout << *p;
+
+    (*p) = 'X';
+    cout << ch;
+  #+end_example
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    char ch = 'Q'; // store character in character variable ch
+    char* p = &ch; // store address of ch in character pointer p
+    cout << *p; // print value of ch using the dereferenced pointer
+
+    ch = 'Z'; // assign another character to ch
+    cout << *p; // print value of ch using the dereferenced pointer *p
+
+    (*p) = 'X'; // assign another character to ch using p
+    cout << ch; // print value of ch
+  #+end_src
+
+* Function pointers (polymorphism, lambda functions)
+
+- Pointers can also point to complex types and functions.
+
+- Example in C/C++ (identical except for the ~cout~):
+  #+begin_src C++ :main no :includes :results output :exports both :noweb yes
+    #include <iostream>
+
+    // add: return the sum of two integer arguments
+    int add(int a, int b) {
+      return a + b;
+    }
+
+    int main() {
+
+      // declare function pointer
+      int (*fptr)(int, int);
+
+      // let fptr point at add
+      fptr = add; // or: fptr = &add;
+
+      int result = fptr(5,7);
+
+      std::cout << "Result: " << result << std::endl;
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Result: 12
+
+- In modern C++, function pointers are rarely needed. Instead use
+  either the (polymorphic) function (object) wrapper ~std::function~ or
+  use a *lambda* expression (anonymous function).
+
+- Function wrapper:
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <functional>
+    #include <iostream>
+
+    int add(int a, int b){
+      return a+b;
+    }
+
+    int main() {
+
+      // wrap add in a function object
+      std::function<int(int,int)> func = add;
+
+      std::cout << func(10,20) << "\n";
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 30
+
+- Lambda function: ~auto~ automatically deduces the type of a variable
+  from its initializer.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    auto add = [](int a, int b) { return a + b; };
+    std::cout << add(2,3);
+  #+end_src
+
+  #+RESULTS:
+  : 5
+
+* ~NULL~ and ~void~
+
+- A null pointer points to nothing. Its value is zero by definition.
+
+- Trying to dereference a null pointer results in an error:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int x = 1;
+    int* p = &x;
+    cout << *p << endl;
+
+    p = NULL; // defined in <cstdlib>
+    cout << *p << endl; // segmentation fault
+  #+end_src
+
+  #+RESULTS:
+  : 1
+
+- The special type ~void~ indicates no type information. Though you
+  cannot declare a ~void~ variable, you can declare a ~void*~ pointer.
+
+- A generic ~void*~ pointer can point to a variable of any type but the
+  compiler cannot check the correctness of such a reference so its use
+  is discouraged.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int x = 42;
+    void* ptr = &x;
+
+    // cast back to int* before dereferencing
+    cout << *(int*)ptr << endl;
+  #+end_src
+
+  #+RESULTS:
+  : 42
+
+- Careful when declaring two or more pointers on the same line: the ~*~
+  operator binds with the variable name, not with the type name:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int* x,y,z; // same as: int* x; int y; int z;
+  #+end_src
+
+* Arrays
+
+- An *array* is a fixed-size collection of elements of the same type.
+  Given any type ~T~ and a constant =N=, a variable of type =T[N]= holds
+  an array of =N= elements, each of type ~T~.
+
+- Array *elements* are accessed by *index*, ranging from =0= to =N-1=.
+
+- Examples:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both
+    double foo[5];     // 5-element array of doubles
+    int bar[10];       // 10-element array of integers
+
+    foo[4] = 2.5;       // assign value to the 5th (last) element of foo
+    bar[2] = 4;         // assign value to the 3rd element of bar
+
+    cout << foo[bar[2]]; // prints foo[4], i.e. 2.5
+  #+end_src
+
+  #+RESULTS:
+  : 2.5
+
+- Once declared, the number of elements in a C or C++ array is *fixed*.
+
+- *What about VLAs?* C introduced *Variable Length Arrays* (VLAs) in
+  C99. VLAs allow array sizes to be determined at *runtime*, but the
+  size remains *fixed after declaration*.  VLAs are optional in C11 and
+  removed in C23. *C++ does not support VLAs.*
+
+- C++ provides no built-in run-time checking for out-of-bounds
+  indexing.[fn:1] The ~vector~ type of the C++ Standard Template Library
+  (STL) provides a more comfortable array type (with run-time index
+  checking and the ability to dynamically change the array's size).
+
+- How is a *two-dimensional* array *implemented*?
+  #+begin_quote
+  A 2-dim array is implemented as an array of arrays: =A[15][30]=
+  declares =A= to be an array of 30 objects, each of which is an array
+  of 15 integers.
+  #+end_quote
+
+- How is a two-dimensional array *indexed*?
+  #+begin_quote
+  A two-dimensional array =A[M][N]= is indexed as =A[i][j]= with =i= \in
+  [0,M-1] and =j= \in [0,N-1].
+  #+end_quote
+
+- How is an array *initialized*?
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    int a[] = {10,11,12,13}; // declares and initializes a[4]
+    bool b[] = {false,true}; // declares and initializes b[2]
+    char c[] = {'c','a','t'}; // declares and initializes c[3]
+  #+end_src
+
+- Can you declare an array of pointers, too?
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    int* r[17]; // declares array of 17 pointers to integer objects
+  #+end_src
+
+- Can you declare an array of ~enum~ structures?
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    enum Color { RED, GREEN, BLUE, COLOR_COUNT};
+
+    int main() {
+
+      Color colors[COLOR_COUNT]; // declare Color array of enum elements
+
+      // assign colors to the array elements
+      colors[0]=RED;
+      colors[1]=RED;
+      colors[2]=GREEN;
+
+      cout << "Colors: ";
+      for (int i=0; i < COLOR_COUNT; i++) {
+        if (colors[i]==RED) cout << "RED ";
+        else if (colors[i]==GREEN) cout << "GREEN ";
+        else if (colors[i]==BLUE) cout << "BLUE ";
+      }
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Colors: RED RED GREEN
+
+- Can you declare an array of functions?
+  #+begin_quote
+  No, you cannot declare an array of functions because in C/C++,
+  functions are not (first-class) objects.[fn:2] But you can declare
+  an array of *pointers to functions* (just like in C):
+  #+end_quote
+
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int add(int a, int b) { return a + b; }
+    int mul(int a, int b) { return a * b; }
+
+    int main() {
+      int (*ops[2])(int, int) = { add, mul }; // pointer array to functions
+
+      cout << ops[0](3,4) << endl; // 7
+      cout << ops[1](3,4) << endl; // 12
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 7
+  : 12
+
+* Pointers and arrays
+
+- What's the connection between pointers and arrays?
+  #+begin_quote
+  The name of an array is equivalent to a pointer to the array's
+  initial element.xs
+  #+end_quote
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    char c[] = {'c','a','t'}; // declare and initialize character array
+    char* p = c; // character pointer p points to c[0]
+    char* q = &c[0]; // character pointer p points to c[0]
+
+    cout << c[2] << p[2] << q[2]; // output ttt
+  #+end_src
+
+  #+RESULTS:
+  : ttt
+
+- Given two arrays c, d, what does ~c==d~ test?
+  #+begin_quote
+  It is equivalent to ~&c[0] == &d[0]~. Unless the addresses of the
+  initial elements of c and d are the same, the test will fail.
+  #+end_quote
+
+- Let's check this:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int c[] = {1,2,3,4}, d[] = {1,2,3,4};
+    cout << boolalpha << (c == d); // `boolalpha` prints true/false
+  #+end_src
+
+  #+RESULTS:
+  : false
+
+- How can I make c[0] and d[0] point at the same memory location?
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int c[] = {1,2,3,4};
+    int* d = c; // d points at c[0]
+    cout << boolalpha << (c == d);
+  #+end_src
+
+  #+RESULTS:
+  : true
+
+- How can one perform operations on entire arrays ("vectorization")?
+  #+begin_quote
+  In C++, use the ~vector~ class (STL). In C, loop over elements. All
+  vector or array operations are a lot easier with ~std::vector~.
+  #+end_quote
+
+- How can you use a pointer to traverse an array?
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    char c[3] = {'c','a','t'}; // declare character array
+    size_t c_length = sizeof(c)/sizeof(c[0]); // compute length of array
+    cout << "Length of array: " << c_length << endl;
+    // start = &c[0]; stop = &c[3];
+    for (char* p = c; p < &c[c_length]; p++) {
+      cout << *p; // *p[0]=c[0], *p[1]=c[1], *p[2]=c[2]
+     }
+  #+end_src
+
+  #+RESULTS:
+  : Length of array: 3
+  : cat
+
+* PRACTICE Pointers and arrays
+
+- Write a program that does the following:
+
+  1. Declare an ~int~ array =data[5]= and initialize it with ={2, 4, 6, 8,
+     10}=.
+  2. Use a pointer =p= to traverse the array. Use your knowledge of the
+     array =length=.
+  3. For each element, square its value *using the pointer* and store
+     the result back in the array.
+  4. Print the final array using an index loop.
+
+  *Expected output*:
+  #+begin_example
+  data[0] = 4
+  data[1] = 16
+  data[2] = 36
+  data[3] = 64
+  data[4] = 100
+  #+end_example
+
+- Pseudocode
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    // declare and initialize integer array
+    // declare pointer p pointing to an integer memory location
+
+    // loop over data using p
+    // assign value pointed at by p to data
+
+    // loop over data using index
+    // PRINT data[index]
+  #+end_src
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int data[5] = {2,4,6,8,10}; // declare and initialize integer array
+    int *p; // declare pointer p pointing to an integer memory location
+
+    for (p = data; p < &data[5]; p++) { // loop over data using p
+      (*p) *= *p; // assign value pointed at by p to data
+     }
+
+    for (int i=0; i<5; i++) { // loop over data using index
+      cout << "data[" << i << "] = " << data[i] << endl; // PRINT data[index]
+     }
+  #+end_src
+
+  #+RESULTS:
+  : data[0] = 4
+  : data[1] = 16
+  : data[2] = 36
+  : data[3] = 64
+  : data[4] = 100
+
+* Strings
+
+- What is a string literal like "Hello, World!" to the computer?
+  #+begin_quote
+  "Hello, World!" is an array of 14 characters that ends with the null
+  character ~\0~ - this is also called a *C-style string*. To manipulate
+  these strings in C, you include ~string.h~.
+  #+end_quote
+
+- C++ provides a ~string~ type in the Standard Template Library
+  (STL). To use *STL strings*, you need to ~#include <string>~.
+
+- STL strings are part of the standard (~std~) namespace, so their full
+  name is ~std::string~. You can save the ~std::~ prefix by adding the
+  statement ~using std::string;~
+
+- Examples of what you can do with ~string~:
+  + Concatenation with ~+~
+  + Comparison with ~<~
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    #include <string>
+    using std::string;
+
+    string s = "to be"; // declare string
+    string t = "not " + s; // declare concatenated string
+    string u = s + " or " + t; // declare concatenated string
+
+    if (s > t) // true: "to be" > "not to be" (lexicographic)
+      cout << u; // output: "to be or not to be"
+  #+end_src
+
+  #+RESULTS:
+  : to be or not to be
+
+- Other operations work just like for arrays:
+  + Checking string length with ~size~
+  + Appending strings with ~+=~
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    #include <string>
+    using std::string;
+
+    string s = "John"; // C++ string s = "John"
+    cout << "s = " << s << endl;
+
+    int i = s.size(); // size of s is i = 4
+    cout << "size of s = " << i << endl;
+
+    char c = s[3]; // char c = 'n'
+    cout << "4th letter of s = " << "'" << c << "'" << endl;
+
+    s += " Smith"; // s = "John Smith"
+    cout << "s = " << s << endl;
+  #+end_src
+
+  - To convert a C++ string ~std::string~ to a C-style string ~const
+    char*~, use ~string::c_str()~
+    #+begin_src C++ :results output :namespaces std :main yes :includes <iostream> <string>
+      string cpp_str = "Hello, C!";
+      const char* c_str = cpp_str.c_str();
+
+      cout << cpp_str << endl;
+      cout << c_str << endl;
+    #+end_src
+
+    #+RESULTS:
+    : Hello, C!
+    : Hello, C!
+
+* PRACTICE Strings
+
+- Write a C++ program that:
+
+  1. Declares a string variable =first= with your *first name*.
+  2. Declares another string =last= with your *last name*.
+  3. Concatenates them into a *full name* =full= with a space in between.
+  4. Prints:
+     - The full name =full=
+     - The number of characters in the full name
+     - The first and last characters of the full name
+
+- Sample output for: Bjarne Stroustrup
+  #+begin_example
+  Full name: Bjarne Stroustrup
+  Length: 17
+  First character: B
+  Last character: p
+  #+end_example
+
+- Solution:
+#+begin_src C++ :main yes :includes <iostream> :namespaces std :results output
+  #include <string>
+  using std::string;
+
+  int main() {
+    string first = "Bjarne";
+    string last = "Stroustrup";
+    string full = first + " " + last;
+
+    cout << "Full name: " << full << endl;
+    cout << "Length: " << full.size() << endl;
+    cout << "First character: " << full[0] << endl;
+    cout << "Last character: " << full[full.size() - 1] << endl;
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Full name: Bjarne Stroustrup
+: Length: 17
+: First character: B
+: Last character: p
+
+* C-style Structures
+
+- What is a *structure* useful for?
+  #+begin_quote
+  A structure (~struct~) is useful for storing an aggregation of
+  elements, which may be of different types. Its members or fields,
+  are named, and can be accessed using the dot (~.~) operator.
+  #+end_quote
+
+- Example: Store the meal preferences of airline passengers.
+  #+name: Passenger
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    struct Passenger { // a public Passenger class
+      string   name;   // Passenger's name
+      MealType mealPref; // Passenger's meal preference
+      bool     isFreqFlyer; // Passenger is frequent flyer
+      string   freqFlyerNo; // Passenger's frequent flyer number
+    };
+  #+end_src
+
+- Example: Declare a =Passenger= and print passenger's details
+  #+name: John Smith
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<Passenger>>
+
+     // Declare and initialize a Passenger [instance] named `pass`
+    Passenger pass = {"John Smith",
+                      VEGETARIAN,
+                      true,
+                      "293145"};
+    // Print details
+    cout << "Name: " << pass.name << endl
+    << "Meal preference: " << pass.mealPref << endl
+    << "Frequent Flyer: " << pass.isFreqFlyer << endl
+    << "Frequent Flyer Number: " << pass.freqFlyerNo << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Name: John Smith
+  : Meal preference: 3
+  : Frequent Flyer: 1
+  : Frequent Flyer Number: 293145
+
+- Example: Change passenger's details
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<John Smith>>
+
+    pass.name = "Jim Jones";
+    pass.mealPref = REGULAR;
+    pass.isFreqFlyer = false;
+    pass.freqFlyerNo = "NONE";
+
+    cout << "\nName: " << pass.name << endl
+    << "Meal preference: " << pass.mealPref << endl
+    << "Frequent Flyer: " << pass.isFreqFlyer << endl
+    << "Frequent Flyer Number: " << pass.freqFlyerNo << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Name: John Smith
+  : Meal preference: 3
+  : Frequent Flyer: 1
+  : Frequent Flyer Number: 293145
+  :
+  : Name: Jim Jones
+  : Meal preference: 1
+  : Frequent Flyer: 0
+  : Frequent Flyer Number: NONE
+
+-  ~struct~ is a C-style structure, ~public~ by default and by design. The
+  equivalent C++ data structure is the ~class~, which allows to combine
+  member data and member functions.
+
+* PRACTICE C-style Structures
+
+- What is the size of =X=?
+  #+name: X
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    struct X {
+      char c;
+      short s;
+      char k;
+      int a;
+    };
+  #+end_src
+
+  #+RESULTS: X
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<X>>
+    X x;
+    size_t sizeX = sizeof(x);
+    cout << "Size of X = " << sizeX << " = " << endl
+    << "Size of char " << sizeof(x.c) << " + " << endl
+    << "Size of short " << sizeof(x.s) << " + " << endl
+    << "Size of char " << sizeof(x.k) << " + " << endl
+    << "Size of int " << sizeof(x.a) << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Size of X = 12 =
+  : Size of char 1 +
+  : Size of short 2 +
+  : Size of char 1 +
+  : Size of int 4
+
+- Explanation:
+  #+begin_quote
+  CPUs access memory faster when data is aligned to its size - e.g. a
+  4-byte ~int~ is stored at an address divisible by 4. Padding is
+  inserted as needed to align the next member:
+
+  | Type      | Member | Size | Offset | Notes               |
+  |-----------+--------+------+--------+---------------------|
+  | ~char~      | =c=      |    1 |      0 | starts at offset 0  |
+  |           |        |    1 |      1 | padding after =c=     |
+  | ~short int~ | =s=      |    2 |      2 | aligned at offset 2 |
+  | ~char~      | =k=      |    1 |      4 | placed after =s=      |
+  |           |        |    3 |    5-7 | padding before =a=    |
+  | ~int~       | =a=      |    4 |      8 | aligned at offset 8 |
+  |-----------+--------+------+--------+---------------------|
+  |           |        |   12 |        |                     |
+  #+TBLFM: @8$3=vsum(@2..@7)
+
+  #+end_quote
+
+- How can you minimize the size of =X=?
+  #+begin_quote
+  Reorder the members from largest to smallest.
+  #+end_quote
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    struct X2 {
+      int a;
+      short s;
+      char c;
+      char k;
+    };
+    X2 x;
+    size_t sizeX = sizeof(x);
+    cout << "Size of X = " << sizeX << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Size of X = 8
+
+- Explanation:
+  #+begin_quote
+  | Type      | Member | Size | Required | Offset | Notes             |
+  |-----------+--------+------+----------+--------+-------------------|
+  | ~int~       | =a=      |    4 |        4 |      0 | aligned naturally |
+  | ~short int~ | =s=      |    2 |        2 |      4 | fits after =a=      |
+  | ~char~      | =c=      |    1 |        1 |      6 | no padding needed |
+  | ~char~      | =k=      |    1 |        1 |      7 | fits after =c=      |
+  |-----------+--------+------+----------+--------+-------------------|
+  |           |        |    8 |          |        |                   |
+  #+TBLFM: @6$3=vsum(@2..@5)
+
+  The Alignment required from ~int~ is 4, no padding needed. Always
+  place widest types first to avoid padding between smaller types.
+  #+end_quote
+
+* *Bonus: Padding vs. packing in C/C++*
+
+- Packing is used in networking protocols to match machine formats.
+
+  | Concept   | Padding                               | Packing                      |
+  |-----------+---------------------------------------+------------------------------|
+  | *What*      | Automatic insertion of unused bytes   | Manual removal               |
+  | *Why*       | Align data for efficient CPU access   | Save memory                  |
+  | *How*       | Compiler-based on alignment rules     | Done via compiler directives |
+  | *Result*    | Larger struct size with faster access | Smaller struct size (slower) |
+  | *Portable?* | Yes (default behavior)                | Non-portable                 |
+
+- Code example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    // No packing but padding
+    struct A {
+      char c;   // 1 byte
+      int i;    // 4 bytes â†’ aligned at 4
+    }; // size = 8 (3 bytes padding after c)
+
+    #pragma pack(1) // BEGIN compiler directive
+    struct B {
+      char c;
+      int i;
+    }; // size = 5 (no padding, but slower access)
+    #pragma pack()  // END compiler directive
+
+    A a;
+    B b;
+    cout << "Size of A: " << sizeof(A) << endl
+    << "Size of B: " << sizeof(B) << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Size of A: 8
+  : Size of B: 5
+
+- In the last example, reordering =A= would not help because an ~int~ and
+  a ~char~ always have to be padded by 3 bytes to satify alignment
+  rules.
+
+* Dynamic memory and ~new~
+
+- To create objects dynamically as needed, C++ reserves a large
+  so-called *heap memory* block also called the *free store*.
+
+- C uses the functions ~malloc~, ~realloc~ and ~free~ to manage dynamic
+  memory allocation and deallocation, C++ uses ~new~ and ~delete~.
+
+- The operator ~new~ dynamically allocates the correct amount of storage
+  from an object of a given type from the free store and returns a
+  pointer to this object.
+
+- What is the value of this pointer?
+  #+begin_quote
+  The value of a pointer is always the address it points to in
+  memory. Pointers can point to any data type, including other
+  pointers, or individuals cells in an array.
+  #+end_quote
+
+- Example: You want to create a new passenger of the =Passenger= type
+  using the ~new~ operator and access its members.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<Passenger>> // name, mealPref, isFreqFlyer, freqFlyerNo
+
+    Passenger *p;
+    p = new Passenger; // p is a pointer to a Passenger instance
+    Passenger *q = new Passenger; // q is another pointer to a Passenger
+
+    p->name = "Jim Jones"; // assign "John Smith" to *p.name
+    cout << (*p).name << endl // access Passenger name
+    << p->name   << endl; // access Passenger name
+
+    p->mealPref = REGULAR;
+    p->isFreqFlyer = false;
+    p->freqFlyerNo = "NONE";
+
+    cout << p->name << "'s meal preference: " << p->mealPref << endl
+    << p->name << " is a frequent flyer: " << p->isFreqFlyer << endl
+    << p->name << "'s frequent flyer number is: " << p->freqFlyerNo << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Jim Jones
+  : Jim Jones
+  : Jim Jones's meal preference: 1
+  : Jim Jones is a frequent flyer: 0
+  : Jim Jones's frequent flyer number is: NONE
+
+- What's the difference between these two allocations of memory?
+  #+begin_example C++
+  Passenger pass;
+  pass.name = "John Smith";
+
+  Passenger *p;
+  p = new Passenger;
+  p->name = "John Smith";
+  #+end_example
+
+  #+begin_quote
+  1. *Stack allocation*: =p= is an *object* of type =Passenger= stored on the
+     *stack*. Its members are accessed with the dot operator. It is
+     automatically destroyed when it goes out of scope.
+
+  2. *Heap allocation*: =q= is a *pointer* to a =Passenger= allocated on the
+     *heap*. Its members are accessed with the arrow operator. It must
+     be manually deleted but the programmer controls its lifetime.
+  #+end_quote
+
+- What happens if one does not ~delete~ dynamically allocated memory?
+  #+begin_quote
+  C++ does not have *garbage collection*, and all dynamically allocated
+  objects must be deleted manually. Otherwise one gets a memory leak.
+  #+end_quote
+
+- To free the memory allocated to a ~new~ object, use
+  ~delete~. Afterwards, the pointers must not be used anymore because it
+  is now dangling freely, without a specific target (though it still
+  stores an address). To tie lose ends, assign a ~nullptr~ to it.
+
+- Example: Use ~delete~ to delete a passenger, then print the pointer's
+  address, assign a ~nullptr~ and print it again.
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<Passenger>>
+
+    Passenger *p;
+    p = new Passenger; // points to new Passenger
+    p->name = "Kitty Malone"; // assigns Passenger name
+
+    cout << "Passenger name: " << p->name << endl;
+    cout << "Pointer address before deletion: " << p << endl;
+
+    delete p; // free memory of new Passenger
+    cout << "Pointer address after deletion: " << p << endl;
+
+    p = nullptr; // make pointer into a null pointer
+    cout << "Pointer address after nullptr: " << p;
+
+  #+end_src
+
+  #+RESULTS:
+  : Passenger name: Kitty Malone
+  : Pointer address before deletion: 0x5fd429c21eb0
+  : Pointer address after deletion: 0x5fd429c21eb0
+  : Pointer address after nullptr: 0
+
+- What would happen if we would print =p->name= after the ~delete p~
+  operation?
+  #+begin_quote
+  Try it! It leads to a *Segmentation fault* because we're trying to
+  access memory that's not there. This also proves that the allocation
+  is happening dynamically (the compiler cannot detect the error).
+  #+end_quote
+
+- Can arrays also be allocated and deleted with ~new~ and ~delete~?
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    char *buffer = new char[5]; // allocate buffer of 10 characters
+    buffer[0]='h';
+    cout << buffer[0];
+    delete [] buffer;
+    cout << '\n' << buffer[0]; // Memory leak! Undefined!
+  #+end_src
+
+  #+RESULTS:
+  : h
+  : ß
+
+* PRACTICE: Memory Allocation with ~struct~ and ~enum~
+
+- Create a small system for identifying pets (dog, cat, bird) with a
+  dynamically allocated struct. Practice memory allocation, access,
+  and cleanup:
+  1. Define an ~enum~ for animal types: =DOG=, =CAT=, =BIRD=.
+  2. Define a =Pet= ~struct~ with:
+     - =name= (e.g., "Sir")
+     - =tag=  (e.g., "101")
+     - =type= (an =Animal=)
+  3. Dynamically allocate:
+     - a dog named "Sir" with tag "101"
+     - a cat named "Lady" with tag "102"
+  4. Print their names and tags.
+  5. Print their addresses.
+  6. Free their memory, set pointers to =nullptr=, and print addresses
+     again.
+
+-  Sample Output:
+  #+begin_example
+  Dog's name and tag:'Sir', 101
+  Cat's name and tag:'Lady', 102
+  Dog's address: 0x564de1e1f2c0
+  Cat's address: 0x564de1e1f300
+  Dog's address: 0
+  Cat's address: 0
+  #+end_example
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output
+    enum Animal { DOG, CAT, BIRD };
+
+    struct Pet {
+      string name;
+      string tag;
+      Animal type;
+    };
+
+    int main() {
+      Pet* dog = new Pet;
+      dog->name = "Sir";
+      dog->tag = "101";
+      dog->type = DOG;
+
+      Pet* cat = new Pet;
+      cat->name = "Lady";
+      cat->tag = "102";
+      cat->type = CAT;
+
+      cout << "Dog's name and tag:'" << dog->name << "', " << dog->tag << endl;
+      cout << "Cat's name and tag:'" << cat->name << "', " << cat->tag << endl;
+
+      cout << "Dog's address: " << dog << endl;
+      cout << "Cat's address: " << cat << endl;
+
+      delete dog;
+      delete cat;
+
+      dog = cat = nullptr;
+
+      cout << "Dog's address: " << dog << endl;
+      cout << "Cat's address: " << cat << endl;
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Dog's name and tag:'Sir', 101
+  : Cat's name and tag:'Lady', 102
+  : Dog's address: 0x5cfeaae38eb0
+  : Cat's address: 0x5cfeaae38f00
+  : Dog's address: 0
+  : Cat's address: 0
+
+* PRACTICE Memory allocation
+
+- Create a C-style structure for pets that allows a vet to identify a
+  pet as a dog, a cat, or a bird (using ~enum~). Pets have a =name= and a =tag=.
+
+- Dynamically allocate memory for a =dog= (named "Sir" with the tag
+  "101") and for a =cat= (named "Lady" with the tag "102"). Print their
+  names and tags.
+
+- Then free the memory for both pets, and print their address values.
+
+- Finally, assign a ~nullptr~ to both pointers and print their address
+  values again.
+
+- Sample output (you will have different address values):
+  #+begin_example
+    Dog's name and tag:'Sir', 101
+    Cat's name and tag:'Lady', 102
+    Dog's address: 0x60b6e07f7eb0
+    Dog's address: 0x60b6e07f7f00
+    Dog's address: 0
+    Dog's address: 0
+  #+end_example
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    enum Animal {DOG, CAT, BIRD}; // three types of animal
+
+    struct Pet { // Pet structure with pet name and tag
+      string name;
+      string tag;
+      Animal type;
+    };
+
+    Pet *dog; // add a dog
+    dog = new Pet;
+    dog->name = "Sir";
+    dog->tag = "101";
+
+    Pet *cat; // add a cat
+    cat = new Pet;
+    cat->name = "Lady";
+    cat->tag = "102";
+
+    // print dog and cat name and tag
+    cout << "Dog's name and tag:'" << dog->name << "', " << dog->tag << endl;
+    cout << "Cat's name and tag:'" << cat->name << "', " << cat->tag << endl;
+
+    delete dog;
+    delete cat;
+
+    // print dog and cat address
+    cout << "Dog's address: " << dog << endl;
+    cout << "Dog's address: " << cat << endl;
+
+    dog = cat = nullptr;
+
+    // print dog and cat address
+    cout << "Dog's address: " << dog << endl;
+    cout << "Dog's address: " << cat << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Dog's name and tag:'Sir', 101
+  : Cat's name and tag:'Lady', 102
+  : Dog's address: 0x5aff3ed69eb0
+  : Dog's address: 0x5aff3ed69f00
+  : Dog's address: 0
+  : Dog's address: 0
+
+* References
+
+- Pointers refer indirectly to an object via its address in
+  memory. Pointers can be ~NULL~.
+
+- References are alternative names for an object: Given a type ~T~, ~&T~
+  indicates a reference to an object of type ~T~. References must refer
+  to an actual (declared and initialized) variable.
+
+- Example: Two names, one author.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    string author = "Samuel Clemens"; // string variable, initialized
+    string& penName = author; // string reference to variable
+    penName = "Mark Twain"; // reference used like the variable
+    cout << author; // output: Mark Twain
+  #+end_src
+
+  #+RESULTS:
+  : Mark Twain
+
+- Example 1: Passing arguments by reference
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output
+    void addOne(int& x) {
+      x += 1;
+    }
+    int main() {
+      int a = 5;
+      addOne(a);
+      cout << a; // output: 6
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 6
+
+- Example 2: Returning a reference to a ~struct~ member
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output
+    struct Passenger {
+      string name;
+    };
+
+    // input/output = reference to Passenger (no copy of the struct)
+    Passenger& update(Passenger& p) {
+      p.name = "John Smith"; // changes Passenger in calling pgm
+      return p;
+    }
+
+    int main() {
+      Passenger pass;
+      update(pass).name += " Jr."; // chained modification
+      cout << pass.name; // output: Updated Name Jr.
+    }
+  #+end_src
+
+  #+RESULTS:
+  : John Smith Jr.
+
+* Named Constants, literals, ~typedef~
+
+- What's the difference between a *literal* and a *constant*?
+  #+begin_quote
+  - Literals are raw values, constants are named, typed, immutable
+    variables.
+  - Constants may be used anywhere where literals may be used as well,
+    e.g. in an array declaration.
+  - Constants are usually written in CAPITAL letters.
+
+  | Concept     | Literals                 | Constants                |
+  |-------------+--------------------------+--------------------------|
+  | *What*        | Fixed values in code     | Named immutable values   |
+  | *Examples*    | ~42~, ~'A'~, ~3.14~, ~"hello"~   | ~const int MAX = 100;~     |
+  | *Type*        | Implicit (type inferred) | Declared w/explicit type |
+  | *Purpose*     | Provide raw data         | Readable and reusable    |
+  | *Modifiable?* | No                       | No                       |
+  #+end_quote
+
+- Examples:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results none
+    const double PI     = 3.14159265;
+    const int CUT_OFF[] = {90,80,70,60};
+    const int N_DAYS    = 7;
+    const int N_HOURS   = 24*N_DAYS; // a constant expression
+    int counter[N_HOURS]; // an array of 168 int values
+    enum Week {MON,TUE,WED,THU,FRI,SAT,SUN};
+  #+end_src
+
+- You can also associate a name with a type using the ~typedef~
+  declaration:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    typedef char* BufferPtr;    // type BufferPtr is a pointer to char
+    typedef double Coordinate;  // type Coordinate is a double variable
+
+    BufferPtr p = new char[5]; // allocate buffer of 10 characters
+    p[0]='H',p[1]='e',p[2]=p[3]='l',p[4]='o'; // assign values
+    cout << "Buffer contains: " << p << endl; // print buffer
+
+    Coordinate x = 3.14, y = 2.71; // use typedef'd double
+    cout << "Coordinates: ("<< x <<", "<< y <<")"<<endl;
+  #+end_src
+
+  #+RESULTS:
+  : Buffer contains: Hello
+  : Coordinates: (3.14, 2.71)
+
+- What are the advantages of ~typedef~?
+  #+begin_quote
+  1. Meaningful synonyms for various types.
+  2. Can change type in one place.
+  #+end_quote
+
+* Scope
+
+- A group of C++ statements enclosed in curly braces ~{...}~ define a
+  block. Variables and types declared within the block are *local*.
+
+- Variables and types declared outside of any block are *global* and are
+  accessible from anywhere in the program.
+
+- The portions of a program from which a given name is accessible are
+  called its *scope*.
+
+- Example: Two variables of the same name defined within nested blocks
+
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    const int CAT = 1;
+
+    int main() {
+      const int CAT = 2;
+      cout << CAT;
+      return EXIT_SUCCESS;
+    }
+    int dog = CAT; // dog = 1 (from the global CAT)
+  #+end_src
+
+  #+RESULTS:
+  : 2
+
+- It is best to avoid global variables to avoid errors.
+
+* Using namespaces
+
+- Some operations need global objects, e.g. ~cout~, the system's
+  standard output stream object.
+
+- A ~namespace~ allows a group of related names to be defined in one
+  place, to organize global objects into natural groups.
+
+- Example: A namespace with two variables
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    namespace myglobals {
+      int cat;
+      string dog = "wuff";
+    }
+  #+end_src
+
+- The *fully qualified name* of a ~namespace~ object uses ~::~, for example
+  =myglobals::cat= refers to the copy of =cat= in the =myglobals= ~namespace~.
+
+- ~cin~ and ~cout~ are in the ~std~ namespace. Their fully qualified names
+  are ~std::cin~ and ~std::cout~.
+
+- To avoid having to enter the ~namespace~ specifier, we can employ
+  ~using~ ahead of the first use:
+  #+begin_src C++ :main no :includes <iostream> <string> :results output :noweb yes
+    using std::string; // make only std::string accessible
+    using std::cout;  // make only std::cout accessible
+
+    namespace myglobals {
+      int cat;
+      string dog = "wuff";
+    }
+
+    using namespace myglobals;
+
+    int main() {
+      cout << dog;
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : wuff
+
+- In the example, ~std::string~ and ~std::cout~ are "brought into scope"
+  with ~using~. All of =myglobals= variables are brought into scope.
+
+* Expressions and operators
+
+- What is an *expression*?
+  #+begin_quote
+  An *expression* is a combination of variables and literals with
+  operators to create new values.
+  #+end_quote
+
+- What is an *lvalue*?
+  #+begin_quote
+  An *lvalue* is anything to which a value might be assigned - on the
+  *left* side of an assignment operator ~=~.
+  #+end_quote
+
+- How are members of a data structure selected?
+  #+begin_quote
+  Member selection depends on the data structure: ~class~, ~struct~, or
+  array: The dot-operator ~.~ selects class/structure members, the arrow
+  operator ~->~ selects pointer members, the index operator ~[]~ selects
+  array elements (also called *subscripting*).
+  #+end_quote
+
+- Which operator groups do you know?
+  #+begin_quote
+  1) Scope resolution
+  2) Subscripting
+  3) Function call
+  4) Postfix and prefix operators
+  5) Arithmetic operators
+  6) Bitshift operators
+  7) Relational operators
+  8) Logical operators
+  9) Conditional operators
+  10) Assignment operators
+  #+end_quote
+
+- What's the precedence of operators in C++?
+  #+attr_html: :width 700px :float nil:
+  [[../img/precedence.png]]
+
+* Bitwise operators
+
+- Bitwise operators act on the representation of numbers as binary bit
+  strings. They can be applied to any integer type resulting in an
+  integer type.
+
+- The operators are:
+  #+attr_html: :width 400px :float nil:
+  [[../img/bitwise.png]]
+
+- *Bitwise complement (=~exp=)*
+
+  - Example: =~5= -> =-6=
+  - Explanation: Inverts all bits of 5 (00000101 -> 11111010 in 8-bit,
+    which is -6 in *two's complement*[fn:3]).
+  - Code example:
+    #+begin_src C++ :main yes :includes <bitset> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+      cout << "~5 -> " << ~5 << endl;
+
+      int a = 0b00000101;
+      cout << "Original: " << " NOT(" << bitset<8>(a) << ") -> " << bitset<8>(~a);
+    #+end_src
+
+    #+RESULTS:
+    : ~5 -> -6
+    : Original:  NOT(00000101) -> 11111010
+
+- *Bitwise AND (=exp & exp=)*
+
+  - Example: =5 & 3= -> =1=
+  - Explanation: 0101 & 0011 = 0001
+  - Code example:
+    #+begin_src C++ :main yes :includes <bitset> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+      cout << "5 & 3 -> " << (5 & 3) << endl;
+
+      int a = 0b00000101, b = 0b00000011;
+      cout << "Original: " << bitset<8>(a) << " AND " << bitset<8>(b)
+      << " -> " << bitset<8>(a & b);
+    #+end_src
+
+    #+RESULTS:
+    : 5 & 3 -> 1
+    : Original: 00000101 AND 00000011 -> 00000001
+
+- *Bitwise XOR (exp ^ exp)*
+  - Example: =5 ^ 3= -> =6=
+  - Explanation: 0101 ^ 0011 = 0110
+  - Code example:
+    #+begin_src C++ :main yes :includes <bitset> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+      cout << "5 ^ 3 -> " << (5 ^ 3) << endl;
+
+      int a = 0b00000101, b = 0b00000011;
+      cout << "Original: " << bitset<8>(a) << " XOR " << bitset<8>(b)
+      << " -> " << bitset<8>(a ^ b);
+    #+end_src
+
+    #+RESULTS:
+    : 5 ^ 3 -> 6
+    : Original: 00000101 XOR 00000011 -> 00000110
+
+- *Bitwise OR (exp | exp)*
+  - Example: =5 | 3= -> =7=
+  - Explanation: 0101 | 0011 = 0111
+    #+begin_src C++ :main yes :includes <bitset> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+      cout << "5 | 3 -> " << (5 | 3) << endl;
+
+      int a = 0b00000101, b = 0b00000011;
+      cout << "Original: " << bitset<8>(a) << " OR " << bitset<8>(b)
+      << " -> " << bitset<8>(a | b);
+    #+end_src
+
+    #+RESULTS:
+    : 5 | 3 -> 7
+    : Original: 00000101 OR 00000011 -> 00000111
+
+- *Left shift (exp1 << exp2)*
+  - Example: =5 << 1= -> =10=
+  - Explanation: 00000101 becomes 00001010 (multiplies by 2)
+    #+begin_src C++ :main yes :includes <bitset> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+      cout << "5 << 1 -> " << (5 << 1) << endl;
+
+      int a = 0b00000101, b = 0b00000001;
+      cout << "Original: " << bitset<8>(a) << " << " << bitset<8>(b)
+      << " -> " << bitset<8>(a << b);
+    #+end_src
+
+    #+RESULTS:
+    : 5 << 1 -> 10
+    : Original: 00000101 << 00000001 -> 00001010
+
+- *Right shift (exp1 >> exp2)*
+  - Example: =5 >> 1= -> =2=
+  - Explanation: 00000101 becomes 00000010 (divides by 2)
+    #+begin_src C++ :main yes :includes <bitset> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+      cout << "5 >> 1 -> " << (5 >> 1) << endl;
+
+      int a = 0b00000101, b = 0b00000001;
+      cout << "Original: " << bitset<8>(a) << " >> " << bitset<8>(b)
+      << " -> " << bitset<8>(a >> b);
+    #+end_src
+
+    #+RESULTS:
+    : 5 >> 1 -> 2
+    : Original: 00000101 >> 00000001 -> 00000010
+
+- Note: The left bitwise shift operator (~<<~) always fills with
+  zeros. How the right bitwise shift operator (~>>~) fills depends on a
+  variable's type: If the left operand of a right shift is *unsigned*,
+  the shift fills with zeros, and otherwise the right shift fills with
+  the number's sign bit (0 for positive, 1 for negative numbers):
+  #+begin_src C++ :main yes :includes <bitset> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    unsigned int a = -0b00010100, b = 0b00000001;
+    cout << "Original: " << bitset<8>(a) << " >> " << bitset<8>(b)
+    << " -> " << bitset<8>(a >> b);
+  #+end_src
+
+  #+RESULTS:
+  : Original: 11101100 >> 00000001 -> 11110110
+
+* Conditional operators
+
+- A special operator not on this list is the *conditional expression*,
+  defined as ~bool_expr ? true_expr : false_exp~. Incidentally, this is
+  exactly the ~ifelse~ function in R.
+
+- Example: What does this program do?
+  #+begin_src R :session *R* :results output :exports both
+    x <- 1
+    y <- 2
+
+    ifelse(test = x < y,
+           yes  = x,
+           no   = y)
+  #+end_src
+
+- The same function in C++:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int x = 1, y = 2;
+    cout << (x < y ? x : y) << endl; // min(x,y)
+  #+end_src
+
+  #+RESULTS:
+  : 1
+
+* Stream operators
+
+- The stream input (=stream >> var=) and output (=stream << exp=)
+  operators look like the bitwise shift operator but they're quite
+  different: This is an example of *operator overloading*.
+
+- Both stream operators are provided by the file ~<iostream>~.
+
+* PRACTICE Expressions
+
+** Conditional Operator and Nesting
+
+- Write a program that initializes three integers: =a = 4, b = 7, c ==
+  2;= Use nested conditional operators to assign the smallest value
+  among the three to a variable =min=.  Print =min=.
+
+- Hint: Use the form ~x < y ? x : y~, but nested to include =c=.  Now add
+  parentheses to make the precedence explicit.
+
+- Solution:
+  1) Pseudocode:
+     #+begin_example
+     IF a < b AND b < c THEN
+        min = a
+     ELSE IF a < b AND c < a THEN
+        min = c
+     ELSE
+        min = b
+     #+end_example
+
+  2) If-else construction
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       int a = 4, b = 7, c = 2, min;
+       cout << a << " " << b << " " << c << endl;
+
+       if (a < b && b < c)
+         min = a;
+        else if (a < b && c < a)
+          min = c;
+        else
+          min = b;
+
+       cout << min;
+     #+end_src
+
+     #+RESULTS:
+     : 4 7 2
+     : 2
+
+  3) Conditional operator
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+       int a = 4, b = 7, c = 2;
+       cout << "Values: " << a << " " << b << " " << c << endl;
+       int min = (a < b ? a : b) < c ? (a < b ? a : b) : c;
+       cout << "Minimum value = " << min;
+     #+end_src
+
+     #+RESULTS:
+     : Values: 4 7 2
+     : Minimum value = 2
+
+** Logical vs. Bitwise Operators
+
+- Write a program that initializes =int x = 3= and =int y = 6=.  Evaluate
+  the expression =x & y == 2= and print the result.
+
+- Include =<bitset>= to be able to print an 8-bit binary =x= as a
+  binary like this: =bitset<8>(x)=
+
+- Print the result of =x & y= using the =bitset<8>= function to get the
+  output: =00000011 AND 00000110 = 00000010=
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <bitset> :namespaces std :results output :exports both :noweb yes
+    int x = 3, y = 6;
+    cout << (x & y) << endl;
+
+    cout << bitset<8>(x) << " AND " << bitset<8>(y) << " = "
+    << bitset<8>(x & y);
+  #+end_src
+
+  #+RESULTS:
+  : 2
+  : 00000011 AND 00000110 = 00000010
+
+** Side Effects and Precedence
+
+- Write a program that initializes =int i = 1=.  Then evaluate the
+  expression =int j = i++ + ++i * 2;=.  Print both =i= and =j=.
+
+- Explain the result based on operator precedence and print the
+  expression without compound operators.
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int i = 1;
+    int j = i++ + ++i * 2; // (i++) + (++(i)*2) = (1+1) + (1+(2*2))
+    cout << "i = " << i << ", j = " << j << endl;
+    cout << (1+1) + (1 + (2*2));
+  #+end_src
+
+  #+RESULTS:
+  : i = 3, j = 7
+  : 7
+
+- Flow:
+  1) =i++= -> =1 + 1 = 2= -> =i=
+  2) =++i * 2= -> =++ (2 * 2)= -> =++4= -> 4 + 1 = 5
+  3) =2 + 5 = 7=
+
+* Type casting
+
+- In C++, there is casting of the fundamental types, or casting of
+  class objects and pointers.
+
+- A *C-style cast* is of the form =(T)exp= where =T= is the desired type for
+  the expression =exp=, or =T(exp)= if the desired type is a name.
+
+- Examples:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int cat = 14;
+    double dog = (double)cat; // C-style cast
+    double pig = double(cat); // C++ functional cast
+  #+end_src
+
+- Application: Integer division
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int i1 = 18;
+    int i2 = 16;
+
+    double dv1 = i1 / i2; // truncation
+    double dv2 = double(i1)/double(i2); // C-style cast
+    double dv3 = double(i1/i2); // C++ style cast ineffective
+
+    cout << "dv1 = " << dv1 << endl
+    << "dv2 = " << dv2 << endl
+    << "dv3 = " << dv3 << endl;
+  #+end_src
+
+  #+RESULTS:
+  : dv1 = 1
+  : dv2 = 1.125
+  : dv3 = 1
+
+* Explicit cast operators
+
+- Casting can be dangerous. For example, casting from =short= to =int= is
+  harmless, but casting from =double= to =int= implies truncation. Casting
+  from =double*= to =char*= is dangerous because pointers vary by machine.
+
+- To enable *portability*, C++ provides safe explicit casting operators,
+  ~static_cast~, ~dynamic_cast~, ~const_cast~, and ~reinterpret_cast~.
+
+- *Static casting* is made between two related types - numbers to
+  numbers, or pointers to pointers:
+  =static_cast<target_type>(expression)=:
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    double d1 = 3.2;
+    double d2 = 3.9999;
+    int i1 = static_cast<int>(d1);
+    int i2 = static_cast<int>(d2);
+    cout << "d1 = " << d1 << ", d2 = " << d2 << endl
+    << "i1 = " << i1 << ",   i2 = " << i2 << endl;
+  #+end_src
+
+  #+RESULTS:
+  : d1 = 3.2, d2 = 3.9999
+  : i1 = 3,   i2 = 3
+
+- Safe explicit casting operators should be used whenever a
+  potentially unsafe operation takes place.
+
+- Why would one ever cast from ~double~ to ~int~? For example when only
+  whole numbers are needed (pixel indexing in graphics, loop bounds,
+  or integer-only APIs, because integer operations are much faster).
+
+* Implicit casting
+
+- An *implicit cast* is performed when no explicit cast has been
+  requested. For example when numbers of different types are involved,
+  the compiler automatically casts towards the stronger type.
+
+- Example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int i = 3;
+    double d = 4.8;
+    double d3 = i / d; // implicit cast to <double>
+    int i3 = d3; // implicit cast to <int> with potential warning
+
+    cout << "i = " << i << endl
+    << "d = " << d << endl
+    << "i/d = " << d3 << endl
+    << "i = d -> " << i3 << endl;
+  #+end_src
+
+  #+RESULTS:
+  : i = 3
+  : d = 4.8
+  : i/d = 0.625
+  : i = d -> 0
+
+- General rule: Play it safe (cast explicitly).
+
+* PRACTICE Type casting
+
+- Write a short program that takes two =int= variables =i1= and =i2=, and
+  computes their ratio as a =double= using three approaches:
+  1. No cast
+  2. C-style cast
+  3. =static_cast=
+
+- Verify that only the correct casts produce the expected decimal
+  result.
+
+- *Expected Output*:
+  #+begin_example
+    res1 = 3
+    res2 = 3.5
+    res3 = 3.5
+  #+end_example
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    int i1=7, i2=2;
+    double res1 = i1/i2; // no cast
+    double res2 = double(i1)/double(i2);
+    double res3 = static_cast<double>(i1)/static_cast<double>(i2);
+    cout << "res1 = " << res1 << endl
+    << "res2 = " << res2 << endl
+    << "res3 = " << res3 << endl;
+  #+end_src
+
+  #+RESULTS:
+  : res1 = 3
+  : res2 = 3.5
+  : res3 = 3.5
+
+* Control flow
+
+- ~if~, ~else if~ and ~else~
+- ~switch~
+- ~while~ and ~do while~ loops
+- ~for~ loops
+
+* Functions
+
+- Functions need:
+  1) Return type
+  2) Name
+  3) Argument list
+  4) Body
+
+- Functions can be *declared* as prototypes (ahead of ~main~) and must be
+  *defined* (anywhere).
+
+- Example: Write a function =evenSum= that is given an integer array =a=
+  and its length =n=. It determines whether the sum of array values is
+  even, and if so returns the value ~true~, and otherwise ~false~.
+
+- Header and declaration: In the declaration, you do not need to use
+  formal argument names (like =a= or =n=).
+  #+name: evenSum header
+  #+begin_src C++ :main no :includes :results none
+    #include <iostream>
+    #include <cstdlib>
+    using namespace std;
+
+    // evenSum: Checks if sum of array argument values is even
+    // returns: <bool>
+    // arguments: <int>[], <int> n
+    bool evenSum(int[], int);
+  #+end_src
+
+- Function definition: In the definition, you need named
+  arguments. The function returns a ~bool~ as expected depending on =sum=.
+  #+name: evenSum definition
+  #+begin_src C++ :main no :includes :results none
+    bool evenSum(int a[], int n) {
+      int sum = 0;
+      for (int i = 0; i < n; i++)
+        sum += a[i];
+      return (sum % 2) == 0;
+    }
+  #+end_src
+
+- Main program with function call:
+  #+name: evenSum main pgm
+  #+begin_src C++ :main no :includes :results output :noweb yes
+    <<evenSum header>>
+
+    int main()
+    {
+      int list[]={4,2,7,8,5,1};
+
+      bool result = evenSum(list,6);
+
+      if(result) cout << "the sum is even\n";
+      else       cout << "the sum is odd\n";
+
+      return EXIT_SUCCESS;
+    }
+
+    <<evenSum definition>>
+  #+end_src
+
+  #+RESULTS: evenSum main pgm
+  : the sum is odd
+
+- When referring to functions like =evenSum=, books often use empty
+  parentheses, which I don't like because it makes the function look
+  like =evenSum(void)= which is not correct.
+
+* Argument passing
+
+- By default, arguments are passed *by value*: A copy of the argument is
+  made and passed to the function. The original argument in the
+  calling program is not altered.
+
+- To modify one of its arguments, it needs to be a *reference type*:
+  now, any modifications made to it modify the original argument in
+  the calling program.
+
+- Example: the function =f= returns no value (~void~) and passes one
+  argument by value, the other one by reference. Inside =f=, both
+  arguments are incremented and printed.
+  #+name: function
+  #+begin_src C++ :results none
+    void f(int value, int& ref) {
+      value++;
+      ref++;
+      cout << "value in f = " << value << endl
+           << "ref in f =   " << ref   << endl;
+    }
+  #+end_src
+
+- In ~main~, the function is called on two integer arguments, and the
+  resulting values are printed:
+  #+begin_src C++ :results output :noweb yes
+    #include <iostream>
+    using namespace std;
+
+    <<function>>
+
+    int main() {
+      int cat = 1;
+      int dog = 1;
+      f(cat,dog); // pass cat by value, dog by ref
+      cout << "cat = " << cat << endl
+           << "dog = " << dog << endl;
+      return 0;
+     }
+  #+end_src
+
+  #+RESULTS:
+  : value in f = 2
+  : ref in f =   2
+  : cat = 1
+  : dog = 2
+
+- Reference arguments achieve the same result as passing the address
+  of the argument (as a pointer), with less notational effort.
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    void f2(int value, int* ptr) {
+      value++;
+      (*ptr)++; // increment dereferenced pointer value
+      cout << "value in f = " << value << endl
+           << "*ptr in f =  " << *ptr   << endl;
+    }
+    int main() {
+      int cat = 1;
+      int dog = 1;
+      f2(cat,&dog); // pass cat by value, dog by address
+      cout << "cat = " << cat << endl
+           << "dog = " << dog << endl;
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : value in f = 2
+  : *ptr in f =  2
+  : cat = 1
+  : dog = 2
+
+* Constant references as arguments
+
+- Passing ~struct~ or ~class~ objects by value is computationally
+  expensive, so passing by reference is much more efficient.
+
+- Since most function arguments are not modified where they come from,
+  they can be called as "constant reference": The compiler is informed
+  that the function cannot alter the value, and also cannot pass it to
+  another function that can modify the value.
+
+- Example:
+  1) uncomment the illegal statement to see the error.
+  2) comment it and run the code to see that =Passenger= is passed.
+  #+begin_src C++ :tangle ../src/constRef.cpp :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    struct Passenger { // a public Passenger class
+      string name;
+    };
+
+    void f(const Passenger& pass) {
+      //pass.name = "Jimmy Bell"; // illegal: `pass` is declared constant
+      cout << pass.name;
+    }
+
+    int main() {
+      Passenger pass;
+      pass.name = "Jim Jones";
+
+      f(pass);
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Jim Jones
+
+* Array arguments
+
+- What about large array arguments? Should we pass them by value?
+  #+begin_quote
+  An array is not copied when it is passed to a function - by default
+  only a pointer to the first array element is passed. So an object of
+  type =T[]= is converted to type =T*=. *Arrays are not passed by value.*
+  #+end_quote
+
+- Example: Write a function that takes an array =a = {1,2,3,4,5}= as an
+  argument and squares each element of the array. Print the original
+  and the squared array in the calling ~main~ function.
+
+- Sample output:
+  #+begin_example
+  1 2 3 4 5
+  1 4 9 16 25
+  #+end_example
+
+- Solution:
+  #+begin_src C++ :results output
+    #include <iostream>
+    using namespace std;
+
+    // square array argument elements
+    void square(int a[], int n) {
+      for (int i=0; i<n; i++)
+        a[i]*=a[i];
+    }
+    // main function
+    int main()
+    {
+      int a[]={1,2,3,4,5};
+      for (int i=0; i<5; i++) cout << a[i] << " ";
+      square(a,5); cout << endl;
+      for (int i=0; i<5; i++) cout << a[i] << " ";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 1 2 3 4 5
+  : 1 4 9 16 25
+
+* Function overloading
+
+- Function overloading occurs when two or more functions are defined
+  with the same name but with different argument lists.
+
+- Example: Procedures that print their arguments. We're using the
+  [[Passenger]] structure defined earlier.
+
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :noweb yes
+    <<Passenger>>
+
+    void print(int x) { // print an integer
+      cout << x << endl;
+     }
+
+    void print(Passenger &p) {
+      cout << p.name << endl;
+    }
+
+    int main() {
+
+      int a = 5;
+      print(a);
+
+      Passenger pass = {"Jim Jones"};
+      print(pass);
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 5
+  : Jim Jones
+
+* Operator overloading
+
+- Operators can be overloaded: The compiler decides which operator to
+  use based on the operands.
+
+- Example 1: We overload the logical comparison operator (~==~) using
+  the [[Passenger]] class defined earlier.
+
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :noweb yes
+    <<Passenger>>
+
+    bool operator==(const Passenger& x, const Passenger& y) {
+      return x.name      == y.name
+        && x.mealPref    == y.mealPref
+        && x.isFreqFlyer == y.isFreqFlyer
+        && x.freqFlyerNo == y.freqFlyerNo;
+     }
+
+    int main() {
+      // define Passenger
+      Passenger pass1 = {"Jim Jones", // name
+                         REGULAR, // mealPref
+                         1, // isFreqFlyer
+                         "100L"}; // freqFlyerNo
+      // copy Passenger
+      Passenger pass2 = pass1;
+
+      Passenger pass3 = {"Haley Mills"};
+
+      // check identities
+      cout << boolalpha << (pass1 == pass2) << endl;
+      cout << boolalpha << (pass1 == pass3) << endl;
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : true
+  : false
+
+- This does not work without overloading the operator - logical
+  equality comparison for ~struct~ objects is not defined. Try it!
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results none :noweb yes
+    <<Passenger>>
+
+     // define Passenger
+    Passenger pass1 = {"Jim Jones", // name
+                   REGULAR, // mealPref
+                   1, // isFreqFlyer
+                   "100L"}; // freqFlyerNo
+    // copy Passenger
+    Passenger pass2 = pass1;
+
+    pass1==pass2;
+  #+end_src
+
+- Another useful application is defining input and output operators
+  for classes and structures.
+
+- Example 2: We overload the output stream operator (~<<~) for the
+  [[Passenger]] class defined earlier. The system's output stream type is
+  ~ostream~.
+
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :noweb yes
+    <<Passenger>>
+
+     // return: ostream ref
+     // params: out stream ref, Passenger object ref
+    ostream& operator<<(ostream& out, const Passenger& p) {
+      out << "Passenger = " << p.name
+          << "\nMeal preference = " << p.mealPref << endl;
+      if (p.isFreqFlyer) {
+        out << "Frequent Flyer no = " << p.freqFlyerNo << endl;
+      }
+      return out;
+     }
+
+    int main() {
+      // define Passenger
+      Passenger pass1 = {"Jim Jones", // name
+                         REGULAR, // mealPref
+                         1, // isFreqFlyer
+                         "100L"}; // freqFlyerNo
+      Passenger pass2 = {"Nora Jones", // name
+                         VEGETARIAN, // mealPref
+                         1, // isFreqFlyer
+                         "101L"}; // freqFlyerNo
+
+      // print Passenger data
+      cout << pass1 << pass2 << endl;
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Passenger = Jim Jones
+  : Meal preference = 1
+  : Frequent Flyer no = 100L
+  : Passenger = Nora Jones
+  : Meal preference = 3
+  : Frequent Flyer no = 101L
+  :
+
+- The return type is =ostrem&= to allow chaining: each operator returns
+  a reference to the ~ostream~ it received so that the next ~<<~ can
+  operate on the same stream.
+
+- Again, the standard ~<<~ is not prepared to print a ~struct~:
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :noweb yes
+    <<Passenger>>
+
+    int main() {
+      // define Passenger
+      Passenger pass = {"Jim Jones", // name
+                        REGULAR, // mealPref
+                        1, // isFreqFlyer
+                        "100L"}; // freqFlyerNo
+
+      // print Passenger data
+      cout << pass << endl;
+
+      return 0;
+     }
+  #+end_src
+
+- Notice that ~<<~ in the overloaded operator uses the standard ~<<~.
+
+- To avoid confusion, restrict operator overloading to general purpose
+  operators like output ~<<~, assignment ~=~, equality ~==~, or indexing ~[]~.
+
+* In-line functions, ~#define~ and ~template~
+
+- As an alternative to ~noweb~ or C-style ~#define~ macro-processing,
+  functions may be defined as ~inline~ or with ~template~.
+
+- Example: finding the minimum of two integer arguments.
+
+  #+begin_src C++ :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    #define MIN(x,y) ((x) < (y) ? (x) : (y));
+
+    inline int min(int x, int y) {
+      return (x < y ? x : y);
+    }
+
+    template<typename T>
+    inline T min2(T x, T y) {
+      return (x < y ? x : y);
+    }
+
+    int main() {
+      cout << MIN(2,3); // notice that `<< endl` will not work here
+      cout << '\n' << min(2,3) << endl;
+      cout << min2(2,3) << endl;
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 2
+  : 2
+  : 2
+
+- A third possiblity is using a ~template~ with a ~typename~:
+
+* Classes
+#+attr_html: :width 400px :float nil:
+#+caption: Principles of Object-Oriented Programming (OOP)
+[[../img/oop.png]]
+
+- Classes are the way in C++ to define new types complete with
+  associated functions and operators (*abstraction*).
+
+- By restricting access to members, properties for a class's use can
+  be separated from details needed for its implementation
+  (*encapsulation*).
+
+- Classes are the foundation of the Object-Oriented Programming (OOP)
+  approach, including concepts like *polymorphism* and *inheritance*.
+
+- Bjarne Stroustrup's first version of C++ was simply called "C with
+  Classes". This development then gained a momentum of its own.
+  
+* Class structure
+
+- What is a ~class~?
+  #+begin_quote
+  A ~class~ consists of member variables (data/attributes) and member
+  functions (methods). Variables may be of any type, and may be
+  classes themselves. Methods act on the data defining behavior.
+  #+end_quote
+
+- How is ~class~ data access controlled?
+  #+begin_quote
+  + Members that are ~public~ are accessible outside the ~class~.
+  + Members that are ~private~ are accessibly only from within.
+  + Exceptions: ~protected~ access and ~friend~ functions (see later).
+  + By convention, as a matter of style, ~public~ members are listed
+    first. The default (no attribute set) means all members are
+    ~private~.
+  #+end_quote
+
+- Example: The =Counter= ~class~ implements a counter stored in the
+  ~private~ integer variable =count=. Three methods initialize (=Counter=),
+  access (=getCount=), and increase (=increaseBy=) the counter's value.
+
+  We name the code block [[Counter declaration]] for later use. Note the block header
+  which only compiles the ~class~ for syntax checking.
+
+  #+name: Counter declaration
+  #+begin_src C++ :results none
+    class Counter {
+    public:
+      Counter();
+      int getCount();
+      void increaseBy(int x);
+    private:
+      int count;
+    };
+  #+end_src
+
+- What else is needed besides the declaration?
+  #+begin_quote
+  The methods are declared but not defined. They could be used but
+  won't do anything. At this point, you cannot even create a =Counter=,
+  because the default constructor =Counter()= is empty. A ~main~ program
+  with the statement =Counter cnt;= will fail with a linking error.
+  #+end_quote
+
+- How can the methods be defined?
+  #+begin_quote
+  They can be defined alongside the ~class~ declaration, or separately
+  (below: [[Counter]]). When defining separately, the methods have to be
+  added to the *namespace* of the class with: =Counter::=
+  #+end_quote
+
+* Class methods
+
+- Now we define =Counter= methods. We include the [[Counter declaration]]
+  using ~noweb~, and we test the code after tangling it (=C-u C-cc C-v t=)
+  with ~g++ -c~ (compile only) on the shell.
+
+  #+name: Counter
+  #+begin_src C++ :results none :main no :noweb yes :tangle ../src/Counter.cpp
+    <<Counter declaration>>
+
+     // constructor
+    Counter::Counter() {
+      count = 0;
+     }
+
+    // get current Counter::count value
+    int Counter::getCount() {
+      return count;
+    }
+
+    // add x to the count
+    void Counter::increaseBy(int x) {
+      count+=x;
+    }
+  #+end_src
+
+- Check it (add one method at a time and run this shell code):
+  #+begin_src bash :results output :exports both
+    g++ -c ../src/Counter.cpp -o ../src/Counter.o
+    ls -l ../src/Counter*
+  #+end_src
+
+  #+RESULTS:
+  : -rw-rw-r-- 1 aletheia aletheia  314 Jun 16 15:41 ../src/Counter.cpp
+  : -rw-rw-r-- 1 aletheia aletheia 1552 Jun 16 15:41 ../src/Counter.o
+
+- Use of the ~class~ =Counter=:
+  #+begin_src C++ :tangle ../src/Counter.cpp :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<Counter>>
+
+    int main() {
+      Counter ctr; // a Counter instance called `ctr`
+      cout << ctr.getCount() << endl; // init count value
+      ctr.increaseBy(3); // increase count value by 3
+      cout << ctr.getCount() << endl; // prints 3
+      ctr.increaseBy(5); // increase count value by 5
+      cout << ctr.getCount() << endl; // prints 8
+      return 0;
+     }
+  #+end_src
+
+  #+RESULTS:
+  : 0
+  : 3
+  : 8
+
+- What about the *destructor* for =Counter=?
+  #+begin_quote
+  The compiler provides a default destructor that returns all
+  allocated memory once the ~main~ program has finished. You can add a
+  separate destructor if you like.
+  #+end_quote
+
+* PRACTICE Destroy the =Counter= instance
+
+- Write a ~class~ =Counter= whose methods are defined inside the
+  ~class~. Inlcude a destrcutor =~Counter=. In the body of the destructor,
+  print a message that the =Counter= was destroyed and print the final
+  =count=.
+
+- Sample output:
+  #+begin_example
+  Counter destroyed. Final count = 8
+  #+end_example
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    class Counter {
+    public:
+      Counter() {count=0;}
+      ~Counter() {cout<<"Counter destroyed. Final count =" << count;}
+      int getCount() {return count;}
+      void increaseBy(int x) {count+=x;}
+    private:
+      int count;
+    };
+
+    int main() {
+      Counter ctr; // a Counter instance called `ctr`
+      cout << ctr.getCount() << endl; // init count value
+      ctr.increaseBy(3); // increase count value by 3
+      cout << ctr.getCount() << endl; // prints 3
+      ctr.increaseBy(5); // increase count value by 5
+      cout << ctr.getCount() << endl; // prints 8
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 0
+  : 3
+  : 8
+  : Counter destroyed. Final count =8
+
+* =Passenger= reloaded
+
+- We redefine =Passenger= as a C++ ~class~ rather than a C ~struct~ by
+  adding member functions, and distinguishing between ~public~ and
+  ~private~ member data.
+
+  #+name: Passenger2 declaration
+  #+begin_src C++ :main no :results none :includes <iostream> <cstdlib> <string> :namespaces std
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    class Passenger {
+    public:
+      Passenger();
+      bool isFrequentFlyer() const;
+      void makeFrequentFlyer(const string& newFreqFLyerNo);
+    private:
+      string   name;
+      MealType mealPref;
+      bool     isFreqFlyer;
+      string   freqFlyerNo;
+    };
+  #+end_src
+
+- We added one *accessor* function, =isFrequentFlyer()=. It is ~const~ and
+  does not change the object content.
+
+- We added one *update* function, =makeFrequentFlyer=, which assigns a
+  ~const string~, the new frequent flyer number, to the =Passenger=.
+
+- Test on shell (or run [[Passenger2 declaration]] and ignore the linking error):
+  #+begin_src bash :results output :exports both
+    g++ -c ../src/Passenger2.cpp -o ../src/Passenger2.o
+    ls -l ../src/Passenger*
+  #+end_src
+
+  #+RESULTS:
+  : -rw-rw-r-- 1 aletheia aletheia  368 Jun 16 20:46 ../src/Passenger2.cpp
+  : -rw-rw-r-- 1 aletheia aletheia 2136 Jun 16 20:47 ../src/Passenger2.o
+
+- We include [[Passenger2 declaration]] and add definitions to the named
+  code block [[Passenger2]]:
+
+  #+name: Passenger2
+  #+begin_src C++ :results none :main no :noweb yes :tangle ../src/Passenger2.cpp :includes <iostream> <cstdlib> <string> :namespaces std
+    <<Passenger2 declaration>>
+
+     // return Passenger's frequent flyer status
+    bool Passenger::isFrequentFlyer() const {
+      return isFreqFlyer;
+     }
+
+    // make Passenger a frequent flyer with new number
+    void Passenger::makeFrequentFlyer(const string& newFreqFlyerNo) {
+      isFreqFlyer = true;
+      freqFlyerNo = newFreqFlyerNo;
+    }
+  #+end_src
+
+- We can now test our new =Passenger= ~class~:
+  #+begin_src C++ :tangle ../src/Passenger2.cpp :main no :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    <<Passenger2>>
+
+    int main() {
+
+      Passenger pass;
+      if (!pass.isFrequentFlyer()) {
+        pass.makeFrequentFlyer("392953");
+      }
+      return 0;
+     }
+  #+end_src
+
+  #+RESULTS:
+
+- When running this program, which is syntactically correct (the
+  program compiles) we are told that the linker (~ld~) failed because of
+  an "undefined reference to =Passenger::Passenger()=. What's the issue?
+  #+begin_quote
+  The issue is that we *declared* the default constructor but we did not
+  define it.
+  #+end_quote
+
+- Let's fix this:
+  #+begin_src C++ :tangle ../src/Passenger2.cpp :main no :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    <<Passenger2>>
+
+    Passenger::Passenger() { // public method
+      name = "--NO NAME--";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+     }
+
+    int main() {
+
+      Passenger pass;
+      if (!pass.isFrequentFlyer()) {
+        pass.makeFrequentFlyer("392953");
+      }
+
+      return 0;
+    }
+  #+end_src
+
+- We don't get any errors but we also cannot easily check success
+  because the ~public~ methods altered ~private~ content of the
+  =Passenger=. The only way to get to this information is by adding
+  ~public~ *getter* methods.
+
+* PRACTICE Add a getter function
+
+- Using the code below, add a getter function =getPassengerInfo= that
+  prints the =Passenger= data (=name=, =mealPref=, =isFreqFLyer=, and
+  =freqFlyerNo=), and test the function in the ~main~ program.
+
+- Questions to ask yourself first:
+  1) Is =getPassengerInfo= a ~public~ or ~private~ function?
+  2) Should the function be allowed to alter object content?
+  3) Does the function have a ~return~ type? Which one?
+  4) Does the function have any arguments? Which ones?
+
+- Starter code (as an exercise, try to write the starter code from
+  scratch without looking first):
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <cstdlib>
+    using namespace std;
+
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    class Passenger {
+    public:
+      Passenger();
+      bool isFrequentFlyer() const;
+      void makeFrequentFlyer(const string& newFreqFLyerNo);
+    private:
+      string   name;
+      MealType mealPref;
+      bool     isFreqFlyer;
+      string   freqFlyerNo;
+    };
+
+    Passenger::Passenger() {
+      name = "--NO NAME--";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+    }
+
+    bool Passenger::isFrequentFlyer() const {
+      return isFreqFlyer;
+    }
+
+    void Passenger::makeFrequentFlyer(const string& newFreqFlyerNo) {
+      isFreqFlyer = true;
+      freqFlyerNo = newFreqFlyerNo;
+    }
+
+    int main() {
+
+      Passenger pass; // invokes the default constructor
+      // TODO get Passenger information
+      // ...
+      return 0;
+    }
+  #+end_src
+
+- *Sample output:*
+  #+begin_example
+  : Name = --NO NAME--
+  : Meal pref = 0
+  : Freq flyer = 0
+  : Freq flyer no = NONE
+  #+end_example
+
+- *Bonus*: write another function =getPassengerInfo2= that should ~return~ a
+  single formatted ~string~ containing the passenger's =name=, meal
+  preference (as ~string~, e.g. "REGULAR", not as an ~enum~ integer), and
+  the freq flyer number (or "NONE" if not set). You need a helper
+  function or a ~switch~ to convert the =MealType= ~enum~ to a ~string~.
+
+- *Solution:*
+  #+begin_quote
+  1) Is =getPassengerInfo= a ~public~ or ~private~ function? -> ~public~
+  2) Should the function be allowed to alter object content? -> NO
+  3) Does the function have a ~return~ type? -> NO
+  4) Does the function have any arguments? -> NO
+
+  Therefore, the declaration: =void getPassengerInfo() const;=
+  #+end_quote
+
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <cstdlib>
+    using namespace std;
+
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    class Passenger {
+    public:
+      Passenger();
+      bool isFrequentFlyer() const;
+      void makeFrequentFlyer(const string& newFreqFLyerNo);
+      void getPassengerInfo() const;
+    private:
+      string   name;
+      MealType mealPref;
+      bool     isFreqFlyer;
+      string   freqFlyerNo;
+    };
+
+    Passenger::Passenger() {
+      name = "--NO NAME--";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+    }
+
+    bool Passenger::isFrequentFlyer() const {
+      return isFreqFlyer;
+    }
+
+    void Passenger::makeFrequentFlyer(const string& newFreqFlyerNo) {
+      isFreqFlyer = true;
+      freqFlyerNo = newFreqFlyerNo;
+    }
+
+    void Passenger::getPassengerInfo() const {
+      cout << "Name = "          << name        << endl
+           << "Meal pref = "     << mealPref    << endl
+           << "Freq flyer = "    << isFreqFlyer << endl
+           << "Freq flyer no = " << freqFlyerNo << endl;
+    }
+
+    int main() {
+
+      Passenger pass; // invokes the default constructor
+      pass.getPassengerInfo();
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Name = --NO NAME--
+  : Meal pref = 0
+  : Freq flyer = 0
+  : Freq flyer no = NONE
+
+* Constructors and destructors
+
+- A *constructor* has the name of the ~class~ and no ~return~ type.
+
+- To initialize objects in different ways, different constructors can
+  be used. For =Passenger=, we define three constructors:
+
+  1) [X] The default constructor =Passenger::Passenger();= initializes with
+     a minimal set of data.
+
+  2) [X] The second constructor takes passenger data as arguments and
+     initializes the object with these:
+     #+begin_example C++
+     Passenger(const string& nm, MealType mp, const string& ffn="NONE");
+     #+end_example
+     Note that =MealType= is not ~const~ because we only want to declare
+     those attributes constant that we need to be immutable after
+     construction.
+
+  3) [X] The third constructor is a *copy constructor* and takes reference
+     data from a =Passenger= as its argument:
+     #+begin_example C++
+     Passenger(const Passenger& pass);
+     #+end_example
+
+- Try to write the entire code created so far (50 lines) and get it to
+  run. Then copy the block to a "Solution" list item below and add the
+  constructors, one at a time.
+
+- *Remembering:* We had a ~const bool~ function =isFrequentFlyer()= that
+  returned the frequent flyer status =Passenger::isFreqFlyer=, and a
+  ~void~ function =makeFrequentFlyer= that assigned a
+  =Passenger::freqFlyerNo= ~string~ to the =Passenger=. The constructor
+  assigns default values: ="NO_NAME"= to =Passenger::name=, =MealType
+  =NO_PREF= for =Passenger::mealPref=, ~false~ for =isFreqFlyer=, and ="NONE"=
+  for =freqFlyerNo=. A ~void~ function =Passenger::getPassengerInfo()=
+  prints ~private~ information about each =Passenger=.
+
+- To recreate this, write one method function at a time and test it in
+  the ~main~ program.
+
+  #+begin_src C++ :main no :includes :results output :exports both
+    // header files
+    #include <iostream>
+    #include <string>
+    #include <cstdlib>
+    using namespace std;
+
+    // MealType definition
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    // class declaration
+    class Passenger {
+    public:
+      Passenger();
+      bool isFrequentFlyer();
+      void makeFrequentFlyer(const string&);
+      void getPassengerInfo();
+    private:
+      string name;
+      MealType mealPref;
+      bool isFreqFlyer;
+      string freqFlyerNo;
+    };
+
+    // member function definitions
+    Passenger::Passenger() {
+      name = "NO NAME";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+    }
+
+    void Passenger::getPassengerInfo() {
+      cout << "Name: " << name << endl
+           << "Meal preference: " << mealPref << endl
+           << boolalpha << "Frequent flyer: " << isFreqFlyer << endl
+           << "Frequent flyer number: " << freqFlyerNo << endl;
+    }
+
+    bool Passenger::isFrequentFlyer() {
+      return isFreqFlyer;
+    }
+
+    void Passenger::makeFrequentFlyer(const string& ffn) {
+      freqFlyerNo = ffn;
+    }
+
+    int main() {
+
+      Passenger pass;
+      if (!pass.isFrequentFlyer())
+        pass.makeFrequentFlyer("345690");
+      pass.getPassengerInfo();
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Name: NO NAME
+  : Meal preference: 0
+  : Frequent flyer: false
+  : Frequent flyer number: 345690
+
+- *Solution*:
+  #+begin_src C++ :main no :includes :results output :exports both
+    // header files
+    #include <iostream>
+    #include <string>
+    #include <cstdlib>
+    using namespace std;
+
+    // MealType definition
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    // class declaration
+    class Passenger {
+    public:
+      Passenger(); // default constructor
+      Passenger(const string&, MealType, const string&);
+      Passenger(const Passenger&); // copy constructor
+      bool isFrequentFlyer();
+      void makeFrequentFlyer(const string&);
+      void getPassengerInfo();
+    private:
+      string name;
+      MealType mealPref;
+      bool isFreqFlyer;
+      string freqFlyerNo;
+    };
+
+    // member function definitions
+    // default constructor
+    Passenger::Passenger() {
+      name = "NO NAME";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+    }
+    // create Passenger (default frequent flyer number)
+    Passenger::Passenger(const string& nm,
+                     MealType mp,
+                     const string& ffn="NONE") {
+      name = nm;
+      mealPref = mp;
+      isFreqFlyer = (ffn != "NONE");
+      freqFlyerNo = ffn;
+    }
+    // copy Passenger data
+    Passenger::Passenger(const Passenger & pass) {
+      name = pass.name;
+      mealPref = pass.mealPref;
+      isFreqFlyer = pass.isFreqFlyer;
+      freqFlyerNo = pass.freqFlyerNo;
+    }
+    // get (private) Passenger information
+    void Passenger::getPassengerInfo() {
+      cout << "Name: " << name << endl
+           << "Meal preference: " << mealPref << endl
+           << boolalpha << "Frequent flyer: " << isFreqFlyer << endl
+           << "Frequent flyer number: " << freqFlyerNo << endl;
+    }
+    // check if Passenger is a frequent flyer
+    bool Passenger::isFrequentFlyer() {
+      return isFreqFlyer;
+    }
+    // assign a frequent flyer number to Passenger
+    void Passenger::makeFrequentFlyer(const string& ffn) {
+      freqFlyerNo = ffn;
+    }
+    // main program
+    int main() {
+      // default constructor:
+      Passenger pass;
+      pass.getPassengerInfo();
+      // create Passenger with a frequent Flyer number
+      Passenger pass2("Jim Jones", REGULAR, "394599");
+      pass2.getPassengerInfo();
+      // create Passenger without a frequent Flyer number
+      Passenger pass3("Nora Smith", LOW_FAT);
+      pass3.getPassengerInfo();
+      // copy Passenger data into a new Passenger
+      Passenger pass4(pass2);
+      pass4.getPassengerInfo();
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Name: NO NAME
+  Meal preference: 0
+  Frequent flyer: false
+  Frequent flyer number: NONE
+  Name: Jim Jones
+  Meal preference: 1
+  Frequent flyer: true
+  Frequent flyer number: 394599
+  Name: Nora Smith
+  Meal preference: 2
+  Frequent flyer: false
+  Frequent flyer number: NONE
+  Name: Jim Jones
+  Meal preference: 1
+  Frequent flyer: true
+  Frequent flyer number: 394599
+  #+end_example
+
+- For a few more tests and reminder of the ~new~ keyword, put the ~class~
+  declaration and all definitions in a macro [[Passenger3]] - don't run
+  this block, it is only included via the ~:noweb yes~ header argument.
+
+  #+name: Passenger3
+  #+begin_src C++ :main no :results none :includes
+    // header files
+    #include <iostream>
+    #include <string>
+    #include <cstdlib>
+    using namespace std;
+
+    // MealType definition
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    // class declaration
+    class Passenger {
+    public:
+      Passenger();
+      Passenger(const string&, MealType, const string&);
+      Passenger(const Passenger&);
+      bool isFrequentFlyer();
+      void makeFrequentFlyer(const string&);
+      void getPassengerInfo();
+    private:
+      string name;
+      MealType mealPref;
+      bool isFreqFlyer;
+      string freqFlyerNo;
+    };
+
+    // member function definitions
+    // default constructor
+    Passenger::Passenger() {
+      name = "NO NAME";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+    }
+    // create Passenger (default frequent flyer number)
+    Passenger::Passenger(const string& nm,
+                         MealType mp,
+                         const string& ffn="NONE") {
+      name = nm;
+      mealPref = mp;
+      isFreqFlyer = (ffn != "NONE");
+      freqFlyerNo = ffn;
+    }
+    // copy Passenger data
+    Passenger::Passenger(const Passenger & pass) {
+      name = pass.name;
+      mealPref = pass.mealPref;
+      isFreqFlyer = pass.isFreqFlyer;
+      freqFlyerNo = pass.freqFlyerNo;
+    }
+    // get (private) Passenger information
+    void Passenger::getPassengerInfo() {
+      cout << "Name: " << name << endl
+           << "Meal preference: " << mealPref << endl
+           << boolalpha << "Frequent flyer: " << isFreqFlyer << endl
+           << "Frequent flyer number: " << freqFlyerNo << endl;
+    }
+    // check if Passenger is a frequent flyer
+    bool Passenger::isFrequentFlyer() {
+      return isFreqFlyer;
+    }
+    // assign a frequent flyer number to Passenger
+    void Passenger::makeFrequentFlyer(const string& ffn) {
+      freqFlyerNo = ffn;
+    }
+  #+end_src
+
+- Here are more examples on how to invoke the constructors to define
+  =Passenger= objects. Remember when you use ~new~ to declare a
+  heap-allocated object, you need to use ~delete~ to destroy it lest a
+  memory leak is left behind (even after ~main~ is finished).
+
+  #+begin_src C++ :main no :includes :results output :noweb yes
+    <<Passenger3>>
+
+    int main() {
+
+      Passenger p1; // default constructor
+      Passenger p2("John Smith", VEGETARIAN, "293145"); // 2nd constructor
+      Passenger p3("Jabberwocky", REGULAR); // not a frequent flyer
+      Passenger p4(p3); // copied from p3
+      Passenger p5 = p2; // copied from p2
+      Passenger* pp1 = new Passenger; // default constructor
+      Passenger* pp2 = new Passenger("Peter White", NO_PREF); // 2nd constructor
+      Passenger pa[20]; // default constructor used
+
+      p5.getPassengerInfo();
+      pp2->getPassengerInfo();
+      pa[10].getPassengerInfo();
+
+      delete pp1;
+      delete pp2;
+
+      return 0;
+     }
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Name: John Smith
+  Meal preference: 3
+  Frequent flyer: true
+  Frequent flyer number: 293145
+  Name: Peter White
+  Meal preference: 0
+  Frequent flyer: false
+  Frequent flyer number: NONE
+  Name: NO NAME
+  Meal preference: 0
+  Frequent flyer: false
+  Frequent flyer number: NONE
+  #+end_example
+
+- Class members can also be initialized with initializer lists. The
+  code fragment below show this for the second =Passenger=
+  constructor. The initializer list is placed between the argument
+  list and the constructor's body:
+
+  #+begin_example C++
+    Passenger::Passenger(const string& nm,
+                         MealType mp,
+                         const string& ffn)
+    : name(nm), mealPref(mp), isFreqFlyer(ffn != "NONE")
+      { freqFlyerNo == ffn; }
+  #+end_example
+
+- The list members look like function calls but they're just
+  assignments:
+  1. =name= is set to the argument =nm=
+  2. =mealPref= is set to the argument =mp=
+  3. =isFreqFlyer= is set to the argument ~true~ or ~false~ if the =Passenger=
+     has or does not have a =freqFlyerNo= other than ="NONE"=.
+  4. If he =isFreqFlyer= then he already has a =freqFlyerNo=.
+
+* PRACTICE Add a constructor with default values
+
+- Write another constructor for the =Passenger= class that uses an
+  *initializer list* to set default values. This constructor should take
+  only the passenger =name=.
+
+- *Requirements:*
+  + Set =mealPref= to =NO_PREF=
+  + Set =isFreqFlyer= to =false=
+  + Set =freqFlyerNo= to the empty string
+
+- *Task:*
+  1. Exchange the 2nd constructor to your =Passenger= class with the new
+     constructor (starter code below - this is the last version,
+     [[Passenger3]]).
+  2. In your =main= function, create a =Passenger= object using this
+     constructor.
+  3. Print all fields of the object to verify default initialization
+     using the getter function (see sample output below).
+
+- *Sample output:*
+  #+begin_example
+
+  #+end_example
+
+- *Starter code:* (~#include~ and ~namespace~ commands in the block header)
+  #+begin_src C++ :main no :includes <iostream> <string> <cstdlib> :namespaces std :results output :exports both
+    // MealType definition
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    // class declaration
+    class Passenger {
+    public:
+      Passenger();
+      Passenger(const string&, MealType, const string&);
+      Passenger(const Passenger&);
+      bool isFrequentFlyer();
+      void makeFrequentFlyer(const string&);
+      void getPassengerInfo();
+    private:
+      string name;
+      MealType mealPref;
+      bool isFreqFlyer;
+      string freqFlyerNo;
+    };
+
+    // member function definitions
+    // default constructor
+    Passenger::Passenger() {
+      name = "NO NAME";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+    }
+    // TODO create Passenger with initializer list (only take `name`)
+    // ...
+
+    // copy Passenger data
+    Passenger::Passenger(const Passenger & pass) {
+      name = pass.name;
+      mealPref = pass.mealPref;
+      isFreqFlyer = pass.isFreqFlyer;
+      freqFlyerNo = pass.freqFlyerNo;
+    }
+    // get (private) Passenger information
+    void Passenger::getPassengerInfo() {
+      cout << "Name: " << name << endl
+           << "Meal preference: " << mealPref << endl
+           << boolalpha << "Frequent flyer: " << isFreqFlyer << endl
+           << "Frequent flyer number: " << freqFlyerNo << endl;
+    }
+    // check if Passenger is a frequent flyer
+    bool Passenger::isFrequentFlyer() {
+      return isFreqFlyer;
+    }
+    // assign a frequent flyer number to Passenger
+    void Passenger::makeFrequentFlyer(const string& ffn) {
+      freqFlyerNo = ffn;
+    }
+    // main program
+    int main() {
+
+      // ...
+
+      return 0;
+    }
+  #+end_src
+
+- *Solution:*
+  #+begin_src C++ :main no :includes <iostream> <string> <cstdlib> :namespaces std :results output :exports both
+    // MealType definition
+    enum MealType {NO_PREF, REGULAR, LOW_FAT, VEGETARIAN};
+
+    // class declaration
+    class Passenger {
+    public:
+      Passenger();
+      // declaration of the constructor does
+      Passenger(const string&);
+      Passenger(const Passenger&);
+      bool isFrequentFlyer();
+      void makeFrequentFlyer(const string&);
+      void getPassengerInfo();
+    private:
+      string name;
+      MealType mealPref;
+      bool isFreqFlyer;
+      string freqFlyerNo;
+    };
+
+    // member function definitions
+    // default constructor
+    Passenger::Passenger() {
+      name = "NO NAME";
+      mealPref = NO_PREF;
+      isFreqFlyer = false;
+      freqFlyerNo = "NONE";
+    }
+    // TODO create Passenger with initializer list (only take `name`)
+    Passenger::Passenger(const string& nm)
+      : name(nm),
+        mealPref(NO_PREF),
+        isFreqFlyer(false),
+        freqFlyerNo("") { }
+
+    // copy Passenger data
+    Passenger::Passenger(const Passenger & pass) {
+      name = pass.name;
+      mealPref = pass.mealPref;
+      isFreqFlyer = pass.isFreqFlyer;
+      freqFlyerNo = pass.freqFlyerNo;
+    }
+    // get (private) Passenger information
+    void Passenger::getPassengerInfo() {
+      cout << "Name: " << name << endl
+           << "Meal preference: " << mealPref << endl
+           << boolalpha << "Frequent flyer: " << isFreqFlyer << endl
+           << "Frequent flyer number: " << freqFlyerNo << endl;
+    }
+    // check if Passenger is a frequent flyer
+    bool Passenger::isFrequentFlyer() {
+      return isFreqFlyer;
+    }
+    // assign a frequent flyer number to Passenger
+    void Passenger::makeFrequentFlyer(const string& ffn) {
+      freqFlyerNo = ffn;
+    }
+    // main program
+    int main() {
+
+      Passenger* pass = new Passenger("Cate Blanchett");
+      pass->getPassengerInfo();
+
+      Passenger pass2("Rowan Atkinson");
+      pass2.getPassengerInfo();
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Name: Cate Blanchett
+  : Meal preference: 0
+  : Frequent flyer: false
+  : Frequent flyer number:
+  : Name: Rowan Atkinson
+  : Meal preference: 0
+  : Frequent flyer: false
+  : Frequent flyer number:
+
+- Let's analyze the solution:
+  #+begin_example C++
+    Passenger::Passenger(const string& nm)
+      : name(nm), mealPref(NO_PREF), isFreqFlyer(false), freqFlyerNo("") { }
+  #+end_example
+
+  #+RESULTS:
+
+  1. The initializer list takes care of the default values.
+  2. The only argument permitted is =Passenger::name=.
+  3. The body of the constructor is empty. Alternative:
+     #+begin_example C++
+     Passenger::Passenger(const string& nm) {
+       name = nm;
+       mealPref=NO_PREF;
+       isFreqFlyer=false;
+       freqFlyerNo=""
+     }
+     #+end_example
+
+* Destructors spell desaster
+
+- Constructors create ~class~ objects, destructors destroy them. If the
+  ~new~ operator is used, the destructor is called using ~delete~ (unless
+  a *smart pointer* is used).
+
+- Example: The following =Vect= class in [[Vector]] stores a vector by
+  dynamically allocating an array of integers. The array of length
+  =size= is referenced by the pointer =data=. The constructor allocates
+  the array, the destructor frees it:
+
+  #+name: Vector
+  #+begin_src C++ :main no :includes :results none :noweb yes
+    class Vect { // class declaration
+
+    public:
+      Vect(int n=10); // constructor declaration
+      ~Vect(); // destructor declaration
+    private:
+      int* data; // pointer to array head
+      int  size; // length of array
+    };
+
+    Vect::Vect(int n) { // constructor
+      size = n; // length of array
+      data = new int[n]; // allocate n integer
+    }
+
+    Vect::~Vect() { // destructor
+      delete [] data;
+    }
+  #+end_src
+
+- Note that memory that was allocated with ~new []~ must be de-allocated
+  with ~delete []~ so that all of the =n= array elements are
+  destroyed. Destructors never have to be invoked explicitly
+
+- Note that the default constructor creates an array of size 10. The
+  default parameter value needs to be only declared.
+
+* Classes and memory allocation
+
+- Using the ~class~ =Vect=:
+  #+begin_src C++ :tangle ../src/Vect.cpp :main no :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    <<Vector>>
+
+    int main() {
+
+      Vect a(100);
+      Vect b = a;
+      Vect c;
+      c = a;
+      return 0;
+     }
+  #+end_src
+
+- The compilation reports a warning and the [[Vect test]] below leads to a
+  ~core dump~. What's going on?
+  #+begin_example
+  free(): double free detected in tcache 2
+  #+end_example
+
+- Test:
+  #+name: Vect test
+  #+begin_src bash :results output :exports both
+    g++ ../src/Vect.cpp -o ../src/Vect
+    ls -l ../src/Vect*
+    ../src/Vect
+  #+end_src
+
+  #+RESULTS:
+  : -rwxrwxr-x 1 aletheia aletheia 16840 Jun 18 14:31 ../src/Vect
+  : -rw-rw-r-- 1 aletheia aletheia   399 Jun 18 14:31 ../src/Vect.cpp
+
+- *Explanation*: All three vectors a,b,c share the same 100-element
+  array. =a= is a =Vect= object of 100 elements, and =c= is a default object
+  of 10 elements. Since there is no copy constructor, =Vect b = a=
+  copies each member of =a= to =b=, by pointers: =b.data = a.data=. This is
+  called a *shallow copy*. It gets worse: No assignment operator for
+  =Vect= was provided, so the statement c = a also shallow copies a to c
+  (only pointers are copied). At the same time, the pointer to =c= is
+  lost (memory leak). All objects have members pointing to the same
+  array in the *free store* (aka *heap memory*) - if one was deleted for
+  example, the shared array would also be deleted: The *core dump*
+  happens because =delete [] data;= is executed twice on the same
+  memory, which leads to undefined memory.
+
+- A Rules of Three applies: If your ~class~ manages resources, you must
+  define, to adoiv issues like double ~delete~:
+  1. A *destructor* to free allocated objects.
+  2. A *copy constructor*, which allocates itw own new member storage
+     and copies the content of member variables.
+  3. A *copy assignment operator*, which deallocates old storage,
+     allocates new storage, and copies all member variables.
+
+- The first code fix in [[Vector2]] below includes a copy constructor and
+  a copy assignment operator that overloads the assignment
+  operator. We also added a separate default constructor =Vect()= which
+  in turns calls upon =Vect(int n)=.
+
+  #+name: Vector2
+  #+begin_src C++ :main no :includes :results none :noweb yes
+    class Vect { // class declaration
+    public:
+      Vect(); // default constructor
+      Vect(int n); // parametrized constructor
+      Vect(const Vect& a);  // copy constructor
+      ~Vect(); // destructor
+    private:
+      int* data;
+      int  size;
+    };
+
+    Vect::Vect() : Vect(10) { // initialized
+    }
+
+    Vect::Vect(int n) { // parametrized constructor
+      size = n;
+      data = new int[n];
+    }
+
+    Vect::Vect(const Vect& a) { // copy constructor
+      size = a.size;
+      data = new int[size];
+      for (int i=0;i<size;i++) { // element-wise copying
+        data[i]=a.data[i];
+      }
+    }
+
+    Vect::~Vect() { // destructor
+      delete [] data;
+    }
+  #+end_src
+
+- The copy constructor's argument is ~const~ because we don't touch the
+  argument object.
+
+- Let's test just this (one test per change!) - it should compile and run.
+  #+begin_src C++ :tangle ../src/Vect2.cpp :main no :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    <<Vector2>>
+
+    int main() {
+
+      Vect a(100); // create vector object
+      Vect b(a); // copy vector object
+
+      return 0;
+     }
+  #+end_src
+
+- The next fix adds the overloaded =Vect= assignment operator:
+  1. Check for self-assignment (not allowed)
+  2. Delete existing array storage
+  3. Allocate new array storage
+  4. Copy elements into new storage.
+
+- The self-assignment check uses the ~this~ keyword: For any object
+  instance, ~this~ is the address of the instance. Just like in ~ostream~
+  example earlier when we overloaded the ~<<~ operator, returning a
+  reference to the current object allows us to *chain* assignments as in
+  a = b = c.
+
+- Second code fix in [[Vector3]] below building on [[Vector2]]:
+  #+name: Vector3
+  #+begin_src C++ :main no :includes :results none :noweb yes
+    class Vect { // class declaration
+    public:
+      Vect(); // default constructor
+      Vect(int n); // parametrized constructor
+      Vect(const Vect& a);  // copy constructor
+      Vect& operator=(const Vect& a); // assignment operator
+      ~Vect(); // destructor
+    private:
+      int* data;
+      int  size;
+    };
+
+    Vect::Vect() : Vect(10) { // initialized
+    }
+
+    Vect::Vect(int n) { // parametrized constructor
+      size = n;
+      data = new int[n];
+    }
+
+    Vect::Vect(const Vect& a) { // copy constructor
+      size = a.size;
+      data = new int[size];
+      for (int i=0;i<size;i++) { // element-wise copying
+        data[i]=a.data[i];
+      }
+    }
+
+    Vect& Vect::operator=(const Vect& a) {
+      if (this != &a) { // no self-assignment
+        delete [] data; // delete this->data
+        size = a.size;
+        data = new int[size];
+        for (int i=0;i<size;i++) data[i]=a.data[i];
+      }
+      return *this;
+    }
+
+    Vect::~Vect() { // destructor
+      delete [] data;
+    }
+  #+end_src
+
+- Let's test [[Vector3]]!
+  #+begin_src C++ :tangle ../src/Vect3.cpp :main no :includes <iostream> <cstdlib> :namespaces std :results none :exports both :noweb yes
+    <<Vector3>>
+
+    int main() {
+
+      Vect a(100); // create vector object
+      Vect b(a); // copy vector object
+      Vect c; // default vector (10 elements)
+      c = a;
+      return 0;
+     }
+  #+end_src
+
+- Compile and run on the shell:
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ Vect3.cpp -o Vect3
+    ls -l Vect*
+    ./Vect3
+  #+end_src
+
+  #+RESULTS:
+  : -rwxrwxr-x 1 aletheia aletheia 16840 Jun 18 14:31 Vect
+  : -rwxrwxr-x 1 aletheia aletheia 17032 Jun 18 15:51 Vect3
+  : -rw-rw-r-- 1 aletheia aletheia  1091 Jun 18 15:49 Vect3.cpp
+  : -rw-rw-r-- 1 aletheia aletheia   399 Jun 18 14:31 Vect.cpp
+
+- What if you want to forbid users from using one or more of these
+  operations (e.g. copying large data structures by mistake)? Then you
+  can define empty copy constructors and assignment functions and make
+  them ~private~ class members so that the compiler can flag them.
+
+* Class friends and nested classes
+
+- A function can be declared as a ~friend~ and access the ~private~ data
+  of a class.
+
+- This could be access for an overloaded operator, or because two
+  different classes are closely related and need to cooperate (e.g. a
+  matrix and a vector class.
+
+- Friendship is not transitive.
+
+- A class definition can be nested within another class, for example
+  =Bookmark= within =Book=. Outside of the class =Book=, you can use
+  =Book::Bookmark= to refer to it.
+
+* The Standard Template Library
+
+- The Standard Template Library (STL) provides classes for common data
+  structures, in the form of *standard containers*:
+
+  | Container      | Explanation                      |
+  |----------------+----------------------------------|
+  | ~stack~          | Last-in, first-out access (LIFO) |
+  | ~queue~          | First-in, first-out (FIFO)       |
+  | ~deque~          | Double-ended queue               |
+  | ~vector~         | Resizable array                  |
+  | ~list~           | Double linked list               |
+  | ~priority_queue~ | Queue ordered by value           |
+  | ~set~            | Set                              |
+  | ~map~            | Associative array (dictionary)   |
+
+** Templates and the STL Vector Class
+
+- STL containers can store objects of any one type (unlike e.g. the
+  user-defined =Vect= class above, which only stores ~int~ values).
+
+- A ~class~ whose definition depends on a user-specified type is a
+  *template*. The template type is specified after the container type.
+
+- Example: Vectors to hold 100 integers, 500 characters, 20 passengers
+  #+begin_src C++ :results none
+    #include <vector>
+    using namespace std;
+
+    class Passenger {};
+
+    int main()
+    {
+      vector<int> scores(100);
+      vector<char> buffer(500);
+      vector<Passenger> passenList(20);
+
+      return 0;
+    }
+  #+end_src
+
+** More on STL Strings
+
+- Here is the complete [[https://en.cppreference.com/w/cpp/string.html][documentation]] for ~<string>~ though more relevant
+  here is ~std::basic_string~ [[https://en.cppreference.com/w/cpp/string/basic_string.html][here]].
+
+- We've already met three string operators and one function:
+  1. ~+~ for string concatenation.
+  2. ~+=~ for appending a string to end of another string.
+  3. ~[]~ for accessing characters of a string.
+  4. ~size~ for determining the length of a string.
+
+- Example uses:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    #include <string>
+    string s1 = "Hello";
+    string s2 = ", ";
+    string s3 = "World!";
+    string s4;
+
+    s4 += (s1 + s2 + s3);
+
+    cout << s1 + s2 + s3 << endl;
+    cout << s4           << endl;
+    cout << size(s4)     << endl;
+    cout << s4[0]        << endl;
+  #+end_src
+
+  #+RESULTS:
+  : Hello, World!
+  : Hello, World!
+  : 13
+  : H
+
+- Let =s= be a string, and let =p= be either an STL or a standard C++
+  string, and let =i= (index), =m= (number of characters involved) be
+  non-negative integers. Then:
+
+  | function         | explanation                                      |
+  |------------------+--------------------------------------------------|
+  | =s.find(p)=        | Return index of 1st occurrence of =p= in =s=         |
+  | =s.find(p,i)=      | ...on or after position =i=                        |
+  | =npos=             | Maximum value of ~string~ type variables           |
+  | ~==string::npos~   | ...test for failure to find in string            |
+  | =s.substr(i,m)=    | Return substring of length =m= starting at =i= of =s=  |
+  | =s.insert(i,p)=    | Insert string =p= before index =i= in string =s=       |
+  | =s.erase(i,m)=     | Remove substring of length =m= starting at =i=       |
+  | =s.replace(i,m,p)= | Replace substring of length =m= starting at =i= by =p= |
+  | =getline(is,s)=    | Read single line from stream =is= and store in =s=   |
+
+- Use examples:
+  #+begin_src C++ :cmdline < ../data/input :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    string s = "a dog"; // "a dog"
+    s += " is a dog";    // "a dog is a dog"
+
+    cout << s.find("dog") << endl; // "dog" occurs first in position 2
+    cout << s.find("dog",3) << endl; //  "dog" occurs next in position 11
+
+    if (s.find("doug") == string::npos) { cout << "not found" << endl;}
+
+    cout << s.substr(7,5) << endl; // "s a d[og]" i=7, m=5
+
+    s.insert(5," is a dog"); // insert at position 6
+    cout << s << endl;
+
+    s.erase(5,9); // remove 9 chars starting at position 5
+    cout << s << endl;
+
+    s.replace(11,3,"frog"); // replace 3 chars at position 11 by "frog"
+    cout << s << endl;
+
+    getline(cin,s);
+    cout << s << endl;
+  #+end_src
+
+  #+RESULTS:
+  : 2
+  : 11
+  : not found
+  : s a d
+  : a dog is a dog is a dog
+  : a dog is a dog
+  : a dog is a frog
+  : Is a frog a toad?
+
+- Input line for =getline=:
+  #+begin_src bash :results output :exports both
+    echo "Is a frog a toad?" > ../data/input
+    cat ../data/input
+  #+end_src
+
+  #+RESULTS:
+  : Is a frog a toad?
+
+- You need =string::npos= because ~npos~ is a member of the ~string~ ~class~,
+  not a ~namespace~ member. Otherwise it would not be defined in this
+  *scope*.
+
+- ~string::npos~ is defined as =static const size_type npos = -1;= where
+  ~size_type~ is an *unsigned* type (usually ~size_t~) - therefore =-1= is the
+  largest possible value, or =std::numeric_limits<size_t>::max()=. If
+  the string is not found, the index search function =s.find= returns an
+  *impossible* index. ~npos~ is used as a *sentinel value*, a marker that no
+  valid index would ever match. This logic is a little twisted, it's
+  quite C-style.
+
+* PRACTICE STL string functions
+
+- *Task:* Write a C++ program that performs the following operations:
+  1. Create a string =s = "cat"=.
+  2. Append the string ="erpillar"= to =s= using =+==.
+  3. Check if ="pill"= occurs in the string using =find=. Print the result.
+  4. If ="worm"= is *not* found in =s=, print ="worm" not found=.
+  5. Insert =" fuzzy "= at position 0 in =s=.
+  6. Replace 6 characters at position 6 with =""=.
+  7. Remove the first character and the ="pillar"= at the end of the
+     string.
+  8. Add =" dog"= to =s=.
+  9. Add double quotation mark at the beginning and end of the string.
+  10. Print the final value of =s=.
+
+- *Tip*: You can chain string operations into the output stream, e.g.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    string test = "hello";
+    cout << (test += " world") << endl
+    << test.insert(test.size(),"!") << endl;
+  #+end_src
+
+  #+RESULTS:
+  : hello world
+  : hello world!
+
+- A more complex example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    string test = "hello";
+    cout << (test += " world") << endl
+    << test.replace(test.find("world"),5,"Marcus") << endl
+    << test.insert(test.size(),"!") << endl;
+  #+end_src
+
+  #+RESULTS:
+  : hello world
+  : hello Marcus
+  : hello Marcus!
+
+- *Bonus:* Ask the user for a line of input using =getline(cin, s)= and
+  print it back. Use the line ="To be or not to be that is the
+  question."=
+
+*- Expected output format example:*
+#+begin_example
+  : "pill" found at i = 5
+  : "worm" not found
+  : "fuzzy dog"
+  : "To be or not to be that is the question."
+#+end_example
+
+- *Solution*:
+  #+begin_src C++ :cmdline < ../data/input :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    #include <string>
+    string s = "cat"; // cat
+    s += "erpillar"; // caterpillar
+    cout << "\"pill\" found at i = " << s.find("pill") << endl;
+    if (s.find("worm") == string::npos) cout << "\"worm\" not found" << endl;
+
+    s.insert(0," fuzzy ");   // " fuzzy caterpillar"
+    s.replace(6,6,"");       // " fuzzypillar"
+    s.erase(0,1);            // fuzzypillar
+    s.erase(5,s.size()-5);   // fuzzy
+    (s += " dog");           // fuzzy dog
+    s.insert(0,"\"");        // "fuzzy dog
+    s.insert(s.size(),"\""); // "fuzzy dog"
+    cout << s;
+    getline(cin,s);
+    cout << '\n' << s << endl;
+  #+end_src
+
+  #+RESULTS:
+  : "pill" found at i = 5
+  : "worm" not found
+  : "fuzzy dog"
+  : "To be or not to be that is the question."
+
+- Complete:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    #include <string>
+    string s = "cat";
+    cout << s << endl;
+
+    cout << (s += "erpillar") << endl; // caterpillar
+
+    cout << "\"pill\" found at i = " << s.find("pill") << endl;
+    if (s.find("worm") == string::npos) cout << "\"worm\" not found" << endl;
+
+    cout << s.insert(0," fuzzy ") << endl // " fuzzy caterpillar"
+    << s.replace(6,6,"")     << endl // " fuzzypillar"
+    << s.erase(0,1)          << endl // fuzzypillar
+    << s.erase(5,s.size()-5) << endl // fuzzy
+    << (s += " dog")         << endl // fuzzy dog
+    << s.insert(0,"\"")      << endl // "fuzzy dog
+    << s.insert(s.size(),"\"") << endl;// "fuzzy dog"
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  cat
+  caterpillar
+  "pill" found at i = 5
+  "worm" not found
+   fuzzy caterpillar
+   fuzzypillar
+  fuzzypillar
+  fuzzy
+  fuzzy dog
+  "fuzzy dog
+  "fuzzy dog"
+  #+end_example
+
+- *Bonus*: replace all numbers by relative positions using the
+  ~string::size()~ function.
+
+- Input:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "\"To be or not to be that is the question.\"" > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : "To be or not to be that is the question."
+
+* C++ Program and File Organization
+
+- A typical C++ program consists of many files. For example, each
+  major ~class~ is placed in its own file.
+
+- There are two common file types:
+
+  1. *Source files* (.cc, .cpp) contain executable statements and data
+     definitions, bodies of *functions* and definitions of *global*
+     variables.
+
+  2. *Header files* (.h) contain shared declarations, read into source
+     files using ~#include~. System header files are enclosed in ~<>~,
+     local header files in ~""~.
+
+- Global variables and functions can be defined only once. The keyword
+  ~extern~ indicates that a global variable is defined in another file.
+
+* Source files
+
+- Example: The first code block [[Source1]] tangles into =Source1.cpp=, the
+  second into =Source2.cpp=. The third code block compiles both files
+  into a single object file =Source=.
+
+- Definition of globals (no ~main~ program, no ~#include~):
+  #+name: Source1
+  #+begin_src C++ :tangle ../src/Source1.cpp :main no :includes :results none
+    int cat = 1;
+    int foo(int x) { return x+1; }
+  #+end_src
+
+- Use of globals (in ~main~ program, with ~#include~):
+  #+name: Source2
+  #+begin_src C++ :tangle ../src/Source2.cpp :main yes :includes <iostream> :results none
+    extern int cat; // cat is defined elsewhere
+    int foo(int x); // foo is defined elsewhere
+
+    std::cout << foo(cat); // prints 2
+  #+end_src
+
+- Compilation and test:
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ Source1.cpp Source2.cpp -o Source
+    ./Source
+  #+end_src
+
+  #+RESULTS:
+  : 2
+
+* Header Files
+
+- Statements beginning with ~#~ are handled by the *preprocessor*.
+
+- Header files do contain declarations (including classes, structures,
+  constants, enumerations, typdefs) but no function definitions
+  (except *inline* functions).
+
+- Example: We put our usual header files ~<iostream>~ and ~<string>~ into
+  a local header file ="Header.h"= that resides in the directory =../src=
+
+- Creation of header file: =echo -e= enables escape sequences like ~\n~
+  (check ~man~ page):
+  #+begin_src bash :results output :exports both
+    cd ../src
+    echo -e "#include <iostream>\n#include <string>" > Header.h
+    cat Header.h
+  #+end_src
+
+  #+RESULTS:
+  : #include <iostream>
+  : #include <string>
+
+- The ~:flag~ header argument passes =-I ../src= to the compiler (check
+  ~man~ page) to look for preprocessor target files:
+  #+begin_src C++ :flags -I ../src :tangle ../src/header.cpp :main no
+    #include "Header.h"
+
+    int main() {
+      std::cout << "Header.h included";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Header.h included
+
+* An Example Program
+
+The program runs with one ~class~, =CreditCard=, which defines a credit
+card object and a procedure that uses this class.
+
+** The =CreditCard= class declaration
+
+- The ~class~ is declared in the header file =CreditCard.h=.
+  #+name: CREDIT_CARD_H
+  #+begin_src C++ :tangle ../src/CreditCard.h :main no :includes :results none
+    #ifndef CREDIT_CARD_H // avoid repeated expansion
+    #define CREDIT_CARD_H // macro definition
+
+    #include <string>     // include string operations
+    #include <iostream>   // include output stream `ostream`
+
+    class CreditCard {
+      // public member functions
+    public:
+      // constructor
+      CreditCard(const std::string& no, // credit card number
+                 const std::string& nm, // card holder name
+                 int lim,               // credit limit
+                 double bal=0);         // initial balance
+      // accessor functions
+      std::string getNumber() const  { return number; }
+      std::string getName() const    { return name; }
+      double      getBalance() const { return balance; }
+      int         getLimit() const   { return limit; }
+      // update functions
+      bool chargelt(double price);      // make a charge
+      void makePayment(double payment); // make a payment
+      // private member data
+    private:
+      std::string number;               // credit card number
+      std::string name;                 // card owner's name
+      int         limit;                // credit limit
+      double      balance;              // credit card balance
+    };
+
+    // print card information
+    std::ostream& operator << (std::ostream& out, const CreditCard& c);
+
+    #endif
+  #+end_src
+
+** The =CreditCard= member functions
+
+- Class member functions are defined in =CreditCard.cpp=, which includes
+  ="CreditCard.h"=.
+  #+name: CREDIT_CARD_CPP
+  #+begin_src C++ :flags -I ../src :tangle ../src/CreditCard.cpp :main no :includes :results none
+    #include "CreditCard.h"
+
+    using namespace std;
+
+    // constructor
+    CreditCard::CreditCard(const std::string& no, // credit card number
+                           const std::string& nm, // card holder name
+                           int lim,               // credit limit
+                           double bal)            // initial balance
+      : number(no), name(nm), limit(lim), balance(bal) {}
+
+    // update functions
+    bool CreditCard::chargelt(double price) { // make a charge
+      if (price + balance > double(limit))
+        return false;
+      balance += price;
+      return true;
+    }
+    void CreditCard::makePayment(double payment) { // make a payment
+      if (payment > balance)
+        payment = balance; // don't go negative
+      balance -= payment;
+    }
+    // print card information
+    std::ostream& operator << (std::ostream& out, const CreditCard& c) {
+      out << "Number = "  << c.getNumber()  << '\n'
+          << "Name = "    << c.getName()    << '\n'
+          << "Balance = " << c.getBalance() << '\n'
+          << "Limit = "   << c.getLimit()   << '\n';
+      return out;
+    }
+  #+end_src
+
+** The Main Test Program
+
+- We first define a =testCard= function that allocates three new cards
+  and updates them. The function is then called in a minimal ~main~
+  program. The card information is held in a =wallet= ~vector~ whose
+  elements are 10 =CreditCard= pointers.
+
+  #+name: CREDIT_CARD_TEST_CPP
+  #+begin_src C++ :flags -I ../src :results none :noweb yes :tangle ../src/CreditCardTest.cpp
+    #include <vector>       // provides STL vector
+    #include "CreditCard.h" // provides CreditCard, cout, string
+
+    using namespace std; // make std accessible
+
+    void testCard() { // CreditCard test function
+
+      vector<CreditCard*> wallet(10); // vector of 10 CreditCard pointers
+
+
+      // allocate 3 new cards
+      wallet[0] = new CreditCard("5391 0375 9387 5309", "John Bowman", 2500);
+      wallet[1] = new CreditCard("3485 0399 3395 1954", "John Bowman", 3500);
+      wallet[2] = new CreditCard("6011 4902 3294 2994", "John Bowman", 5000);
+      // make some charges
+      for (int j = 1;j <= 16; j++) {
+        wallet[0]->chargelt(double(j)); // explicitly cast to double
+        wallet[1]->chargelt(2 * j);     // implicitly cast to double
+        wallet[2]->chargelt(double(3 * j));
+      }
+      // make more charges
+      cout << "Card payments:\n";
+      for(int i = 0;i < 3; i++) {
+        cout << *wallet[i];
+        while (wallet[i]->getBalance() > 100.0) {
+          wallet[i]->makePayment(100.0);
+          cout << "New balance = " << wallet[i]->getBalance() << '\n';
+        }
+        cout << '\n';
+        delete wallet[i]; // deallocate storage
+      } // END for
+    } // END testCard
+
+    // main program
+    int main()
+    {
+      testCard();
+      return EXIT_SUCCESS;
+    }
+  #+end_src
+
+- We now have =CreditCard.h= which is included, and the definition file
+  =CreditCard.cpp=, which includes the header file and needs to be
+  compiled alongside the =CreditCardTest.cpp= file with the ~main~
+  function.
+
+** The ~Makefile~ and making the executable
+
+=Makefile=:
+#+begin_src sh :tangle ../src/Makefile
+  # Makefile for CreditCard class and test
+  CXX      = g++
+  CXXFLAGS = -std=c++17 -Wall -Wextra -g
+
+  TARGET   = CreditCardTest
+  OBJS     = CreditCard.o CreditCardTest.o
+
+  $(TARGET): $(OBJS)
+  $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+
+  CreditCard.o: CreditCard.cpp CreditCard.h
+  $(CXX) $(CXXFLAGS) -c CreditCard.cpp
+
+  CreditCardTest.o: CreditCardTest.cpp CreditCard.h
+  $(CXX) $(CXXFLAGS) -c CreditCardTest.cpp
+
+  clean:
+  rm -f *.o $(TARGET)
+#+end_src
+
+#+begin_src bash :results output :exports both
+  cd ../src
+  ls -lt CreditCard* Makefile
+  make
+  ./CreditCardTest
+#+end_src
+
+#+RESULTS:
+#+begin_example
+-rw-rw-r-- 1 aletheia aletheia   1178 Jun 24 12:33 CreditCardTest.cpp
+-rwxrwxr-x 1 aletheia aletheia 149296 Jun 24 12:33 CreditCardTest
+-rw-rw-r-- 1 aletheia aletheia 174208 Jun 24 12:33 CreditCardTest.o
+-rw-rw-r-- 1 aletheia aletheia  97192 Jun 24 12:32 CreditCard.o
+-rw-rw-r-- 1 aletheia aletheia   1015 Jun 24 12:32 CreditCard.cpp
+-rw-rw-r-- 1 aletheia aletheia   1221 Jun 24 10:58 CreditCard.h
+-rw-rw-r-- 1 aletheia aletheia    428 Jun 24 10:52 Makefile
+g++ -std=c++17 -Wall -Wextra -g -c CreditCardTest.cpp
+g++ -std=c++17 -Wall -Wextra -g -o CreditCardTest CreditCard.o CreditCardTest.o
+Card payments:
+Number = 5391 0375 9387 5309
+Name = John Bowman
+Balance = 136
+Limit = 2500
+New balance = 36
+
+Number = 3485 0399 3395 1954
+Name = John Bowman
+Balance = 272
+Limit = 3500
+New balance = 172
+New balance = 72
+
+Number = 6011 4902 3294 2994
+Name = John Bowman
+Balance = 408
+Limit = 5000
+New balance = 308
+New balance = 208
+New balance = 108
+New balance = 8
+
+#+end_example
+
+* Writing a C++ Program
+
+- Writing a program in C++ is no different from writing any other
+  program. It involves:
+
+  1. Design
+  2. Coding
+  3. Testing and Debugging.
+
+** Design
+
+- What you need to do:
+  1. Decide which classes to use.
+  2. Decide how classes should interact.
+  3. Decide what data each class will store.
+  4. Decide which actions each class will perform.
+
+- Classes have:
+
+  1) *Responsibilities:* The work is done by different *actors*. Each
+     actor has a different job. Describe this job using action
+     verbs. These actors form the classes for the program.
+
+     Example 1: The only actor for credit card transactions is
+     =CreditCard=. It handles all relevant actions. External entities
+     like users, banks, or ATMs are abstracted away - their effects
+     are modeled through method calls on the =CreditCard= class.
+
+     Example 2: What could the actors be for a library system?
+     #+begin_quote
+     - =Book= stores =title=, =author=, =status= (checked out/available) data.
+     - =Library= manages =Book= collections, can =addBook=, =findBook=, and
+       =listAvailableBooks=.
+     #+end_quote
+
+  2) *Independence*: The work for each class should be independent from
+     the work of other classes. In this way, each class has some
+     autonomy over some aspect of the program. Its data are required
+     to perform these actions.
+
+  3) *Behaviors:* The consequences of each action are well understood by
+     other classes with which it interacts. The set of behaviors is
+     also called its *protocol*.
+
+  4) So is this the only way to model for example credit card
+  transactions?
+  #+begin_quote
+  No. Separating the transaction into different actors improves
+  clarity, supports data logging, validation, and extensions
+  (e.g. fraud detection, transaction history etc.). Example:
+  + =CreditCard= stores card info and balance, handles =charge= and =pay=.
+  + =Transaction= is a single action, handles =execute= and =getAmount=.
+  + =AccountHolder= is the user, can =initiateCharge=, =makePayment=.
+  + =Bank= can =authorize= charges, and =process= payments.
+  #+end_quote
+
+- With greater experience comes greater skill in recognizing
+  patterns. This means when to apply inheritance vs. composition, when
+  to extract interfaces, and encapsulate responsibilities. The key to
+  OOP is collaboration among objects to reflect real-world
+  relationships and produce reusable, maintainable, working code.
+
+** Pseudo-Code
+
+- Pseudo-code is a mixture of natural language and high-level
+  programming constructs that describe the main idea behind an
+  algorithm.
+
+- The constructs commonly used are:
+
+  1. *Expressions*, especially ~<-~ for ~=~ for the equality relation ~==~.
+
+  2. *Function declarations*: ALGORITHM name(arguments)
+
+  3. *Decisions:* IF [condition] THEN [T-action] ELSE [F-action]
+
+  4. *While-loops*: WHILE [condition] DO [action]
+
+  5. *Repeat-loops*: REPEAT [action] UNTIL [condition]
+
+  6. *For-loops*: FOR [variable-increment-definition] DO [action]
+
+  7. *Array indexing:* A[i] is the i-th cell of A[0] to A[n-1] cells
+
+  8. *Member function calls*: object.method(args)
+
+  9. *Function returns:* RETURN [value]
+
+  10. *Comments:* { [comment] }
+
+- Focus on human readability and understanding over syntax accuracy.
+
+** Coding
+
+*** CRC Cards
+
+- Many programmers do their initial coding on so-called
+  Class-Responsibility-Collaborator (CRC) cards ([[https://agilemodeling.com/artifacts/crcModel.htm][see here]] for the
+  method, and here for an [[https://lucid.co/templates/crc-cards-example][extended example]]).
+
+  #+attr_html: :width 600px :float nil:
+  #+caption: CRC card (front) - Source: slideserve
+  [[../img/a-crc-card-front-n.jpg]]
+
+  #+attr_html: :width 600px :float nil:
+  #+caption: CRC card (back) - Source: slideserve
+  [[../img/crc-card-back-n.jpg]]
+
+- Each card represents a component of the problem, which will become a
+  ~class~ in the program. LHS: write down the responsibilities for the
+  component, which may become member functions. RHS: other classes to
+  interact with to perform.
+
+- The design process iterates through an action/actor cycle: We first
+  identify an action (responsibility) like "make appointment" for the
+  class "Patient", and then we determine a suitable actor (component)
+  to perform the action, like "Appointment" as a class with its own
+  member data (calendar) and member functions ("show appointment").
+
+- On the back of the card, we write down attributes (member data) of
+  the class, and relationships, in particular super-classes ("A
+  patient is a-kind-of Person"), and aggregations ("A Patient
+  has-parts of a Medical History").
+
+*** UML diagrams
+
+- Unified Modeling Language (UML) diagrams can also express program
+  organization and object-oriented software designs.
+
+- UML has a richer notation than CRC cards including process
+  diagrams. CRC card information can be embedded in (static) a UML class
+  diagram ([[https://www.geeksforgeeks.org/system-design/unified-modeling-language-uml-class-diagrams/][see here for an overview]]).
+
+- An example: The =Animal= superclass has three sub-classes, and both
+  ~public~ member data like =age= and member functions like =isMammal=. It
+  is a generalization of its sub-classes =Duck=, =Fish= and =Zebra=.
+  #+attr_html: :width 600px :float nil:
+  [[../img/class_diagram_uml.png]]
+
+- Once the design is decided, we begin to code using either a text
+  editor (like GNU Emacs), or an editor embedded in an integrated
+  development environment (like Microsoft VSCode).
+
+- We compile the source code into working (machine) code using a
+  compiler like GNU GCC and a debugger like GNU GDB.
+
+** Readability and Style
+
+Main principles:
+
+1. Use meaningful names for identifiers.
+
+2. Capitalize the first letter of each word in an identifier (except
+   variables or methods): =VectorSum=, =DeviceManager= for classes,
+   =insertItem=, =studentName= for member functions/data,
+
+3. Use named constants and enumerations instead of embedded
+   values. These can then be used in more than one class. Fully
+   capitalize such constants:
+   #+begin_example C++
+   const int MIN_CREDITS = 12;
+   const int MAX_CREDITS = 24;
+
+   enum YEAR { FRESHMAN, SOPHOMORE, JUNIOR, SENIOR ];
+   #+end_example
+
+4. Indent statement blocks.
+
+5. Organize classes in a consistent order:
+   1) Public types and nested classes
+   2) Public member functions
+   3) Protected member functions (internal utilities)
+   4) Private member data.
+
+6. Use comments that add meaning:
+   1) Inline-comments for quick explanations
+   2) Block comments for explanation of a purpose
+   3) External comments for more details.
+
+** Testing
+
+- Every programming project must have a testing plan.
+
+- Programs are executed over a representative subset of inputs.
+
+- Every method in the program is tested at least once.
+
+- Every statement in the program is executed at least once.
+
+- Special cases for the input need to be identified and tested.
+
+  Example: When testing a method that sorts an array of integers,
+  consider
+  1) The array has zero length
+  2) The array has one element only
+  3) All array elements are identical
+  4) The array is already sorted
+  5) The array is reverse sorted
+
+- Special conditions for the data structures must be identified and
+  tested.
+
+  Example: When using an array to store data, consider
+  1) inserting elements at the beginning of the subarray with data
+  2) removing elements at the beginning of the subarray with data
+  3) inserting elements at the end of the subarray with data
+  4) removing elements at the end of the subarray with data.
+
+- If there is a caller-callee relationship (function A calls B),
+  functions can be tested in two main ways: top-down or botton-up.
+
+  1) *Bottom-up*: from lover-level functions to higher-level
+     functions. Ensures that errors in a method are not caused by
+     lower-level functions nested within it.
+
+  2) *Top-down*: from the top to the bottom of the method
+     hierarchy. Often includes *stubbing* - replacing a lower-level
+     function with a stub that simulates the output of the original
+     method. For example if A calls B to get the first line of a file,
+     when we test A, B can be replace with a stub that returns a fixed
+     string.
+
+** Debugging
+
+- Simple: Insert *print statements* to track values during execution.
+- Problem: Remove statements before going to "production".
+- Better: Using a debugger with *breakpoints* and *conditional
+  breakpoints*.
+
+* Sources
+
+- Goodrich et al. [[https://archive.org/details/data-structures-and-algorithms-in-c-2nd-edition/page/n24/mode/1up][archive.org]] pp. 1-60.
+- slideserve: [[https://www.slideserve.com/rob/zeit2301-design-of-information-systems-structural-design-crc-cards][slideserve.com]] presentation.
+
+* Footnotes
+
+[fn:1]The general philosophy of C++ as an extension of C: Do not
+introduce any features that would slow down program execution. C's
+philosophy is even more restrictive and includes no built-in memory
+management whatsoever (to reduce overhead) but uses ~malloc~, ~realloc~
+and ~free~ instead.xs
+
+[fn:2] A first-class object aka "citizen" enjoys full language
+support: You an create it at runtime, pass it as a function argument,
+return it from functions, assign it to variables, store it in
+containers, compare or use it in expressions (with suitable
+operators).
+
+[fn:3] "Two's complement" is a binary encoding for signed integers so
+that addition and subtraction works the same way for positive and
+negative values (for negative numbers: invert all bits, then add 1),
+e.g. +5 -> 00000101, -5 -> ~00000101 -> 11111010 -> +1 = 11111011, and
+now 5 - 5 -> 00000101 - 11111011 = 100000000 (overflow bit dropped) =
+0

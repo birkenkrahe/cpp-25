@@ -1,0 +1,26 @@
+#+TITLE: The Stack Abstract Data Type
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 240 Data Structures Fall 2025
+#+OPTIONS: toc:1 num:1 ^:nil:
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+- [ ] Introduction to the Stack ADT
+- [ ] A static stack class (built on arrays)
+- [ ] Implementing stack operations
+- [ ] Dynamic stacks (built on linked list)
+- [ ] The STL ~stack~ container adapter
+
+* Overview
+  #+attr_html: :width 400px :float nil:
+  #+caption: A Last-In First-Out stack of plates.
+  [[../img/LIFO.png]]
+  
+* Review questions
+
+   
+* Glossary
+
+| TERM                      | EXPLANATION                                      |
+|---------------------------+--------------------------------------------------|
+

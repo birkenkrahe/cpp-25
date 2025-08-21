@@ -1,0 +1,2034 @@
+#+STARTUP: overview hideblocks indent entitiespretty:
+* 7 Arrays and Vectors
+** Exercises:
+*** TODO Exercise: Initialize an array of ten characters
+
+- *Task:* Write a program that initializes an array of ten characters to
+  store the first ten letters of the alphabet. Display the ASCII codes
+  of the characters.
+
+- *Tip*: To safely convert a letter into an ASCII character, use
+  ~static_cast<int>~. Example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+    cout << static_cast<int>('Z'); // output: 90
+  #+end_src
+
+  #+RESULTS:
+  : 90
+
+- Solution: Program 7-5 Gaddis page 396
+
+*** TODO Exercise: Write numbers to file and read them from file
+
+- *Tasks:* Write two functions =array2file=, which reads an array to a
+  file, and =file2array=, which reads the content of the same file to
+  another array. Output:
+  1. Print the original first (initialized) array.
+  2. Print the content of the file with the saved numbers.
+  3. Print the original second (initialized) array.
+  4. Print the second array with the numbers read from file.
+
+- *Tip:* To read a file line-by-line and print each line, you can use
+  ~getline~:
+  #+begin_example C++
+  ifstream inputFile("../data/SavedNumbers.txt");
+  string line;
+  if (!inputFile) {
+    cerr << "Error opening file.\n";
+    return 1;
+  }
+  cout << "Contents of SavedNumbers.txt:\n";
+  while (getline(inputFile, line))
+    cout << line << endl;
+  inputFile.close();
+  #+end_example
+
+- *Solution:*
+*** TODO Exercise: Find the first difference between two arrays
+
+- *Problem:* Write a program that compares two arrays element by
+  element. If they differ, print the *index* and *values* of the first
+  mismatch. If they are identical, print a confirmation message.
+
+*- *Example output (if different):*
+: Arrays differ at index 3: 40 != 20
+
+*- Example output (if identical):*
+: Arrays are identical.
+
+- *Starter Code:*
+  #+begin_src C++ :main no :includes <iostream> :namespaces std
+    const int SIZE = 5;
+    int firstArray[] = {5, 10, 15, 40, 25};
+    int secondArray[] = {5, 10, 15, 20, 25};
+
+    // TODO: Compare the arrays and report the first mismatch
+  #+end_src
+
+- *Task*: Complete the program in the starter code to produce the
+  correct output in either case.
+
+- *Solution:*
+
+*** TODO Exercise: Average over an array using a function
+
+- *Task*: Write a C++ program that asks the user to enter 10 integers,
+  which are stored in an array. The function =avgArray= is to calculate
+  and return the average of the numbers entered.
+
+- *Constraints:*
+  1) Include a prototype for =avgArray=.
+  2) Include a function description ahead of the definition.
+  3) Test the program as =avgArray.cpp= with a ~bash~ code block.
+  4) Print the average with single digit precision.
+
+- *Sample input:* =1 2 3 4 5 6 7 8 9 10=
+
+- *Sample output:*
+  #+begin_example
+    #+RESULTS:
+    : 5.5
+  #+end_example
+
+- *Solution*:
+  #+begin_src C++ :tangle ../src/avgArray.cpp :noeval :main no :includes :results output :exports both
+    #include <iostream>
+    #include <iomanip>
+    using namespace std;
+
+    double avgArray(const int [], int);
+
+    int main()
+    {
+      const int SIZE = 10;
+      int array[SIZE];
+
+      for (int i = 0; i<SIZE; i++)
+        cin >> array[i];
+
+      cout << fixed << showpoint << setprecision(1);
+      cout << avgArray(array, SIZE) << endl;
+
+      return 0;
+    }
+
+    //***********************************************************
+    // The function avgArray take an integer array and its size *
+    // as arguments and returns the average of all its elements *
+    //***********************************************************
+    double avgArray(const int num[], int size) {
+      double sum = 0.0; // or `int` but then static_cast<double> below
+      int count;
+      for (count=0;count<size;count++)
+        {
+          sum += num[count];
+        }
+      return sum/size;
+      //return static_cast<double>(sum)/static_cast<double>(size);
+    }
+  #+end_src
+
+- Test:
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ avgArray.cpp -o avg
+    echo "1 2 3 4 5 6 7 8 9 10" | ./avg
+  #+end_src
+
+  #+RESULTS:
+  : 5.5
+
+** Exercises (with real-life scenarios) - ChatGPT
+
+*** TODO Exercise: Initialize an array of ten characters
+- *Scenario:* You're designing a simple educational app for children that teaches the alphabet. The first task is to store and display the ASCII codes of the first ten letters to help learners understand character encoding.
+
+- *Task:* Write a program that initializes an array of ten characters to store the first ten letters of the alphabet. Display the ASCII codes of the characters.
+
+- *Tip:* To safely convert a letter into an ASCII character, use ~static_cast<int>~. Example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both
+    cout << static_cast<int>('Z'); // output: 90
+  #+end_src
+
+  #+RESULTS:
+  : 90
+
+- *Solution:* Program 7-5 Gaddis page 396
+
+*** TODO Exercise: Write numbers to file and read them from file
+- *Scenario:* You're helping a coworker troubleshoot a sensor logging system. You want to simulate the process of saving and reloading temperature data using arrays and files.
+
+- *Tasks:* Write two functions =array2file=, which writes an array to a file, and =file2array=, which reads the content of the same file into another array. Output:
+  1. Print the original first (initialized) array.
+  2. Print the content of the file with the saved numbers.
+  3. Print the original second (initialized) array.
+  4. Print the second array after reading from file.
+
+- *Tip:* To read a file line-by-line and print each line, use ~getline~:
+  #+begin_example C++
+  ifstream inputFile("../data/SavedNumbers.txt");
+  string line;
+  if (!inputFile) {
+    cerr << "Error opening file.\n";
+    return 1;
+  }
+  cout << "Contents of SavedNumbers.txt:\n";
+  while (getline(inputFile, line))
+    cout << line << endl;
+  inputFile.close();
+  #+end_example
+
+- *Solution:*
+
+*** TODO Exercise: Find the first difference between two arrays
+- *Scenario:* You're working on a program to compare two copies of a voting record. You need to detect if and where the two versions disagree.
+
+- *Problem:* Write a program that compares two arrays element by element. If they differ, print the *index* and *values* of the first mismatch. If they are identical, print a confirmation message.
+
+- *Example output (if different):*
+: Arrays differ at index 3: 40 != 20
+
+- *Example output (if identical):*
+: Arrays are identical.
+
+- *Starter Code:*
+  #+begin_src C++ :main no :includes <iostream> :namespaces std
+    const int SIZE = 5;
+    int firstArray[] = {5, 10, 15, 40, 25};
+    int secondArray[] = {5, 10, 15, 20, 25};
+
+    // TODO: Compare the arrays and report the first mismatch
+  #+end_src
+
+- *Task:* Complete the program in the starter code to produce the correct output in either case.
+
+- *Solution:*
+
+** Exercises: Real-Life Array Manipulation Scenarios in C++ (Grok)
+
+*** Scenario Overview
+
+You are a junior programmer at a small retail company, "AlphaMart,"
+tasked with developing tools to manage inventory and customer
+data. The company uses C++ for its lightweight and efficient
+programs. Your manager has assigned you three tasks to handle
+character-based product codes, numerical sales data, and inventory
+comparisons. Each task involves arrays and is grounded in a real-life
+retail scenario.
+
+*** Learning Objectives
+
+- Initialize and manipulate arrays to handle product codes.
+- Read and write array data to files for persistent storage of sales data.
+- Compare arrays to identify discrepancies in inventory records.
+- Apply C++ programming concepts (loops, file I/O, array comparison)
+  to practical problems.
+
+*** Exercises
+
+**** TODO Exercise 1: Initialize an Array of Product Code Characters
+***** Scenario
+AlphaMart assigns single-letter codes (A to J) to its top ten product
+categories (e.g., A for Appliances, B for Books). Your task is to
+create a program that initializes an array with these codes and
+displays their ASCII values for use in a legacy system that processes
+numerical identifiers.
+
+***** Task
+- Write a C++ program that:
+  1. Initializes an array of ten characters with the letters 'A' to
+     'J'.
+  2. Prints each letter alongside its ASCII code using
+     `static_cast<int>`.
+- *Example Output:*
+  #+begin_example
+  Product Code: A, ASCII: 65
+  Product Code: B, ASCII: 66
+  ...
+  Product Code: J, ASCII: 74
+  #+end_example
+- *Tip*: Use `static_cast<int>` to convert a character to its ASCII
+  value, e.g., `static_cast<int>('A')` outputs 65.
+- *Starter Code:*
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both :noweb yes
+    int main() {
+      char productCodes[10];
+      // TODO: Initialize array with 'A' to 'J' and print ASCII codes
+      return 0;
+    }
+  #+end_src
+- *Challenge*: Modify the program to allow the user to input a product
+  code (A–J) and display its ASCII value, handling invalid inputs
+  gracefully.
+
+**** TODO Exercise 2: Save and Retrieve Daily Sales Data
+***** Scenario
+AlphaMart tracks daily sales quantities for five key products in an
+array. To maintain records, you need to save this data to a file at
+the end of the day and retrieve it later for analysis. Your task is to
+create a program with functions to write sales data to a file and read
+it back into another array for verification.
+
+***** Task
+- Write a C++ program with two functions:
+  1. `array2file`: Writes an array of five integers (representing
+     sales quantities) to a file named "DailySales.txt".
+  2. `file2array`: Reads the data from "DailySales.txt" into a second
+     array.
+- Print:
+  1. The original array (e.g., `{120, 85, 200, 45, 300}`).
+  2. The contents of the file (line by line).
+  3. The second array before reading (e.g., initialized to zeros).
+  4. The second array after reading from the file.
+- *Example Output:*
+  #+begin_example
+  Original Sales Data: 120 85 200 45 300
+  File Contents:
+  120
+  85
+  200
+  45
+  300
+  Second Array (Initial): 0 0 0 0 0
+  Second Array (After Reading): 120 85 200 45 300
+  #+end_example
+- *Tip*: Use `ofstream` to write to the file and `ifstream` with
+  `getline` to read. Ensure proper file handling (check if the file
+  opens successfully).
+- *Starter Code:*
+  #+begin_src C++ :main yes :includes <iostream> <fstream> <string> :namespaces std :results output :exports both :noweb yes
+    void array2file(int arr[], int size, const string& filename) {
+      // TODO: Write array to file
+    }
+    void file2array(int arr[], int size, const string& filename) {
+      // TODO: Read file into array
+    }
+    int main() {
+      const int SIZE = 5;
+      int salesData[] = {120, 85, 200, 45, 300};
+      int retrievedData[SIZE] = {0};
+      // TODO: Call functions and print results
+      return 0;
+    }
+  #+end_src
+- *Challenge*: Add error handling to check if the file is empty or
+  contains invalid data (e.g., non-numeric values).
+
+**** TODO Exercise 3: Detect Inventory Discrepancies
+***** Scenario
+AlphaMart receives weekly inventory updates from two sources: a
+warehouse system and a store system. Both provide arrays of five
+integers representing item counts for key products. Your task is to
+write a program that compares these arrays to identify the first
+discrepancy, helping the inventory team resolve mismatches quickly.
+
+***** Task
+- Write a C++ program that:
+  1. Compares two arrays of five integers element by element.
+  2. If a mismatch is found, prints the index and the differing values.
+  3. If the arrays are identical, prints a confirmation message.
+- *Example Output (Mismatch):*
+  #+begin_example
+  Inventory mismatch at index 3: Warehouse = 40, Store = 20
+  #+end_example
+- *Example Output (Identical):*
+  #+begin_example
+  Warehouse and Store inventories are identical.
+  #+end_example
+- *Starter Code:*
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both :noweb yes
+    int main() {
+      const int SIZE = 5;
+      int warehouse[] = {50, 100, 150, 40, 200};
+      int store[] = {50, 100, 150, 20, 200};
+      // TODO: Compare arrays and report first mismatch or confirm identical
+      return 0;
+    }
+  #+end_src
+- *Challenge*: Extend the program to count and report all mismatches
+  (not just the first) and suggest which system might be incorrect
+  based on negative values (e.g., a negative count is likely an
+  error).
+
+*** Submission Instructions
+- Submit your C++ code for all three exercises in a single file or as separate files, clearly labeled (e.g., `exercise1.cpp`, `exercise2.cpp`, `exercise3.cpp`).
+- Include comments in your code to explain the logic, especially how it relates to the retail scenario.
+- Provide a text file with:
+  - Sample output for each exercise.
+  - A brief reflection (3–5 sentences) on how these tasks could be extended to handle larger datasets (e.g., more products or longer sales histories) in a real retail system.
+- Ensure your programs handle edge cases (e.g., invalid inputs, file errors) where specified in the challenges.
+
+*** Learning Outcomes
+- Apply array initialization to manage structured data like product codes.
+- Use file I/O to persist and retrieve business data, simulating real-world data storage.
+- Implement array comparison to solve practical problems like inventory reconciliation.
+- Develop problem-solving skills by adapting C++ code to realistic retail scenarios.
+** Exercise comparison
+
+| *Criterion*            | *ChatGPT Version*                   | *Grok Version*                                    | *Winner* |
+|----------------------+-----------------------------------+-------------------------------------------------+--------|
+| Contextual depth     | Light, single-paragraph scenarios | Rich, unified workplace scenario                | Grok   |
+| Realism              | Plausible but generic             | Specific to a retail company (AlphaMart)        | Grok   |
+| Cohesion             | Exercises feel separate           | Exercises are connected via a common narrative  | Grok   |
+| Learning objectives  | Implicit or scattered             | Clearly listed at the top                       | Grok   |
+| Instructional detail | Adequate starter code and tips    | Adds challenges and structured output           | Grok   |
+| Student motivation   | Moderate (tasks feel academic)    | High (tasks framed as professional assignments) | Grok   |
+| Assessment readiness | No submission directions          | Explicit submission & reflection instructions   | Grok   |
+
+** TODO Review questions
+*** Short Answer
+1. What is the difference between a size declarator and a subscript?
+   #+begin_quote
+
+   #+end_quote
+
+2. Look at the following array definition: =int values[10];=
+   - How many elements does the array have?
+   - What is the subscript of the first element in the array?
+   - What is the subscript of the last element in the array?
+   - Assuming that an ~int~ uses 4 bytes of memory, how much memory
+     does the array use?
+
+3. Why should a function that accepts an array as an argument, and
+   processes that array, also accept an argument specifying the
+   array’s size?
+   #+begin_quote
+
+   #+end_quote
+
+4. Consider the following array definition: =int values[5]={4,7,6,8,2};=
+
+   What does each of the following statements display?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     cout << values[4] << endl;
+     cout << (values[2] + values[3]) << endl;
+     cout << ++values[1] << endl;
+   #+end_src
+
+5. How do you define an array without providing a size declarator?
+
+6. Look at the following array definition: =int array[5]={1,2,3};=
+   - What value is stored in ~array[0]~?
+   - What value is stored in ~array[2]~?
+
+7. Assuming ~array1~ and ~array2~ are both arrays, why is it not possible
+   to assign ~array1 = array2~?
+   #+begin_example C++
+     array1 = array2;
+   #+end_example
+
+8. Assuming ~array~ is an array of integers, will the following
+   statement display the contents of the array?
+   #+begin_src C++ :noeval :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     cout << numbers << endl;
+   #+end_src
+
+9. Is an array passed to a function by value or by reference?
+
+10. When you pass an array name as an argument to a function, what is
+    actually being passed?
+
+11. How do you establish a parallel relationship between two or more arrays?
+
+12. Look at the following array definition: =double sales[8][10];=
+    - How many rows does the array have?
+    - How many columns does the array have?
+    - How many elements does the array have?
+    - Write a statement that stores a number in the last column of the
+      last row in the array.
+
+13. When writing a function that accepts a two-dimensional array as an
+    argument, which size declarator must you provide in the parameter
+    for the array?
+
+14. What advantages does a ~vector~ offer over an array?
+
+*** Fill in the Blank
+- The _________ indicates the number of elements, or values, an array
+  can hold.
+- The size declarator must be a(n) _________ with a value greater than
+  _________.
+- Each element of an array is accessed and indexed by a number known
+  as a(n) _________.
+- Subscript numbering in C++ always starts at _________.
+- The number inside the brackets of an array definition is the
+  _________, but the number inside an array’s brackets in an assignment
+  statement is the _________.
+- C++ has no array _________ checking.
+- Starting values for an array may be specified with a(n) _________
+  list.
+- If an array is partially initialized, the uninitialized elements
+  will be set to _________.
+- If the size declarator is omitted, C++ counts the items in the
+  _________.
+- By using the same _________ for multiple arrays, you can build
+  relationships between the data.
+- You cannot use the _________ operator to copy one array to another.
+- Any time the name of an array is used without brackets and a
+  subscript, it is seen as _________.
+- To pass an array to a function, pass the _________ of the array.
+- A(n) _________ array is like several arrays of the same type put
+  together.
+- Think of a two-dimensional array as having _________ and _________.
+- To define a two-dimensional array, _________ size declarators are
+  required.
+- Enclose each row’s initialization list in _________.
+- When a two-dimensional array is passed to a function, the _________
+  size must be specified.
+- The ____________________ is a collection of programmer-defined data
+  types and algorithms.
+- The two types of STL containers are ___________ and ______________.
+- The ~vector~ data type is a(n) ______________ container.
+- To define a ~vector~, include the ____________ header file.
+- To store a value in a ~vector~, use the ________________ member
+  function.
+- To determine the number of elements, use the _____________ member
+  function.
+- Use ________________ to remove the last element.
+- To completely clear a ~vector~, use the ___________ member function.
+
+*** Algorithm Workbench
+1. ~numbers~ is an integer array with 20 elements.
+   - Write a regular ~for~ loop and a range-based ~for~ loop to print each
+     element.
+
+2. Copy ~arrayA~ to ~arrayB~, both with 100 elements.
+
+3. Store 10 employee IDs (~int~) and weekly pay (~float~):
+   - A) Define two parallel arrays.
+   - B) Write a loop to print each employee’s ID and pay.
+
+4. Define a 2D array of integers named =grades=. It should have 30 rows
+   and 10 columns.
+
+5. Store populations of 12 countries:
+   - A) Define two parallel arrays.
+   - B) Write a loop to print each country and its population.
+
+6. Given two arrays ~a~ and ~b~ with 25 elements:
+   - Will the code print the correct sum of values for both arrays?
+     Why or why not?
+
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+       int a[25];
+       int b[25];
+       int total =0; // Accumulator
+       int count;    // Loop counter
+       // Calculate and display the total of the first array
+       for (count=0;count<24;count++)
+         total += a[count];
+       cout << "The total for array a is " << total << endl;
+       // Calculate and display the total of the second array
+       for (count=0;count<24;count++)
+         total += b[count];
+       cout << "The total for array b is " << total << endl;
+
+     #+end_src
+
+7. Look at the following array definition: =int numberArray[9][12];=
+
+   - Write a statement that assigns 145 to the first column of the
+     first row of this array.
+   - Write a statement that assigns 18 to the last column of the last
+     row of this array.
+
+8. =values= is a 2D array of floating-point values with 10 rows and 20
+   columns. Write code that sums all the elements in the array and
+   stores the sum in the variable =total=.
+
+9. An application uses a 2D array defined as follows: =int days[29[5];=
+
+   - Write code that sums each row in the array and displays the
+     result.
+   - Write code that sums each column in the array and displays the
+     results.
+
+*** True or False
+
+1. [ ] An array’s size declarator can be a literal, named constant, or
+   variable.
+2. [ ] To calculate memory used by an array, multiply elements × bytes
+   per element.
+3. [ ] Array elements are accessed by unique numbers.
+4. [ ] The first element in an array is accessed by subscript 1.
+5. [ ] The last element’s subscript is one less than total elements.
+6. [ ] The contents of an array element cannot be displayed with ~cout~.
+7. [ ] Subscript numbers may be stored in variables.
+8. [ ] You can write programs with invalid subscripts.
+9. [ ] Arrays cannot be initialized in the definition.
+10. [ ] Initialization list values are stored in order.
+11. [ ] Partial array initialization is allowed.
+12. [ ] Uninitialized elements in partially initialized arrays contain
+    garbage.
+13. [ ] You must leave all elements after the first uninitialized one
+    uninitialized.
+14. [ ] If size declarator is omitted, an initialization list is not
+    required.
+15. [ ] Uninitialized elements of a ~vector~ will be zero.
+16. [ ] You cannot assign one array to another with ~=~.
+17. [ ] Array name without brackets/subscript equals first element
+    value.
+18. [ ] To pass an array to a function, pass the name.
+19. [ ] Parameter for array function does not require size declarator.
+20. [ ] Array passed to function gives access to original.
+21. [ ] 2D arrays are like several identical arrays together.
+22. [ ] Think of 2D arrays as rows and columns.
+23. [ ] First size declarator = columns; second = rows.
+24. [ ] You must specify row size in 2D array function parameter.
+25. [ ] C++ supports arrays with 3+ dimensions.
+26. [ ] A ~vector~ is an associative container.
+27. [ ] Must include ~vector~ header file to use a ~vector~.
+28. [ ] Vectors can report element count.
+29. [ ] Can use ~<<~ to insert value into empty vector.
+30. [ ] ~vector~ grows automatically when full.
+
+*** Find the Errors
+
+Each of the following definitions and program segments has
+errors. Locate as many as you can.
+
+1.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int size;
+     double values[size];
+   #+end_src
+
+2.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int collection[220];
+   #+end_src
+
+3.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int table[10];
+     for (int x = 0; x < 20; x++)
+       {
+         cout << Enter the next value: ";
+           cin >> table[x];
+       }
+   #+end_src
+
+4.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int hours[3] = 8,12,16;
+   #+end_src
+
+5.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int numbers[8] = 1,2, , 4, 5};
+   #+end_src
+
+6.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     float ratings[];
+   #+end_src
+
+7.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     char greeting[] = {'H','e','l','l','o'};
+     cout << greeting;
+   #+end_src
+
+8.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int array1[4], array2[4] = {3,6,9,12};
+     array1 = array2;
+   #+end_src
+
+9.
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     void showValues(int nums)
+     {
+       for (int count = 0; count < 8; count++)
+         cout << nums[count];
+     }
+   #+end_src
+
+10.
+    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+      void showValues(int nums[4][])
+      {
+        for (rows = 0; rows < 4; rows++)
+          for (cols = 0; cols < 5; cols++)
+            cout << nums[rows][cols];
+      }
+    #+end_src
+
+11.
+    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+      vector<int> numbers = {1,2,3,4};
+    #+end_src
+
+** IN PROGRESS Programming Challenges
+
+*** Largest/Smallest Array Values
+
+- *Task:* Write a program that lets the user enter ten values into an
+  array. The program should then display the largest and the smallest
+  values stored in the array.
+
+- *Challenges:* 1) Design functions to find the min/max values. 2)
+  Re-code the solution using a ~vector~ instead of an array.
+
+- *Pseudocode:*
+  #+begin_example
+  Include I/O header file.
+  Use std namespace.
+  Begin main
+    Declare array of ten elements.
+    Get ten values from the user.
+    Store the input values in the array.
+    Declare min and max variables and set them to the first element.
+    Step through the array to find the smallest and largest element.
+    Display the largest and smallest element in the array.
+  End main
+  #+end_example
+
+- *Code:*
+  #+name: Challenge 7.1 Gaddis page 454
+  #+begin_src C++ :tangle ../src/minmax.cpp :cmdline < ../data/input :main no :includes :results output :exports both
+    #include <iostream>
+    using namespace std;
+
+    int main()
+    {
+      const int SIZE {10};
+      int array[SIZE];
+      for (int &val : array)
+        {
+          cin >> val;
+          cout << val << " ";
+        }
+      int min=array[0];
+      int max=array[0];
+      for (int count=1;count<SIZE;count++)
+        {
+          if (array[count]<min)
+            min=array[count];
+          if (array[count]>max)
+            max=array[count];
+        }
+      cout << "\nSmallest array value: " << min << endl;
+      cout << "Largest array value: " << max << endl;
+      return 0;
+    }
+  #+end_src
+
+#+RESULTS: Challenge 7.1 Gaddis page 454
+: 1 2 3 4 5 6 7 8 9 10
+: Smallest array value: 1
+: Largest array value: 10
+
+- Test
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ minmax.cpp -o min
+    echo "1 2 3 4 5 6 7 8 9 10" | ./min
+  #+end_src
+
+  #+RESULTS:
+  : 1 2 3 4 5 6 7 8 9 10 Smallest array value: 1
+
+- Input file
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "1 2 3 4 5 6 7 8 9 10" > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : 1 2 3 4 5 6 7 8 9 10
+
+*** Rainfall Statistics
+
+- *Task:* Write a program that lets the user enter the total rainfall
+  for each of 12 months into an array of ~double~ values. The program
+  should calculate and display the total rainfall for the year, the
+  average monthly rainfall, and the months with the highest and lowest
+
+- *Sample input/output:*
+  #+begin_example
+  #+RESULTS:
+  #+begin_example
+  Enter rainfall [in] every month for 12 months:
+  Enter rainfall for month # 1: (You entered: 3.1).
+  Enter rainfall for month # 2: (You entered: 3.5).
+  Enter rainfall for month # 3: (You entered: 4.3).
+  Enter rainfall for month # 4: (You entered: 4.8).
+  Enter rainfall for month # 5: (You entered: 4.5).
+  Enter rainfall for month # 6: (You entered: 3.0).
+  Enter rainfall for month # 7: (You entered: 2.6).
+  Enter rainfall for month # 8: (You entered: 2.4).
+  Enter rainfall for month # 9: (You entered: 2.8).
+  Enter rainfall for month # 10: (You entered: 3.8).
+  Enter rainfall for month # 11: (You entered: 4.6).
+  Enter rainfall for month # 12: (You entered: 4.5).
+
+  During these 12 months, a total of 43.9 inches of rain fell.
+  The average was 3.7 inches.
+  Most rain fell in month #4
+  Least rain fell in month #8.
+  #+end_example
+
+- *Constraints:* No negative numbers for monthly rainfall figures.
+
+- *Bonus*: Implement your solution with a ~vector~ instead of an array,
+  for any number of months (ask for it as input). The ~vector~ should
+  initially be empty.
+
+- *Pseudocode*:
+  #+begin_example
+  Declare constants: MONTHS = 12
+  Declare double array rain[12]
+  Declare double total = 0
+  Declare double average
+  Declare min_count, max_count indices
+  Declare loop variable
+
+  Enter value for each month (monthly rainfall amount)
+  If value entered is negative, ask for another entry
+  Store values in array
+
+  Set min and max to first array element
+  Step through array:
+       Sum rainfall to obtain `total`
+       Search for min and max
+         Store min_count (month with min rainfall),
+               max_count (month with max rainfall)
+
+  Display total, average, min_count, max_count
+  #+end_example
+
+- *Input* file (LR, AR monthly rainfall, source: [[https://weatherspark.com/y/10887/Average-Weather-in-Little-Rock-Arkansas-United-States-Year-Round#Figures-Rainfall][weatherspark.com]]):
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "3.1 3.5 4.3 4.8 4.5 3.0 2.6 2.4 2.8 3.8 4.6 4.5" > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : 3.1 3.5 4.3 4.8 4.5 3.0 2.6 2.4 2.8 3.8 4.6 4.5
+
+- *Solution:*
+  #+begin_src C++ :cmdline < ../data/input :main yes :includes <iomanip> <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both
+    // Enter total rainfall for each of 12 months into an array.
+    // Compute total, monthly average, months with min/max rain.
+
+    // Declare constants and variables.
+    const int MONTHS = 12;
+    double rain[MONTHS]; // rainfall for each of 12 months
+    double total = 0.;  // total rainfall per 12 months
+    double average; // monthly average over 12 months
+    int min_count = 0, max_count = 0; // index of min/max values
+    int count; // loop variable
+
+    // Getting input.
+    cout << fixed << showpoint << setprecision(1);
+    cout << "Enter rainfall [in] every month for 12 months:\n";
+    for (int count = 0; count < MONTHS; count++)
+      {
+        cout << "Enter rainfall for month # " << (count + 1) << ": ";
+        cin >> rain[count];
+        cout << "(You entered: " << rain[count] << ").\n";
+      }
+
+    // Compute results.
+    for (count=0; count < MONTHS; count++)
+      {
+        total += rain[count]; // total rainfall
+        if (rain[count] > rain[max_count])
+          max_count = count;
+        if (rain[count] < rain[min_count])
+          min_count = count;
+      }
+    average = total / MONTHS;
+
+    // Display results.
+    cout << "\nDuring these 12 months, a total of "   << total
+    << " inches of rain fell.\nThe average was " << average
+    << " inches.\nMost rain fell in month #"     << (max_count + 1)
+    << " \nLeast rain fell in month #"           << (min_count + 1)
+    << "." << endl;
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Enter rainfall [in] every month for 12 months:
+  Enter rainfall for month # 1: (You entered: 3.1).
+  Enter rainfall for month # 2: (You entered: 3.5).
+  Enter rainfall for month # 3: (You entered: 4.3).
+  Enter rainfall for month # 4: (You entered: 4.8).
+  Enter rainfall for month # 5: (You entered: 4.5).
+  Enter rainfall for month # 6: (You entered: 3.0).
+  Enter rainfall for month # 7: (You entered: 2.6).
+  Enter rainfall for month # 8: (You entered: 2.4).
+  Enter rainfall for month # 9: (You entered: 2.8).
+  Enter rainfall for month # 10: (You entered: 3.8).
+  Enter rainfall for month # 11: (You entered: 4.6).
+  Enter rainfall for month # 12: (You entered: 4.5).
+
+  During these 12 months, a total of 43.9 inches of rain fell.
+  The average was 3.7 inches.
+  Most rain fell in month #4
+  Least rain fell in month #8.
+  #+end_example
+
+- Once the basic algorithm works, add the constraint: Validate entry.
+  #+begin_src C++ :noeval
+    if (rain_per_month < 0)
+      {
+        cout << "Enter a positive value!\n";
+        count--;
+        continue;
+      }
+  #+end_src
+
+- Complete code:
+  #+begin_src C++ :cmdline < ../data/input :tangle ../src/rainfall_7-2.cpp :main yes :includes <iomanip> <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both
+    // Enter total rainfall for each of 12 months into an array.
+    // Compute total, monthly average, months with min/max rain.
+
+    // Declare constants and variables.
+    const int MONTHS = 12;
+    double rain[MONTHS]; // rainfall for each of 12 months
+    double total = 0.;  // total rainfall per 12 months
+    double average; // monthly average over 12 months
+    int min_count = 0, max_count = 0; // index of min/max values
+    int count; // loop variable
+
+    // Getting input.
+    cout << fixed << showpoint << setprecision(1);
+    cout << "Enter rainfall [in] every month for 12 months:\n";
+    for (int count = 0; count < MONTHS; count++)
+      {
+        cout << "Enter rainfall for month # " << (count + 1) << ": ";
+        cin >> rain[count];
+        if (rain[count] < 0)
+          {
+            cout << "Enter a positive value!\n";
+            count--; // set loop variable back
+            continue;  // continue loop
+          }
+        cout << "(You entered: " << rain[count] << ").\n";
+      }
+
+    // Compute results.
+    for (count=0; count < MONTHS; count++)
+      {
+        total += rain[count]; // total rainfall
+        if (rain[count] > rain[max_count])
+          max_count = count;
+        if (rain[count] < rain[min_count])
+          min_count = count;
+      }
+    average = total / MONTHS;
+
+    // Display results.
+    cout << "\nDuring these 12 months, a total of "   << total
+    << " inches of rain fell.\nThe average was " << average
+    << " inches.\nMost rain fell in month #"     << (max_count + 1)
+    << " \nLeast rain fell in month #"           << (min_count + 1)
+    << "." << endl;
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Enter rainfall [in] every month for 12 months:
+  Enter rainfall for month # 1: (You entered: 3.1).
+  Enter rainfall for month # 2: (You entered: 3.5).
+  Enter rainfall for month # 3: (You entered: 4.3).
+  Enter rainfall for month # 4: (You entered: 4.8).
+  Enter rainfall for month # 5: (You entered: 4.5).
+  Enter rainfall for month # 6: (You entered: 3.0).
+  Enter rainfall for month # 7: (You entered: 2.6).
+  Enter rainfall for month # 8: (You entered: 2.4).
+  Enter rainfall for month # 9: (You entered: 2.8).
+  Enter rainfall for month # 10: (You entered: 3.8).
+  Enter rainfall for month # 11: (You entered: 4.6).
+  Enter rainfall for month # 12: (You entered: 4.5).
+
+  During these 12 months, a total of 43.9 inches of rain fell.
+  The average was 3.7 inches.
+  Most rain fell in month #4
+  Least rain fell in month #8.
+  #+end_example
+
+- First make sure that the working program still works. Then test with
+  negative entry value on the shell interactively: (org-babel-tangle)
+  the file and check it on the shell first with the sample values,
+  then alter one of the values to be negative. Break off with C-c C-c.
+
+- Bonus solution with ~vector~. The following changes apply:
+  1) Declare =vector<double> rain;= (empty vector).
+  2) Ask for =number_of_months= (length of vector, loop length).
+  3) Replace =MONTHS= everywhere by =number_of_months=.
+  4) Save input values to ~double~ =tempRain=, then
+     =rain.push_back(tempRain)=.
+  5) The input file =input2= needs an additional first value for
+     =number_of_months=.
+
+  #+begin_src C++ :cmdline < ../data/input2 :tangle ../src/rainfall_bonus.cpp :main yes :includes <iomanip> <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both
+    // Enter number of months, total rainfall for each month into a
+    // vector. Compute total, monthly average, months with min/max rain.
+
+    // Declare constants and variables.
+    vector<double> rain; // rainfall per month (input)
+    int number_of_months; // number of months (input)
+    double total = 0.;  // total rainfall per 12 months
+    double average; // monthly average over 12 months
+    int min_count = 0, max_count = 0; // index of min/max values
+    int count; // loop variable
+    double tempRain; // hold rainfall for vector storage
+
+    // Getting input.
+    cout << fixed << showpoint << setprecision(1);
+    cout << "Enter number of months for which rainfall was recorded: ";
+    cin >> number_of_months;
+    cout << "You entered: " << number_of_months << ".\n";
+    cout << "Enter rainfall [in] every month for " << number_of_months
+    << " months:\n";
+    for (int count = 0; count < number_of_months; count++)
+      {
+        cout << "Enter rainfall for month # " << (count + 1) << ": ";
+        cin >> tempRain;
+        cout << "(You entered: " << tempRain << ").\n";
+        if (tempRain < 0)
+          {
+            cout << "Enter a positive value!\n";
+            count--; // set loop variable back
+            continue;  // continue loop
+          }
+        rain.push_back(tempRain);
+      }
+
+    // Compute results.
+    for (count=0; count < number_of_months; count++)
+      {
+        total += rain[count]; // total rainfall
+        if (rain[count] > rain[max_count])
+          max_count = count;
+        if (rain[count] < rain[min_count])
+          min_count = count;
+      }
+    average = total / number_of_months;
+
+    // Display results.
+    cout << "\nDuring these " << number_of_months
+    << " months, a total of "   << total
+    << " inches of rain fell.\nThe average was " << average
+    << " inches.\nMost rain fell in month #"     << (max_count + 1)
+    << " \nLeast rain fell in month #"           << (min_count + 1)
+    << "." << endl;
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Enter number of months for which rainfall was recorded:You entered: 3.
+  Enter rainfall [in] every month for 3 months:
+  Enter rainfall for month # 1: (You entered: 3.1).
+  Enter rainfall for month # 2: (You entered: 3.5).
+  Enter rainfall for month # 3: (You entered: 4.3).
+
+  During these 3 months, a total of 10.9 inches of rain fell.
+  The average was 3.6 inches.
+  Most rain fell in month #3
+  Least rain fell in month #1.
+  #+end_example
+
+- Input file:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo " 3 3.1 3.5 4.3" > input2
+    cat input2
+  #+end_src
+
+  #+RESULTS:
+  :  3 3.1 3.5 4.3
+
+- Test the code on the shell with a negative input for the rainfall.
+
+* 9 Pointers
+
+Dynamic storage allocation: Live Code Example 9.5
+
+* 17 STL Container and Interator Fundamentals
+
+** Exercise: Favorite Numbers
+
+*** Task:
+
+- Create a ~vector~ =nums= with these values: ~{7, 13, 42, 5, 17}~
+- Print them using:
+  1. A range-based ~for~ loop without index (separated by an empty space)
+  2. A range-based ~for~ loop with index (separated by comma)
+  3. An iterator-based loop (separated by a comma)
+- Use ~sort~ to sort the vector in ascending order
+- Print the first the sorted values (separated by empty space), and
+  then the original values (separated by empty space).
+
+*** Solution
+
+#+begin_src C++ :main no :includes :results output :exports both
+  #include <iostream>
+  #include <vector>
+  #include <algorithm>
+  using namespace std;
+
+  int main()
+  {
+    vector<int> nums {7,13,42,5,17}; // integer vector
+
+    for (int item : nums) // range-based for-each loop
+      cout << item << " ";
+
+    cout << endl;
+    for (size_t i=0; i<nums.size(); ++i) // range-based (index)
+      cout << nums[i] << (i<nums.size()-1 ? ", " :"\n");
+
+    vector<int>::iterator it; // define iterator
+    //auto it = nums.begin(); // equivalent iterator definition
+    for (it=nums.begin(); it != nums.end(); ++it) // print withiterator
+      {
+        if (it != nums.end()-1) cout << *it << ", ";
+        else                  cout << *it << endl;
+      }
+
+    vector<int> nums_sorted = nums; // copy vector
+    sort(nums_sorted.begin(), nums_sorted.end());
+    for (int item : nums_sorted) // print sorted vector
+      cout << item << " ";
+    // to sort in descending order, add `greater<int>` as 3rd argument
+    // sort(nums_sorted.begin(), nums_sorted.end(), std::greater<int>());
+    cout << endl;
+    for (int item : nums) // print original vector
+      cout << item << " ";
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: 7 13 42 5 17
+: 7, 13, 42, 5, 17
+: 7, 13, 42, 5, 17
+: 5 7 13 17 42
+: 7 13 42 5 17
+
+** Review questions
+
+1. What two types of containers does the STL provide? Examples?
+
+2. What is a container adapter class? Example?
+
+3. What is an iterator? Example?
+
+4. Suppose you are writing a program that uses the ~array~ and ~vector~
+   classes. What header files must be included to use these classes?
+
+5. What is the difference between a bidirectional and a random-access
+   iterator?
+
+6. What does the ~++~ operator do when applied to an iterator?
+
+7. What does a container ~begin()~ and ~end()~ member functions return?
+
+8. What is the difference between a mutable iterator and a constant
+   iterator?
+
+9. What is a reverse iterator?
+
+10. What does a container's ~rbegin()~ and ~rend()~ member functions
+    return?
+
+** Review Questions AI Solutions
+
+1. What two types of containers does the STL provide? Examples?
+   #+begin_quote
+   The STL provides *sequence containers* (e.g., vector, list, deque)
+   and *associative containers* (e.g., set, map, unordered_map).
+   #+end_quote
+
+2. What is a container adapter class? Example?
+   #+begin_quote
+   A container adapter provides a restricted interface to an
+   underlying container.  Examples include stack, queue, and
+   priority_queue, which are typically built on deque or vector.
+   #+end_quote
+
+3. What is an iterator? Example?
+   #+begin_quote
+   An iterator is an object that points to elements in a container and
+   allows traversal.  Example: vector<int>::iterator it = vec.begin();
+   #+end_quote
+
+4. Suppose you are writing a program that uses the ~array~ and ~vector~ classes. What header files must be included to use these classes?
+   #+begin_quote
+   #include <array>
+   #include <vector>
+   #+end_quote
+
+5. What is the difference between a bidirectional and a random-access iterator?
+   #+begin_quote
+   A bidirectional iterator can move forward and backward one step at
+   a time.  A random-access iterator can move to any position using
+   arithmetic (e.g., it + 2, it[3]).
+   #+end_quote
+
+6. What does the ~++~ operator do when applied to an iterator?
+   #+begin_quote
+   It advances the iterator to the next element in the container.
+   #+end_quote
+
+7. What does a container ~begin()~ and ~end()~ member functions return?
+   #+begin_quote
+   begin() returns an iterator to the first element.  end() returns an
+   iterator one past the last element.
+   #+end_quote
+
+8. What is the difference between a mutable iterator and a constant iterator?
+   #+begin_quote
+   A mutable iterator allows modification of the element it points to.
+   A const_iterator does not allow modification of the element.
+   #+end_quote
+
+9. What is a reverse iterator?
+   #+begin_quote
+   A reverse iterator is an iterator that moves from the end of a
+   container toward the beginning.
+   #+end_quote
+
+10. What does a container's ~rbegin()~ and ~rend()~ member functions return?
+    #+begin_quote
+    rbegin() returns a reverse iterator to the last element.  rend()
+    returns a reverse iterator one before the first element.
+    #+end_quote
+
+* TODO 17 STL vector class
+* 17 STP map class
+
+** PRACTICE Exercise: Inventory Prices
+
+*** Problem
+
+- Write a program that:
+
+  1. Creates a ~map<string, vector<double>>~ to store item prices from
+     multiple suppliers.
+  2. Each key is a *product name* (e.g. ~"Wrench"~, ~"Hammer"~, ~"Drill"~).
+  3. Each value is a ~vector~ of *prices* for that product from different
+     suppliers.
+
+- Use a range-based ~for~ loop to:
+  + Print each *product name*
+  + Print each *supplier price* on the same line using a nested ~for~ loop
+
+*- Sample output:*
+#+begin_example
+Item: Drill     Prices:  45.00 42.99 47.50
+Item: Hammer    Prices:   8.50  9.10  8.75
+Item: Wrench    Prices:  12.99 11.49 13.25
+#+end_example
+
+*- Requirements:*
++ Use brace ~{}~ initialization for vectors.
++ Use ~auto~ in your loops.
++ Print ~double~ values with two decimal places.
+
+- *Bonus*: After listing each item’s prices, also display the *lowest*
+  price for that item. Compute that value using a function. Output:
+  #+begin_example
+  : Item: Drill Prices:  45.00 42.99 47.50      Lowest: 42.99
+  : Item: Hammer        Prices:   8.50  9.10  8.75      Lowest: 8.50
+  : Item: Wrench        Prices:  12.99 11.49 13.25      Lowest: 11.49
+  #+end_example
+
+- *Challenge* (data science): Run this code in the ~Rcpp~ package to
+  visualize the data using R's plotting capabilities.
+
+- *Question*: What does ~auto~ stand for in each of the two (nested)
+  loops of this program?
+
+- *Solution:* [[https://onecompiler.com/cpp/43rjhcaub][onecompiler.com/cpp/43rjhcaub]]
+
+- *Solution with answer to ~auto~ question:* [[https://onecompiler.com/cpp/43rjaufuq][onecompiler.com/cpp/43rjaufuq]]
+
+- *Bonus solution*: [[https://onecompiler.com/cpp/43rjd86bs][onecompiler.com/cpp/43rjd86bs]]
+
+*** *Solution* path
+
+- Version 0: Paper plan and implementation ([[https://chat.google.com/room/AAAAcFTK-VI/6Fnu60iTaiw/6Fnu60iTaiw?cls=10][see Google Chat]]).
+  #+attr_html: :width 600px :float nil:
+  [[../img/inventory_prices_plan.jpg]]
+
+- Version 1: Improved (it runs).
+  #+name: Inventory prices v1
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <iomanip>
+    #include <string>
+    #include <vector>
+    #include <map>
+    using namespace std;
+
+    int main()
+    {
+      // Create vectors of supplier prices.
+      vector<double> price1 {12.99, 11.49, 13.25};
+      vector<double> price2 { 8.50,  9.10,  8.75};
+      vector<double> price3 {45.00, 42.99, 47.50};
+
+      // Create map of products (key) with supplier prices (values).
+      map<string, vector<double>> products;
+
+      // Assign price vectors to each product key.
+      products["Wrench"] = {price1};
+      products["Hammer"] = {price2};
+      products["Drill"]  = {price3};
+
+      // Display products and prices with fixed precision.
+      cout << fixed << setprecision(2);
+
+      // Loop over the product keys.
+      for (auto product : products)
+        {
+          cout << "Item: " << product.first << "  ";
+          // Loop over the prices.
+          cout << "Prices: ";
+          for (auto price : product.second)
+            {
+              cout << price << " ";
+            }
+          cout << endl;
+        }
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS: Inventory prices v1
+  : Item: Drill  Prices: 45.00 42.99 47.50
+  : Item: Hammer  Prices: 8.50 9.10 8.75
+  : Item: Wrench  Prices: 12.99 11.49 13.25
+
+- Issues with the paper version and version 1:
+
+  1) I did not follow the instruction to create a ~map~ straightaway
+     (there is no mention of storing prices as vectors). But I wrote
+     this on paper so I wanted to see if my program worked before
+     simplifying it.
+
+  2) The =Drill= product price is wrongly indented (because the strings
+     have different length and are listed first).
+
+  3) No matter how the products are added to the ~map~, they are
+     displayed in alphabetical order. This is because when using
+     ~map<string,T>~, the keys are stored in *sorted* order using the ~<~
+     operator for ~string~, which means alphabetical by default. If you
+     want insertion order,
+
+  4) On paper, I mistakenly wrote =product->first= and =product->second=:
+     The range-loop variable =product= is not an iterator, it's a ~pair~
+     whose ~first~ and ~second~ members (~string~ and ~vector<double>~ are
+     accessed with the ~.~ operator. The range-loop variable =price= is a
+     ~double~.
+
+- Version 2 changes:
+
+  1) Create a ~map~ straightaway for each product.
+  2) Add a ~\t~ character after the =Item= print out.
+  3) Going to change the assignment to alphabetical rather than
+     insertion order, because ~map~ always sorts keys. If you want
+     insertion order, you need a different container!
+
+  #+name: Inventory prices v2
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <iomanip>
+    #include <string>
+    #include <vector>
+    #include <map>
+    using namespace std;
+
+    int main()
+    {
+      // Create map of products (key) with supplier prices (values).
+      map<string, vector<double>> products;
+
+      // Assign price vectors to each product key.
+      products["Wrench"] = {12.99, 11.49, 13.25};
+      products["Hammer"] = { 8.50,  9.10,  8.75};
+      products["Drill"]  = {45.00, 42.99, 47.50};
+
+      // Display products and prices with fixed precision.
+      cout << fixed << setprecision(2);
+
+      // Loop over the product keys.
+      for (auto product : products)
+        {
+          cout << "Item: " << product.first;
+          // Loop over the prices.
+          cout << "\tPrices: ";
+          for (auto price : product.second)
+            {
+              cout << right << setw(6) << price;
+            }
+          cout << endl;
+        }
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS: Inventory prices v2
+  : Item: Drill Prices:  45.00 42.99 47.50
+  : Item: Hammer        Prices:   8.50  9.10  8.75
+  : Item: Wrench        Prices:  12.99 11.49 13.25
+
+- Bonus solution: building on version 2 - compute and print out the
+  minimum price for each item.
+
+  1. Testing the algorithms
+     #+name: vector min
+     #+begin_src C++ :main no :includes :results output :exports both
+       #include <iostream>
+       #include <vector>
+       using namespace std;
+
+       int main()
+       {
+         vector<double> v {12.00, 8.67, 44.00};
+         double min = v[0];
+         for (int i=1;i<v.size();i++)
+           if (v[i]<min) min=v[i];
+         cout << min;
+         return 0;
+       }
+     #+end_src
+
+     #+RESULTS:
+     : 8.67
+
+  2. Modularizing the algorithm as a function that takes a vector
+     argument.
+     #+name: vector min function
+     #+begin_src C++ :main no :includes :results output :exports both
+       #include <iostream>
+       #include <vector>
+       using namespace std;
+
+       double minVec(vector<double> v)
+       {
+         double min = v[0];
+         for (int i=1;i<v.size();i++)
+           if (v[i]<min) min=v[i];
+         return min;
+       }
+
+       int main()
+       {
+         vector<double> vec {12.00, 8.67, 44.00};
+         cout << "Minimum value = " << minVec(vec) << endl;
+         return 0;
+       }
+     #+end_src
+
+     #+RESULTS: vector min function
+     : Minimum value = 8.67
+
+  3. Put the function into the version 2 program, rename it =lowest=,
+     and call it after the inner loop so that the lowest value is
+     printed at the end of each row.
+
+     #+name: Inventory prices with lowest price
+     #+begin_src C++ :main no :includes :results output :exports both
+       // Store item prices from multiple suppliers in a map. Each key is a
+       // product name, each value is a vector of prices for that product.
+       // Print the lowest price for each product.
+       #include <iostream>
+       #include <iomanip>
+       #include <string>
+       #include <vector>
+       #include <map>
+       using namespace std;
+
+       double lowest(vector<double>);
+
+       int main()
+       {
+         // Create map of products (key) with supplier prices (values).
+         map<string, vector<double>> products;
+
+         // Assign price vectors to each product key.
+         products["Wrench"] = {12.99, 11.49, 13.25};
+         products["Hammer"] = { 8.50,  9.10,  8.75};
+         products["Drill"]  = {45.00, 42.99, 47.50};
+
+         // Display products and prices with fixed precision.
+         cout << fixed << setprecision(2);
+
+         // Loop over the product keys.
+         for (auto product : products)
+           {
+             cout << "Item: " << product.first;
+             // Loop over the prices.
+             cout << "\tPrices: ";
+             for (auto price : product.second)
+        {
+          cout << right << setw(6) << price;
+        }
+             cout << "\tLowest: " // print lowest price
+           << right << setw(4) <<  lowest(product.second);
+             cout << endl;
+           }
+         return 0;
+       }
+
+       double lowest(vector<double> v)
+       {
+         double min = v[0];
+         for (int i=1;i<v.size();i++)
+           if (v[i]<min) min=v[i];
+         return min;
+       }
+     #+end_src
+
+     #+RESULTS: Inventory prices with function
+     : Item: Drill      Prices:  45.00 42.99 47.50      Lowest: 42.99
+     : Item: Hammer     Prices:   8.50  9.10  8.75      Lowest: 8.50
+     : Item: Wrench     Prices:  12.99 11.49 13.25      Lowest: 11.49
+
+*** The ~auto~ in the nested loops
+
+- Clarifying the nature of ~auto~ in the range-based loops: Here, the
+  range-based loops from version 1 are replaced by the full data type.
+  #+name: Inventory prices - full auto
+  #+begin_src C++ :main no :includes :results output :exports both
+    // Store item prices from multiple suppliers in a map. Each key is a
+    // product name, each value is a vector of prices for that product.
+    #include <iostream>
+    #include <iomanip>
+    #include <string>
+    #include <vector>
+    #include <map>
+    using namespace std;
+
+    int main()
+    {
+      // Create vectors of supplier prices.
+      vector<double> price1 {12.99, 8.50, 45.00};
+      vector<double> price2 {12.99, 8.50, 45.00};
+      vector<double> price3 {12.99, 8.50, 45.00};
+
+      // Create map of products (key) with supplier prices (values).
+      map<string, vector<double>> products;
+
+      // Assign price vectors to each product key.
+      products["Wrench"] = {price1};
+      products["Hammer"] = {price2};
+      products["Drill"]  = {price3};
+
+      // Display products and prices with fixed precision.
+      cout << fixed << setprecision(2);
+
+      // Loop over the product keys.
+      for (pair<string,vector<double>> product : products)
+        {
+          cout << "Item: " << product.first;
+          // Loop over the prices.
+          cout << "\tPrices: ";
+          for (double price : product.second)
+            {
+              cout << price << " ";
+            }
+          cout << endl;
+        }
+      return 0;
+    }
+  #+end_src
+
+** PRACTICE Exercise: Searching for a title in a map of Books
+
+*** Problem
+
+- *Task:* Write a program that:
+  1. Defines a =Book= class with the following ~private~ members:
+     - =title=
+     - =author=
+     - =year=
+  2. Include a default constructor and a parameterized constructor.
+  3. Include public getters for all members.
+  4. In ~main~:
+     - Create 3 =Book= objects
+     - Store them in a =map<string, Book>= using the book =title= as the
+       key
+  5. Ask the user to enter a book =title=.
+     - Use =getline(cin, title)= to allow spaces
+     - Search the map using ~find~
+     - If found, print author and year; otherwise, print “Book not
+       found.”
+
+- *Example output:*
+  #+begin_example
+  Enter a book title to search for: The Great Gatsby
+  Author: F. Scott Fitzgerald
+  Year: 1925
+  #+end_example
+
+- *Requirements:*
+  + Class definition in a separate header file (~Book.h~)
+  + Use ~map<string, Book>~
+  + Use ~find~ and a range-based ~for~ loop only if extending
+
+- *Solution:* [[https://onecompiler.com/cpp/43rjvr67k][onecompiler.com/cpp/43rjvr67k]]
+
+*** Solution Path
+
+1. Define the =Book= class and test it with a ~main~ program. Add the user
+   input and use it to add a book. Store ~class~ def in =Book.h=.
+
+   Remember: use pass-by-reference (~string&~) if you want to modify the
+   argument inside the function or if the arguments are very
+   large. Example:
+   #+begin_example C++
+   void updateTitle(string& t) { t = "New Title"; }
+   #+end_example
+   It's always OK to leave ~int~ as call-by-value.
+
+   #+name: Book class
+   #+begin_src C++ :cmdline < ../data/searchTitle.txt :main no :includes :results output
+     #include <iostream>
+     #include <string>
+     using namespace std;
+
+     class Book
+     {
+     private:
+       string title;
+       string author;
+       int year;
+     public:
+       Book() {title="";author="";year=0;}
+       Book(string t, string a, int y)
+         : title(t), author(a), year(y) {}
+       string getTitle() {return title;}
+       string getAuthor() {return author;}
+       int getYear() {return year;}
+     };
+
+     int main()
+     {
+       string searchTitle;
+       Book b; // Create a default book.
+       cout << b.getTitle() << b.getAuthor() << b.getYear() << endl;
+       // Create a book with a non-empty title and author.
+       Book b2("War and Peace","Tolstoy",1869);
+       cout << b2.getTitle()  << endl
+            << b2.getAuthor() << endl
+            << b2.getYear()   << endl;
+       // Ask the user to input book information.
+       cout << "Enter a book title!\n";
+       getline(cin, searchTitle);
+       cout << "You entered: " << searchTitle;
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS: Book class
+   : 0
+   : War and Peace
+   : Tolstoy
+   : 1869
+   : Enter a book title!
+   : You entered: The Brothers Karamasov
+
+   Input: =searchTitle=
+   #+begin_src bash :results output :exports both
+     cd ../data
+     echo "The Brothers Karamasov" > searchTitle.txt
+     cat searchTitle.txt
+   #+end_src
+
+   #+RESULTS:
+   : The Brothers Karamasov
+
+2. Store class definition in =../src/Book.h= (to be included in ~main~).
+   #+name: BOOK_H
+   #+begin_src C++ :tangle ../src/Book.h :main no :includes :results none :noeval
+     #ifndef BOOK_H
+     #define BOOK_H
+     #include <iostream>
+     #include <string>
+     using namespace std;
+
+     class Book
+     {
+     private:
+       string title;
+       string author;
+       int year;
+     public:
+       Book() : title(""), author(""), year(0) {}
+       Book(string t, string a, int y)
+         : title(t), author(a), year(y) {}
+       string getTitle() {return title;}
+       string getAuthor() {return author;}
+       int getYear() {return year;}
+     };
+     #endif // BOOK_H
+   #+end_src
+
+3. In the ~main~ program, create three =Book= objects, and store them in a
+   ~map~ using the book =title= as the key. Print the ~map~.
+   #+name: Book map
+   #+begin_src C++ :flags -I ../src :main no :includes :results output :exports both
+     #include <iostream>
+     #include <map>
+     #include "Book.h"
+     using namespace std;
+
+     int main()
+     {
+       // Create three Books objects.
+       Book book1 {"War and Peace", "Leo Tolstoy", 1869};
+       Book book2 {"Die Buddenbrooks", "Thomas Mann", 1901};
+       Book book3 {"Portrait of a Lady", "Henry James", 1881};
+       
+       // Create a map with three Book objects using the title as the key.
+       map<string, Book> books;
+       books[book1.getTitle()] = {book1};
+       books[book2.getTitle()] = {book2};
+       books[book3.getTitle()] = {book3};              
+
+       // Print map content.
+       //for (auto [k,v] : books) cout << k << v.getAuthor() << endl;
+       for (map<string,Book>::iterator it = books.begin();
+            it != books.end();
+            it++)
+         cout << "Title: "  << it->first
+              << ". Author: " << it->second.getAuthor()
+              << ". Year: "   << it->second.getYear()
+              << ".\n";
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS: Book map
+   : Title: Die Buddenbrooks. Author: Thomas Mann. Year: 1901.
+   : Title: Portrait of a Lady. Author: Henry James. Year: 1881.
+   : Title: War and Peace. Author: Leo Tolstoy. Year: 1869.
+
+4. Ask the user to enter a =Book= =title= using =getline(cin, title)=. Then
+   search the map using =find= (which returns an iterator). If found,
+   print author and year, otherwise print "Book not found."
+
+   #+name: Book search
+   #+begin_src C++ :cmdline < ../data/searchTitle.txt :flags -I ../src :main no :includes :results output :exports both
+     // Store three Book class objects with private member data title,
+     // author, year in a map, using the book title as key. Ask the user to
+     // enter a book title to search for and print author and year, or
+     // "Book not found".
+     //*********************************************************************
+     #include <iostream>
+     #include <map>
+     #include "Book.h"
+     using namespace std;
+
+     int main()
+     {
+       string title; // Book title to search for.
+       
+       // Create three Books objects.
+       Book book1 {"War and Peace", "Leo Tolstoy", 1869};
+       Book book2 {"Die Buddenbrooks", "Thomas Mann", 1901};
+       Book book3 {"Portrait of a Lady", "Henry James", 1881};
+       
+       // Create a map with three Book objects using the title as the key.
+       map<string, Book> books;
+       books[book1.getTitle()] = {book1};
+       books[book2.getTitle()] = {book2};
+       books[book3.getTitle()] = {book3};              
+
+       // Print map content.
+       //for (auto [k,v] : books) cout << k << v.getAuthor() << endl;
+       for (map<string,Book>::iterator it = books.begin();
+            it != books.end();
+            it++)
+         cout << "Title: "  << it->first
+              << ". Author: " << it->second.getAuthor()
+              << ". Year: "   << it->second.getYear()
+              << ".\n";
+
+       // Ask user to enter a book title to search for.
+       cout << "\nEnter a book title to search for: ";
+       getline(cin, title);
+       cout << title;
+
+       // Search the map for the book title.
+       // auto it = books.find(title);
+       map<string, Book>::iterator it = books.find(title);
+
+p       if (it != books.end())
+         cout << "\nAuthor: " << it->second.getAuthor()
+              << "\nYear: "   << it->second.getYear() << endl;
+       else
+         cout << "\nBook not found.";
+                
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS: Book search
+   : Title: Die Buddenbrooks. Author: Thomas Mann. Year: 1901.
+   : Title: Portrait of a Lady. Author: Henry James. Year: 1881.
+   : Title: War and Peace. Author: Leo Tolstoy. Year: 1869.
+   : 
+   : Enter a book title to search for: Portrait of a Lady
+   : Author: Henry James
+   : Year: 1881
+
+   Input: =title= to search for
+   #+begin_src bash :results output :exports both
+     cd ../data
+     echo "Portrait of a Lady" > searchTitle.txt
+     cat searchTitle.txt
+   #+end_src
+
+   #+RESULTS:
+   : Portrait of a Lady
+
+** Home assignment: Course information
+
+- See: Gaddis 17. Programming Challenges (2) p. 1159 (with video).
+
+* Coding Exercises (C++) Based on Index Structures
+#+attr_html: :width 400px :float nil:
+[[../img/trees.jpg]]
+
+** B-Tree / B+ Tree
+
+1. *B-Tree Node Insertion*  
+   Write a C++ class for a simple B-Tree (order 3).  
+   - Implement node splitting during insertion.
+   - Insert values: 6, 16, 26, 36, 46, 56, 66
+   - Print the structure (in-order traversal).
+
+2. *B+ Tree Leaf Links*  
+   Extend the B-Tree to a B+ Tree:
+   - Leaf nodes are linked.
+   - Perform range query: print all keys from 16 to 46.
+
+** Hash Index
+
+3. *Simple Hash Index Simulation*  
+   - Implement a hash table with chaining using linked lists.
+   - Keys are strings (e.g., "E4"), values are records.
+   - Insert: ("E4", "Adam"), ("A2", "Eve"), ("B7", "Bob")
+   - Look up and print "E4".
+
+4. *Hash Function Debugging*  
+   - Write a custom hash function for string keys.
+   - Print the bucket index for each inserted key.
+   - Handle collisions explicitly.
+
+** Inverted Index
+
+5. *Build Forward and Inverted Index*  
+   Given a vector of (ID, term) pairs:  
+   `[(1, "Tiger"), (2, "Lion"), (3, "Tiger"), (4, "Elephant"), (5, "Lion")]`  
+   - Build and print a forward index (map ID → term)  
+   - Build and print an inverted index (map term → vector of IDs)
+
+6. *Search Inverted Index*  
+   - Add a function to return all IDs for a search term like "Lion"
+   - Bonus: Add support for multi-term queries using set intersection.
+
+** Bonus
+
+7. *Index Benchmarking*  
+   - Compare lookup performance between:
+     - std::map (B-Tree-like)
+     - std::unordered_map (hash table)
+   - Insert 100,000 key-value pairs and measure access time.
+
+** Solutions
+
+*** B-Tree Insertion (Simplified)
+
+#+begin_src cpp :tangle b_tree_insert.cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const int T = 2; // Minimum degree
+
+class BTreeNode {
+public:
+    vector<int> keys;
+    vector<BTreeNode*> children;
+    bool leaf;
+
+    BTreeNode(bool isLeaf) : leaf(isLeaf) {}
+
+    void traverse() {
+        int i;
+        for (i = 0; i < keys.size(); i++) {
+            if (!leaf) children[i]->traverse();
+            cout << keys[i] << " ";
+        }
+        if (!leaf) children[i]->traverse();
+    }
+
+    void insertNonFull(int k);
+    void splitChild(int i, BTreeNode *y);
+};
+
+class BTree {
+public:
+    BTreeNode *root;
+    BTree() { root = new BTreeNode(true); }
+
+    void insert(int k);
+    void traverse() {
+        if (root) root->traverse();
+        cout << endl;
+    }
+};
+
+void BTree::insert(int k) {
+    if (root->keys.size() == 2*T - 1) {
+        BTreeNode *s = new BTreeNode(false);
+        s->children.push_back(root);
+        s->splitChild(0, root);
+        int i = (s->keys[0] < k) ? 1 : 0;
+        s->children[i]->insertNonFull(k);
+        root = s;
+    } else {
+        root->insertNonFull(k);
+    }
+}
+
+void BTreeNode::insertNonFull(int k) {
+    int i = keys.size() - 1;
+    if (leaf) {
+        keys.push_back(0);
+        while (i >= 0 && keys[i] > k) {
+            keys[i+1] = keys[i];
+            i--;
+        }
+        keys[i+1] = k;
+    } else {
+        while (i >= 0 && keys[i] > k) i--;
+        i++;
+        if (children[i]->keys.size() == 2*T - 1) {
+            splitChild(i, children[i]);
+            if (keys[i] < k) i++;
+        }
+        children[i]->insertNonFull(k);
+    }
+}
+
+void BTreeNode::splitChild(int i, BTreeNode *y) {
+    BTreeNode *z = new BTreeNode(y->leaf);
+    for (int j = 0; j < T - 1; j++)
+        z->keys.push_back(y->keys[T + j]);
+    if (!y->leaf)
+        for (int j = 0; j < T; j++)
+            z->children.push_back(y->children[T + j]);
+    y->keys.resize(T - 1);
+    y->children.resize(y->leaf ? 0 : T);
+    children.insert(children.begin() + i + 1, z);
+    keys.insert(keys.begin() + i, y->keys[T - 1]);
+}
+
+int main() {
+    BTree t;
+    vector<int> values = {6, 16, 26, 36, 46, 56, 66};
+    for (int v : values) t.insert(v);
+    t.traverse();
+    return 0;
+}
+#+end_src
+
+*** Hash Index (with chaining)
+
+#+begin_src cpp :tangle hash_index.cpp
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+using namespace std;
+
+const int TABLE_SIZE = 7;
+
+class HashIndex {
+    vector<list<pair<string, string>>> table;
+public:
+    HashIndex() : table(TABLE_SIZE) {}
+
+    int hash(const string& key) {
+        int h = 0;
+        for (char c : key) h = (h * 31 + c) % TABLE_SIZE;
+        return h;
+    }
+
+    void insert(const string& key, const string& value) {
+        int index = hash(key);
+        table[index].push_back({key, value});
+    }
+
+    string get(const string& key) {
+        int index = hash(key);
+        for (auto& p : table[index])
+            if (p.first == key)
+                return p.second;
+        return "Not found";
+    }
+};
+
+int main() {
+    HashIndex hi;
+    hi.insert("E4", "Adam");
+    hi.insert("A2", "Eve");
+    hi.insert("B7", "Bob");
+
+    cout << "Lookup E4: " << hi.get("E4") << endl;
+    return 0;
+}
+#+end_src
+
+*** Inverted Index
+
+#+begin_src cpp :tangle inverted_index.cpp
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+#include <string>
+using namespace std;
+
+int main() {
+    vector<pair<int, string>> data = {
+        {1, "Tiger"}, {2, "Lion"}, {3, "Tiger"},
+        {4, "Elephant"}, {5, "Lion"}
+    };
+
+    unordered_map<int, string> forwardIndex;
+    unordered_map<string, vector<int>> invertedIndex;
+
+    for (auto [id, term] : data) {
+        forwardIndex[id] = term;
+        invertedIndex[term].push_back(id);
+    }
+
+    cout << "Forward Index:\n";
+    for (auto& [id, term] : forwardIndex)
+        cout << id << " → " << term << endl;
+
+    cout << "\nInverted Index:\n";
+    for (auto& [term, ids] : invertedIndex) {
+        cout << term << " → ";
+        for (int id : ids) cout << id << " ";
+        cout << endl;
+    }
+
+    return 0;
+}
+#+end_src
+

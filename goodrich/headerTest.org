@@ -1,0 +1,306 @@
+#+TITLE:Header File Test
+#+AUTHOR:Marcus Birkenkrahe
+#+SUBTITLE:C++ Primer
+#+STARTUP: overview hideblocks indent
+#+OPTIONS: toc:nil num:nil ^:nil
+#+PROPERTY: header-args:C++ :main yes :includes <iostream> :results output :exports both :noweb yes
+* Objective
+
+- Test the setup in Goodrich et al (1.6.1 An Example Program
+  pp. 48-54) with a simpler class.
+
+* Class definition
+
+- The ~class~ =Book=:
+  1) A book has an ISBN, a title, and an author.
+  2) A constructor to assign the data to a book.
+  3) A function =getBookInfo= to get =Book= data.
+
+* Preparations: get one file working
+
+- First we put all of this into one file, and then we take it apart.
+  #+name: BOOK
+  #+begin_src C++ :tangle book.cpp :main no :includes :results output
+    // -- HEADER --
+    #include <iostream>
+    #include <string>
+
+    using namespace std;
+
+    // -- CLASS DECLARATION --
+    class Book {
+    public:
+      Book();
+      Book(const string&,const string&,const string&);
+      void getBookInfo();
+    private:
+      string const ISBN;
+      string const author;
+      string const title;
+    };
+
+    // -- MEMBER FUNCTIONS --
+    Book::Book()
+      : ISBN("NONE"), author("NONE"), title("NONE") {}
+
+    Book::Book(const string& i,const string& a,const string& t)
+      : ISBN(i), author(a), title(t) {}
+
+    void Book::getBookInfo() {
+      cout << "ISBN   = " << ISBN    << endl
+           << "Author = " << author  << endl
+           << "Title  = " << title   << endl;
+    }
+
+    // -- TEST SUITE --
+    int main() {
+      Book bk;
+      bk.getBookInfo();
+
+      Book bk2("9780138308681", "Stroustrup","Programming");
+      bk2.getBookInfo();
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : ISBN   = NONE
+  : Author = NONE
+  : Title  = NONE
+  : ISBN   = 9780138308681
+  : Author = Stroustrup
+  : Title  = Programming
+
+* Separation into subfiles
+
+- Now that we know it works, let's take the file apart:
+  1) =Book.h= with standard header files ~<iostream>~, ~<cstdlib>~ and
+     ~<string>~, with the ~using~ directive for ~std~, and with the
+     declaration of the =Book= ~class~.
+  2) =Book.cpp= with the member function definitions.
+  3) =Main.cpp= with the ~main~ program to test the ~class~.
+
+- Header file: [[BOOK_H]] contains all declarations. It is included in
+  [[BOOK_CPP]].
+
+  #+name: BOOK_H
+  #+begin_src C++ :tangle Book.h :main no :includes :results none
+    #ifndef BOOK_H
+    #define BOOK_H
+
+    // -- HEADER --
+    #include <iostream>
+    #include <string>
+
+    using namespace std;
+
+    // -- CLASS DECLARATION --
+    class Book {
+    public:
+      Book();
+      Book(const string&,const string&,const string&);
+      void getBookInfo();
+    private:
+      string const ISBN;
+      string const author;
+      string const title;
+    };
+    #endif
+  #+end_src
+
+- Member functions: =Book.cpp= contains the member functions. To be able
+  to find ="Book.h"= in the present working directory, the compiler
+  ~:flag~ =-I .= has to be set (you could also use the absolute path)
+  #+name: BOOK_CPP
+  #+begin_src C++ :flags -I $PWD :tangle Book.cpp :main no :includes :results none
+    #include "Book.h"
+
+    // -- MEMBER FUNCTIONS --
+    Book::Book()
+      : ISBN("NONE"), author("NONE"), title("NONE") {}
+
+    Book::Book(const string& i,const string& a,const string& t)
+      : ISBN(i), author(a), title(t) {}
+
+    void Book::getBookInfo() {
+      cout << "ISBN   = " << ISBN    << endl
+           << "Author = " << author  << endl
+           << "Title  = " << title   << endl;
+    }
+  #+end_src
+
+- Test suite: =Main.cpp= is our ~main~ program with the test
+  statements.
+  #+name: BOOK_TEST
+  #+begin_src C++ :tangle BookTest.cpp :flags -I . :results output
+    // -- TEST SUITE --
+    #include "Book.h"
+    
+    int main() {
+      Book bk;
+      bk.getBookInfo();
+
+      Book bk2("9780138308681", "Stroustrup","Programming");
+      bk2.getBookInfo();
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS: BOOK_TEST
+  : ISBN   = NONE
+  : Author = NONE
+  : Title  = NONE
+  : ISBN   = 9780138308681
+  : Author = Stroustrup
+  : Title  = Programming
+
+To run this test file with two other dependencies, we can do three
+things:
+1) Use ~noweb~ as a way to import the code fragments.
+2) Compile and link all files on the command-line.
+3) Design a ~Makefile~ and use ~make~ on the command-line.
+
+* Using ~noweb~
+
+- ~noweb~ is a preprocessor that imports code fragments. So the code
+  block below simply tangles identical to [[BOOK]]. The header file
+  ="Book.h"= is not included twice because it is wrapped in a macro.
+  #+begin_src C++ :noweb yes :flags -I . :results output :tangle book_noweb.cpp
+    <<BOOK_H>>
+    <<BOOK_CPP>>
+    <<BOOK_TEST>>
+  #+end_src
+
+  #+RESULTS:
+  : ISBN   = NONE
+  : Author = NONE
+  : Title  = NONE
+  : ISBN   = 9780138308681
+  : Author = Stroustrup
+  : Title  = Programming
+
+* Compile and link files on the command-line
+
+- We can do this in this Org-mode file in a shell block. Only =Book.cpp=
+  and =BookTest.cpp= are needed because =Book.cpp= includes =Book.h= but if
+  we would include it by mistake, it would not matter.
+
+  #+begin_src bash :results output :exports both
+    ls *Book*
+    g++ Book.cpp -o Book.o -c
+    g++ BookTest.cpp Book.o -o BookTest
+    ./BookTest
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  Book.cpp
+  Book.h
+  Book.o
+  BookTest.cpp
+  BookTest.o
+  makeBook
+  ISBN   = NONE
+  Author = NONE
+  Title  = NONE
+  ISBN   = 9780138308681
+  Author = Stroustrup
+  Title  = Programming
+  #+end_example
+
+* Making it all with ~make~ and a ~Makefile~
+
+- This is the best method because as soon as you have multiple files,
+  you have dependencies, and you don't want to have to manually keep
+  track of which file you changed when. The ~Makefile~ does this for
+  you. Read ~man make(1)~ for details, or go to [[https://gnu.org/software/make][gnu.org/software/make]].
+
+- In this case the built-in ~Makefile~ for ~make~ probably already does
+  the job:
+  #+begin_src bash :results output :exports both
+    ls -lt *Book*
+    make BookTest
+  #+end_src
+
+  #+RESULTS:
+  : -rwxrwxr-x 1 aletheia aletheia  24240 Jun 24 14:37 BookTest
+  : -rw-rw-r-- 1 aletheia aletheia  13224 Jun 24 14:37 Book.o
+  : -rw-rw-r-- 1 aletheia aletheia 102800 Jun 24 14:34 BookTest.o
+  : -rw-rw-r-- 1 aletheia aletheia    324 Jun 24 14:34 Book.h
+  : -rw-rw-r-- 1 aletheia aletheia    177 Jun 24 14:34 BookTest.cpp
+  : -rw-rw-r-- 1 aletheia aletheia    320 Jun 24 14:33 makeBook
+  : -rw-rw-r-- 1 aletheia aletheia    360 Jun 21 20:55 Book.cpp
+  : make: 'BookTest' is up to date.
+
+- As you can see, =BookTest= was made and can now be run:
+  #+begin_src bash :results output :exports both
+    ./BookTest
+  #+end_src
+
+  #+RESULTS:
+  : ISBN   = NONE
+  : Author = NONE
+  : Title  = NONE
+  : ISBN   = 9780138308681
+  : Author = Stroustrup
+  : Title  = Programming
+
+- An explicit ~Makefile~ for this job would look like this:
+  #+name: makeBook
+  #+begin_src makefile :tangle makeBook
+    CXX      = g++
+    CXXFLAGS = -std=c++17 -Wall -Wextra -g
+
+    TARGET   = BookTest
+    OBJS     = BookTest.o Book.o
+
+    $(TARGET): $(OBJS)
+    	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+
+    Book.o: Book.cpp Book.h
+    	$(CXX) $(CXXFLAGS) -c Book.cpp
+
+    BookTest.o: BookTest.cpp Book.h
+    	$(CXX) $(CXXFLAGS) -c BookTest.cpp
+
+    clean:
+    	rm -f *.o $(TARGET)
+  #+end_src
+
+- Test it with ~make -f makeBook~. Use ~touch~ on any of the three files
+  involved to change the timestamp and force a recompilation:
+  1) uncomment =touch Book.h=, run the code, then comment it again
+  2) uncomment =touch Book.cpp=, run the code, then comment it again
+  3) uncomment =touch BookTest.cpp=, run the code, then comment it again
+  #+begin_src bash :results output :exports both
+    ls -lt Book* 
+    #touch Book.h
+    #touch Book.cpp
+    #touch BookTest.cpp
+    make -f makeBook
+    ./BookTest
+    make -f makeBook clean
+    ls -lt Book* 
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+  -rw-rw-r-- 1 aletheia aletheia 177 Jun 24 14:38 BookTest.cpp
+  -rw-rw-r-- 1 aletheia aletheia 360 Jun 24 14:38 Book.cpp
+  -rw-rw-r-- 1 aletheia aletheia 324 Jun 24 14:38 Book.h
+  g++ -std=c++17 -Wall -Wextra -g -c BookTest.cpp
+  g++ -std=c++17 -Wall -Wextra -g -c Book.cpp
+  g++ -std=c++17 -Wall -Wextra -g -o BookTest BookTest.o Book.o
+  ISBN   = NONE
+  Author = NONE
+  Title  = NONE
+  ISBN   = 9780138308681
+  Author = Stroustrup
+  Title  = Programming
+  rm -f *.o BookTest
+  -rw-rw-r-- 1 aletheia aletheia 177 Jun 24 14:38 BookTest.cpp
+  -rw-rw-r-- 1 aletheia aletheia 360 Jun 24 14:38 Book.cpp
+  -rw-rw-r-- 1 aletheia aletheia 324 Jun 24 14:38 Book.h
+  #+end_example

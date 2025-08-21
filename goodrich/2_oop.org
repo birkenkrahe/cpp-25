@@ -1,0 +1,221 @@
+#+title: Data Structures - Object-Oriented Design
+#+author: Marcus Birkenkrahe
+#+subtitle: Based on Goodrich, Tamassian, Mount (2e) 2012
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+PROPERY: header-args:C++ :results output :main yes :includes <iostream> <cstdlib> <string> :namespaces std :exports both :noweb yes
+* Objectives
+
+This review is based on chapter 2 of Goodrich et al (2e): pp. 66-98.
+
+- OO design goals, principles and patterns
+- Inheritance and polymorphism
+- Templates
+- Exceptions
+
+Exercises in a separate file (1_oop_exercises.org).
+
+* 2.1 Goals, Principles and Patterns
+
+- In this paradigm, everything that can be coded is an *object*.
+
+- Objects come from a ~class~ with *data members* and *methods*.
+
+- Each ~class~ presents an abstracted view of the objects that are
+  instances of this ~class~, encapsulating ~private~ data.
+
+* 2.1.1 Object-oriented design goals
+
+Software implementations should achieve *robustness*, *adaptability*, and *reusability*.
+
+1. Robust = handles unexpected inputs.
+2. Adaptable = adapts to environmental changes and is portable.
+3. Reusable = same code is a component in different systems/apps.
+
+* 2.1.2 OO design principles
+
+Abstraction, encapsulation, modularity, hierarchy.
+
+1. *Abstraction* = reduce system to fundamental parts that are described
+   in a simple, precise language.
+
+   *Abstract data type* (ADT): model that specifies the type of data
+   stored, the operations supported on them, and types of parameters
+   of the operations. All classes are ADTs that also implements an
+   ~public~ interface through its accessor functions.
+
+2. *Encapsulation*: different components of a software system should not
+   reveal the internal details of their implementations. The
+   programmer has to develop and maintain the public interface.
+
+3. *Modularity*: software system components interact with each
+   other. The language provides mechanisms to split up the
+   functionality.
+
+4. *Hierarchy*: similar abstract definitions are grouped so that one
+   goes from specific to more general as one travels up the hierarchy.
+
+   #+attr_html: :width 400px :float nil:
+   #+caption: Examples of an "is a" hierarchy (Goodrich et al, 2011)
+   [[../img/fig2.3_hierarchy.png]]
+
+* 2.1.3 Design patterns
+
+- Design patterns are solutions to a typical software design problem.
+
+- Unified modeling language (UML) is used to map OO designs.
+
+- According to the Gang of Four (Gamma, Helm, Johnson,
+  Vlissides, 1994), there are 23 patterns in three groups:
+
+  1. *Creational* patterns: Used to construct an object so that it can
+     be decoupled from its implementing system, e.g. "Prototype".
+
+  2. *Structural* patterns: Used to form large structures between many
+     disparate objects, e.g. "Bridge".
+
+  3. *Behavioral* patterns: Used to manage responsibilities between
+     objects and manage algorithms, e.g. "Iterator", "Template".
+
+- There are also algorithmic patterns like "divide-and-conquer",
+  "brute-force", "recursion.
+
+* 2.2.1 Inheritance in C++: =Person= and =Student=
+
+- Base/parent/superclass = generic class like =Person=. This will tangle
+  into =Person.h= for inclusion in =Person.cpp=.
+  #+name: PERSON_H
+  #+begin_src C++ :tangle ../src/Person.h :main no :includes :results none
+    #ifndef PERSON_H
+    #define PERSON_H
+
+    #include <string>
+    #include <iostream>
+
+    class Person {
+    private:
+      std::string name;
+      std::string idNum;
+    public:
+      Person();
+      Person(const std::string& name,
+             const std::string& idNum);
+      void print();
+      std::string getName();
+    };
+    #endif
+  #+end_src
+
+- Derived/child/subclass = extending or specializing class like
+  =Student=. This will tangle into =Student.h= for inclusion in
+  =Student.cpp=.
+  #+name: Student
+  #+begin_src C++ :flags -I ../src :tangle ../src/Student.h :main no :includes :results none
+    #ifndef STUDENT_H
+    #define STUDENT_H
+
+    #include "Person.h"
+
+    class Student : public Person {
+    private:
+      std::string major;
+      int gradYear;
+    public:
+      void print();
+      void changeMajor(const std::string& newMajor);
+    };
+    #endif
+  #+end_src
+
+- Every =Student= is also a =Person=, but not every =Person= is a =Student=.
+
+- The keywords ~public~, ~private~ specify open (to any user) and private
+  (controlled) inheritance.
+
+- Since a =Student= is a =Person=, it inherits the ~private~ =Person= data
+  (like =name=), and the methods like =getName= or =print=.
+
+- A UML class diagram shows the class relationship: Each entry
+  (record) shows if the member is ~public~ or ~private~, its name, and its
+  ~return~ type. The arrow with the open triangle arrow head indicates
+  that =Student= generalizes to =Person=, or =Person= specializes or extends
+  to =Student=.
+  #+attr_html: :width 400px :float nil:
+  #+caption: Person and Student class
+  [[../img/person_student.png]]
+
+- Before we go on, let's test these classes so far. We need:
+  1) an implementation for the member functions for =Person= in =Person.cpp=
+  2) an implementation for the member functions for =Student= in =Student.cpp=
+  3) a ~main~ program in =TestPersonStudent.cpp=,
+  5) a =Makefile= to tie it all together and run it.
+
+- Member functions for =Person=:
+  #+name: PERSON_CPP
+  #+begin_src C++ :flags -I ../src :tangle ../src/Person.cpp :main no :includes :results none
+    #include "Person.h"
+
+    // constructors
+    Person::Person() : name(""), idNum("") {}
+      
+    Person::Person(const std::string& nm,
+                   const std::string& id)
+      : name(nm), idNum(id) {}
+  #+end_src
+
+- Member functions for =Student=:
+  #+name: STUDENT_CPP
+  #+begin_src C++ :flags -I ../src :tangle ../src/Person.cpp :main no :includes :results none
+    #include "Student.h"
+
+  #+end_src
+
+- Test program with =main=:
+  #+name: PERSON_TEST_CPP
+  #+begin_src C++ :tangle ../src/PersonTest.cpp :flags -I ../src :main no :includes :results output :exports both
+    #include "Person.h"
+
+    int main() {
+      Person person;
+      return 0;
+    }
+  #+end_src
+
+- A =Makefile=: Run this 
+  #+begin_src sh :tangle ../src/Makefile
+    # Makefile for Person class and test
+    CXX      = g++
+    CXXFLAGS = -std=c++17 -Wall -Wextra -g
+
+    TARGET   = person
+    OBJS     = Person.o PersonTest.o
+
+    $(TARGET): $(OBJS)
+    	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+
+    Person.o: Person.cpp Person.h
+    	$(CXX) $(CXXFLAGS) -c Person.cpp
+
+    PersonTest.o: PersonTest.cpp Person.h
+    	$(CXX) $(CXXFLAGS) -c PersonTest.cpp
+
+    clean:
+    	rm -f *.o $(TARGET)
+  #+end_src
+
+- Noweb: Need to remove some ~#include~ commands before running this.
+  #+begin_src C++ :tangle person.cpp :main no :includes :noweb yes
+    <<PERSON_H>>
+    <<PERSON_CPP>>
+    <<PERSON_TEST_CPP>>
+  #+end_src
+
+* The ~protected~ interface
+
+- Member functions of the derived class do not have access to base
+  class members unless they are labelled as ~protected~.
+
+-
+
+* Source
+
+- [[https://www.geeksforgeeks.org/system-design/gang-of-four-gof-design-patterns/][GoF Design Patterns, geeksforgeeks.org]]

@@ -1,0 +1,57 @@
+1) What is the correct way to copy the contents of one array to
+   another in C++?
+
+   #+begin_quote
+   To copy the contents of one array to another you need to step
+   through one array and copy each element to the other array.
+   #+end_quote
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int a[] {100,200,300};
+     int b[sizeof(a)/sizeof(a[0])] {0};
+
+     for (int val : b)
+       cout << val << " "; // before copying     
+     cout << endl;
+     for (int index=0; index<3; index++) {
+       b[index]=a[index];
+       cout << b[index] << " ";
+      }
+   #+end_src
+
+   #+RESULTS:
+   : 0 0 0 
+   : 100 200 300 
+
+2) What does the statement =newValues = oldValues;= do in C++ if
+   =newValues= and =oldValues= are two arrays of the same length?
+
+   #+begin_quote
+   The statement causes a compiler error since you cannot assign
+   arrays directly in C++.
+   #+end_quote
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results none :exports both :noweb yes
+     int newValues[100];
+     int oldValues[100];
+     newValues = oldValues; // invalid array assignment
+   #+end_src
+
+3) How can you print all elements of an array in C++?
+
+   #+begin_quote
+     You can print all elements of an array by stepping through the
+     array using a range-based ~for~ loop. 
+   #+end_quote
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+     int array[10] {1,1,1,1,1,1,1,1,1,1};
+
+     for (int val : array)
+       cout << val << " ";
+   #+end_src
+
+   #+RESULTS:
+   : 1 1 1 1 1 1 1 1 1 1
+
+   

@@ -1,0 +1,56 @@
+#+STARTUP: overview hideblocks indent entitiespretty: 
+#+begin_src C++ :main no :include :results output
+  #include <iostream>
+  using namespace std;
+
+  // The BankAccount class has a balance.
+  // It is created with a starting balance.
+  // You can deposit or withdraw funds.
+  // You can get a balance printout.
+  class BankAccount
+  {
+  private:
+    double balance;
+
+  public:
+    // Member function prototypes
+    BankAccount(double starting_balance);
+    void deposit(double amount);
+    void withdraw(double amount);
+    double getBalance() const;
+
+  };
+
+  // Class member function definitions
+  BankAccount::BankAccount(double startingBal)
+  { balance = startingBal; }
+
+  void BankAccount::deposit(double amount)
+  { balance += amount; }
+
+  void BankAccount::withdraw(double amount)
+  { balance -= amount; }
+
+  double BankAccount::getBalance() const
+  { return balance; }
+
+  // Main function
+  int main()
+  {
+    // Create BankAccount
+    BankAccount account(200.);
+    cout << "Account starting balance: $" << account.getBalance() << ".\n";
+    // Deposit amount
+    account.deposit(300.); 
+    cout << "Deposited $300. New balance: $" << account.getBalance() << ".\n";
+    // Withdraw amount
+    account.withdraw(100.);
+    cout << "Withdrawn $100. New balance: $" << account.getBalance() << ".\n";    
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: Account starting balance: $200.
+: Deposited $300. New balance: $500.
+: Withdrawn $100. New balance: $400.

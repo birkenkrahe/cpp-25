@@ -1,0 +1,450 @@
+#+TITLE: Introduction to the course  / C++ code review
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 240 - Data structures with C++ - Lyon College, FA24
+:REVEAL_PROPERTIES:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_REVEAL_JS_VERSION: 4
+#+REVEAL_INIT_OPTIONS: transition: 'cube'
+#+REVEAL_THEME: black
+:END:
+#+STARTUP:overview hideblocks indent
+#+OPTIONS: toc:1 num:1 ^:nil
+#+PROPERTY: header-args:C++ :main yes :includes <iostream> :results output :exports both :noweb yes
+#+PROPERTY: header-args:C :main yes :includes <stdio.h> :results output :exports both :noweb yes
+* Course overview
+#+attr_html: :width 400px:
+[[../img/poster.png]]
+
+The syllabus is available on [[https://lyon.instructure.com/courses/3669/assignments/syllabus][Canvas]] and on [[https://github.com/birkenkrahe/cpp-25/blob/main/org/syllabus.org][GitHub]].
+
+* From C++ To C and Back Again: *Instructor Introduction*
+
+   - Background and experience
+   - Course objectives and expectations
+
+* Abstractions: The key to our schedule
+
+- CS is a science of *abstractions* that are used to bridge the gap
+  between man and machine.
+
+  Question: How do computers differ from humans?
+  
+  #+begin_example
+            +----------------------+
+            |   Computer Science   |
+            |   = Abstraction      |
+            +----------+-----------+
+                       |
+      -------------------------------------
+      |                                   |
+   +--v------------+                   +----v------------+
+   |Computer       |                   | Humans          |
+   |---------------|                   |-----------------|
+   | Fast          |                   | Slow            |
+   | Binary        |                   | Decimal         |
+   | Algorithmic   |                   | Heuristic       |
+   | Sort/Search   |                   | Patterns        |
+   | Precise       |                   | Ambiguos        |
+   | Data-oriented |                   | Story-oriented  |
+   | Specialist    |                   | Generalist      |
+   | Never tired   |                   | Easily fatigued |
+   | Syntactic     |                   | Semantic        |
+   | Soulless      |                   | Spirited        |   
+   +---------------+                   +-----------------+
+   
+             <------ Abstraction bridges ------>
+  #+end_example
+   
+- How do "abstractions" bridge the gap between Man and Machine?
+  #+begin_quote
+  | Computer      | Abstraction bridging gap             | Humans          |
+  |---------------+--------------------------------------+-----------------|
+  | Fast          | Batch jobs, schedulers manage pacing | Slow            |
+  | Binary        | Number systems, text encodings       | Decimal         |
+  | Algorithmic   | Heuristics encoded as algorithms     | Heuristic       |
+  | Sort/Search   | Pattern recognition via ML models    | Patterns        |
+  | Precise       | Error bars, tolerances in software   | Ambiguous       |
+  | Data-oriented | Visualization, narratives in reports | Story-oriented  |
+  | Specialist    | General-purpose languages, OS layers | Generalist      |
+  | Never tired   | Automation of repetitive workflows   | Easily fatigued |
+  | Syntactic     | Semantics via programming languages  | Semantic        |
+  | Soulless      | HCI, design, artful interfaces       | Spirited        |
+  #+end_quote
+
+- What is the limit of abstractions?
+  #+begin_quote
+  Abstractions are like a translation layer between two profoundly
+  alien entities, one of whom (machines) are made by the other
+  (man). They cannot turn machines into men or men into machines.
+
+  Abstractions are also never loss-less: By sacrificing detail, and by
+  creating a machine representation of reality, aspects of reality are
+  suppressed.
+  #+end_quote
+
+- How does this impact our course on data structures?
+  #+begin_quote
+  The course has several attractors or main themes:
+  1) Understanding abstract (user-defined) data types.
+  2) Understanding memory control.
+  3) Understanding object-orientation.
+  4) Understanding containers and iterators.
+
+  | Week | C++ Version (2025)                  | Abstractions           |
+  |------+-------------------------------------+------------------------|
+  |    0 | Overview, infrastructure C++ review |                        |
+  |    1 | Intro to Data Structures            | Abstract Data Types    |
+  |    2 | C-style Arrays                      | Collections            |
+  |    3 | Introduction to STL Vectors         | Extensible collections |
+  |    4 | Time & Space Complexity             | Complexity             |
+  |------+-------------------------------------+------------------------|
+  |    5 | Pointers and arrays                 | Memory control         |
+  |    6 | Dynamical memory allocation         | Memory control         |
+  |------+-------------------------------------+------------------------|
+  |    7 | Classes and UML                     | Object-orientation     |
+  |    8 | STL Vector class                    | Sequential containers  |
+  |    9 | STL Map class                       | Associative containers |
+  |------+-------------------------------------+------------------------|
+  |   10 | Linked lists (opt)                  | Container adapters     |
+  |   11 | Stacks (opt)                        | Container adapters     |
+  |   12 | Queues (opt)                        | Container adapters     |
+  |------+-------------------------------------+------------------------|
+  |   13 | Recursion (opt)                     | Problem solving        |
+  |   14 | Trees (opt)                         | Graph theory           |
+  |   15 | Hash Tables + Graphs (opt)          | Graph theory           |
+  #+end_quote
+
+* Confusing: C++ sample codes
+
+Can you guess what this code does?
+
+1. Arrays, ~auto~ type, range-based loops: weeks 1-4
+   #+begin_example C++
+     double temps[] = {22.5, 25.0, 19.5, 21.0, 23.5, 26.1};
+     for (auto temp : temps)
+       cout << temp << "C = "
+            << temp * 9./5. + 32. << "F." << endl;
+   #+end_example
+
+2. Smart pointers, pointer arithmetic, dynamical memory allocation:
+   weeks 5-7
+   #+begin_example C++
+   auto str = std::make_unique<char[]>(6);
+   std::strcpy(str.get(), "Hello");
+   char* ptr = str.get();
+   while (*ptr != '\0')
+     ptr++;
+   std::cout << "Length = " << (ptr - str.get()) << "\n";
+   #+end_example
+
+3. Classes, vectors, maps, STL: weeks 8-10
+   #+begin_example C++
+      map<int,string> emp =
+        {{101,"Jim Jones"} , {102,"Adam Miller"},
+         {103,"Beth Young"}, {104, "Jake Brown"}};
+      emp.erase(103);
+      for (map<int,string>::iterator it = emp.begin();
+           it != emp.end();
+           it++)
+        cout << it->first << ", " << it->second << endl;
+   #+end_example
+
+4. Linked lists, stacks, queues: weeks 11-12 (perhaps)
+   #+begin_example C++
+   std::stack<int> st;
+   st.push(10);
+   st.push(20);
+   st.pop();
+   #+end_example
+
+5. Recursion, trees, hash tables, graphs: weeks 13-15 (perhaps)
+   #+begin_example C++
+   void inorder(Node* r) {
+     if (!r) return;
+     inorder(r->L);
+     std::cout << r->key << " ";
+     inorder(r->R);
+   }
+  #+end_example
+
+Answer:
+#+begin_quote
+1. Iterates through an array of temperatures and prints
+   Celsius–Fahrenheit conversions.
+
+2. Walks through a-string until the null terminator is found and
+   prints its length.
+
+3. Uses a map to store employee records, erase one, and print the
+   rest.
+
+4. Demonstrates pushing and popping values on a stack (LIFO).
+
+5. Recursively traverses a binary tree in inorder sequence.
+#+end_quote
+
+* Difficult: C++ and its Standards
+
+It's complicated.
+#+attr_html: :width 400px :float nil:
+#+caption: Overlapping C++ standards
+[[../img/cpp_standards.png]]
+
+To learn data structures, we will stick to a mix of C++11 and C++17.
+
+Stroustrup: Every monitor here probably runs a different C++
+standard..."Was man nicht im Kopf hat, muss man in den Beinen haben."
+#+attr_html: :width 600px :float nil:
+[[../img/stroustrup.jpg]]
+
+#+name: C++ Versions through the years, and their key features
+| VVVV    | Year | Key Features                                                               |
+|-------+------+----------------------------------------------------------------------------|
+| C++98 | 1998 | First ISO standard; templates, STL, exceptions                             |
+| C++03 | 2003 | Bug fixes and minor improvements to C++98                                  |
+| C++11 | 2011 | auto, range-based for, lambdas, move semantics, nullptr, smart pointers    |
+| C++14 | 2014 | Generic lambdas, make_unique, relaxed constexpr, variable templates        |
+| C++17 | 2017 | if constexpr, structured bindings, optional, variant, string_view, filesys |
+| C++20 | 2020 | Concepts, ranges, coroutines, modules, span, chrono cal, more constexpr    |
+| C++23 | 2023 | More constexpr, std::expected, multidim subscript, improved ranges/lambdas |
+| C++26 | 2026 | Executors, reflection, pattern matching, library enhancements (TBD)        |
+
+* Truth: God is in the detail
+#+attr_html: :width 300px:
+[[../img/god_is_in_the_detail.png]]
+
+- Paying attention to small details leads to excellence in computing.
+
+- You're now getting immersed in a world of excruciating technical
+  details:
+
+  1. *Excruciating* because unlike in mathematics there isn't a theory
+     or a clean, memorable hierarchy of axioms to hold on to.
+     
+  2. *Technical* (from the Greek word τεχνικός, "skillful" or "artful")
+     because controlling machines depends on precision and tools that
+     are learnt by practice rather than deduction.
+
+  3. *Detailed* because every small piece matters: a missing semicolon,
+     a wrong bracket, a single mistyped character can bring the whole
+     structure down.
+
+* Advice: How should you study?
+
+- *Short list* from my [[https://github.com/birkenkrahe/org/blob/master/fall24/newFAQ.org#how-should-you-study-for-this-course][new FAQ (2024) on GitHub]]:
+
+  1. Code every day no matter how little.
+
+  2. Review lecture notes and notebooks.
+
+  3. Participate actively in the class.
+
+  4. Form study groups and/or join Lyon’s Programming Club.
+
+  5. Complete assignments well before the deadline.
+
+  6. Practice literate programming by documenting your process.
+
+  7. Focus on fundamentals, simple examples, solid understanding.
+
+  8. Drill yourself using the weekly quizzes, make small examples.
+
+  9. Seek help when needed, on the chat or during office hours.
+
+  10. Build a code & notebook repository at GitHub for your resume.
+
+- *Extended advice:* On Google chat, I shared the 1994 Oxford U study
+  guide for mathematics students, and I recommended you read
+  pp. 1-10. Here is the summary:
+
+  1. Your total working-time should be constent with full-time work.
+
+  2. Attend all lectures and take notes (it does not matter how they
+     look). Work through lecture material if you missed a lecture.
+
+  3. If no lecture material is provided ask the instructor for it
+     and/or ask for a meeting to go through the material briefly.
+
+  4. Attempt to solve some problems related to the lecture. Use
+     problems from the lecture first (with known answers).
+
+  5. Use your own brain as a tutor to begin with. Challenge yourself
+     with questions you don't immediately know the answer to.
+
+  6. After a (self) tutorial session, give yourself an honest,
+     rigorous check what you did not understand yet.
+
+  7. Use books if you can. The books that have the greatest staying
+     power are the ones that you connect with and that you like.
+
+  8. Use the vacations and (weekend) breaks to consolidate what you
+     have done during the preceding term (week), and to read ahead for
+     the coming term (week).
+
+  9. Create a GitHub account as a remote master copy of your
+     programming work and use the profile to measure your activity.
+     #+attr_html: :width 400px :float nil:
+     [[../img/github.png]]
+
+  10. Do more programming than feels necessary. Drill basic operations
+      (I/O, string handling, memory allocation, problem analysis)
+      until they become second nature. Join CSC 450 (see below).
+
+* Advice: How you could study using AI
+
+- For what it's worth: I fed this part to ChatGPT and asked about
+  changes because of GAI - I mostly agree except *try not to use AI at
+  all* because it is extremely hard for a *beginner* to know when he
+  should stop trying. *Rule of thumb:* For any topic, allott twice the
+  time, for any new topic, thrice the time you think you need.
+  #+begin_quote
+  1) *Lectures:* Attend all lectures as before—presence still
+     matters. Use GAI to:
+     - Clarify unclear definitions or steps after class.
+     - Rephrase explanations in simpler terms or alternative
+       perspectives.
+     - Simulate follow-up Q&A on difficult parts of the lecture.
+  2) *Private study*: Study actively, not passively—GAI is a tool, not a
+     shortcut. Use GAI to:
+     - Generate hints for exercises without revealing solutions.
+     - Ask conceptual questions in your own words.
+     - Test your understanding by explaining it to GAI and checking
+       its paraphrase.
+  3) *Problem-Solving:* Try every problem independently first. Use GAI
+     when stuck to:
+     - Request a single hint or next step.
+     - Debug your reasoning or identify common mistakes.
+     - Generate similar practice problems to reinforce concepts.
+  4) *Tutorials:* Use GAI to simulate a mini-tutorial beforehand:
+     - Practice explaining your solutions out loud to the AI.
+     - Ask GAI to critique clarity or suggest alternate reasoning.
+  5) *Vacation and Review Work*: Use GAI to:
+     - Generate custom quizzes or flashcards.
+     - Review old material interactively.
+     - Preview future course content through exploratory questioning.
+  6) *General Principle*
+     - Always try first—then ask AI.
+     - Use GAI to deepen understanding, not to shortcut thinking.
+     - Combine traditional study skills with AI tools for best results.
+  #+end_quote
+
+* Objective: From CS consumer to CS producer
+
+I found this in the preface to "An Infinite Descent into Pure
+Mathematics" (free book at [[https://infinitedescent.xyz][infinitedescent.xyz]]) by Clive Newstead.
+
+#+begin_quote
+»Consumers of mathematics are expected to say how they used their
+tools to find their answers. Producers of mathematics, on the other
+hand, have to do much more: they must be able to keep track of
+definitions and hypotheses, piece together facts in new and
+interesting ways, and make their own definitions of mathematical
+concepts. But even more importantly, once they have done this, they
+must communicate their findings in a way that others find
+intelligible, and they must convince others that what they have done
+is correct, appropriate and worthwhile.«
+#+end_quote
+
+Adapted to computer science:
+
+1) *Consumers of computer science* can say how they used their tools to
+   find their answers to computational problems.
+
+2) *Producers of computer science*:
+   - Keep track of specifications and assumptions.
+   - Combine algorithms and data structures in new & interesting ways.
+   - Design their own abstract data types and systems.
+   - Communicate their solutions in understandable ways.
+   - Convince others that what they have built is correct, appropriate
+     and worthwhile.
+
+* Want to learn more? Join CSC 450 (Thu 4-5 pm)
+
+To learn more by doing, join my programming seminar (1 credit).
+
+We meet every Thursday from 4-5 pm only to solve programming problems.
+
+You can use any language that you know - no prerequisites otherwise.
+
+* Syllabus
+
+1. General course information [office hours, textbooks]
+2. Objectives [ADTs, memory, OOP, containers, iterators]
+3. Target audiences [attitude & readiness]
+4. Student learning outcomes [get ready for more - CSC 265]
+5. Course requirements [Intro to programming, college algebra]
+6. Grading [programming + tests + optional final exam]
+7. Rubric [100% to 0%]
+8. LMS [Canvas - attendance self-check - course links - calendar]
+9. GitHub [Materials]
+10. Lyon Standard Policies [notice changed attendance policy]
+11. Weekly schedule [program, test every week]
+12. About [not] Using AI
+
+* Summary (the important stuff)
+
+- Computer science is about abstractions that are used to bridge the
+  gap between man and machine.
+
+- Abstractions represent the real world (like a President who
+  represents his people).
+
+- Only paying attention to detail leads to excellence in computing.
+
+- You should code every day no matter how little.
+
+- Your total study time should be consistent with full time work.
+
+- You should study without AI until you know what you're doing.
+
+* C++ review
+
+** Poll on High Level Languages
+
+- "Data structures" is language agnostic
+- C vs. C++
+- Java vs. JavaScript
+- Python vs. R
+- [[https://tiobe.com/index][TIOBE Programming Index 08/25]] vs. [[https://spectrum.ieee.org/top-programming-languages-2024][IEEE Programming languages 2024]]
+- Why C/C++? https://benjdd.com/languages/
+- My suggestion: Check out the free C++ primer [[https://tinyurl.com/cpp-primer][tinyurl.com/cpp-primer]]
+
+** 10 super simple sample programs
+
+- I designed these originally for 2024 but did not work through them
+  in class, alas. I wish I had.
+
+- Process:
+  1. You get one Onecompiler.com program stub at a time.
+  2. You complete the program in no more than 5 minutes.
+  3. I show you the solution and we discuss the problem.
+
+- These exercises are not graded or monitored. It is your
+  responsibility to identify and fill your gaps.
+
+- After the entry quiz and the entry programs, you need to decide if
+  you want to come to office hours for a quick 1-on-1 refresher.
+
+- Program stubs: *Disable editor autocompletion when you first log in!*
+  
+  1. Variables: tinyurl.com/cpp-review-1
+
+  2. Integer arithmetic: tinyurl.com/cpp-review-2
+
+  3. Floating-point numbers. tinyurl.com/cpp-review-3
+
+  4. Floating-point arithmetic: tinyurl.com/cpp-review-4
+
+  5. Input/Output/comments: tinyurl.com/cpp-review-5
+
+  6. Conversion/compound operator: tinyurl.com/cpp-review-6
+
+  7. Conditional statements: tinyurl.com/cpp-review-7
+
+  8. Loops: tinyurl.com/cpp-review-8
+
+  9. Arrays: tinyurl.com/cpp-review-9
+
+  10. Functions: tinyurl.com/cpp-review-10
+
+

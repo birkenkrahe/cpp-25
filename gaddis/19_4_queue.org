@@ -1,0 +1,26 @@
+#+TITLE: The Queue Abstract Data Type
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 240 Data Structures Fall 2025
+#+OPTIONS: toc:1 num:1 ^:nil:
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+- [ ] Introduction to the Queue ADT
+- [ ] A static queue class
+- [ ] Dynamic queues
+- [ ] The STL deque and queue containers
+- [ ] The ~queue~ container adapter
+
+* Overview
+  #+attr_html: :width 300px :float nil:
+  #+caption: A First-In First-Out queue of animals.
+  [[../img/FIFO.png]]
+  
+* Review questions
+
+   
+* Glossary
+
+| TERM                      | EXPLANATION                                      |
+|---------------------------+--------------------------------------------------|
+

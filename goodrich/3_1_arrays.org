@@ -1,0 +1,411 @@
+#+title: Data Structures - Using Arrays
+#+author: Marcus Birkenkrahe
+#+subtitle: Based on Goodrich, Tamassian, Mount (2e) 2012
+#+STARTUP: overview hideblocks indent entitiespretty:
+#+PROPERY: header-args:C++ :results output :main yes :includes <iostream> <cstdlib> <string> :namespaces std :exports both :noweb yes
+* Objectives
+
+- [ ] Examples and functions that use one- or two-dimensional arrays
+- [ ] Concept of resizable arrays for C++ ~vector~ and ~string~ classes
+- [ ] Support for iterators and memory management for array classes
+
+Topics:
+- [ ] Storing Game Entries in an Array
+- [ ] Sorting an Array
+- [ ] Two-dimensional Arrays and Positional Games
+
+* Storing Game Entries in an Array
+
+- We want to store a sequence of high score entries for a video game
+  in an array. Records for hospital patients or the names of players
+  on a football team would be analogous examples.
+
+- We develop a =Scoreboard= class to store a certain number of high
+  scores (depending on the game).
+
+- Once the score limit is reached, a new score qualifies for inclusion
+  if it is higher than the lowest score on board. Entries will be
+  stored from highest to lowest score. In the case of a tie, the score
+  entered first will appear ahead of another.
+
+- An entry contains a string with the name of the player, and an
+  integer with the player's score. A player may have more than one
+  entry on the high-score board (if they play the game often enough).
+
+- A typical state of a scoreboard with capacity 10, storing 6 current
+  entries:
+  [[../img/scoreboard.png]]
+
+* PRACTICE Scoreboard Model 1
+
+[[../img/scoreboard_practice_1.png]]
+
+Answer:
+#+begin_quote
+[[../img/scoreboard_practice_1_solution.png]]
+
+*Why?* - Mike's score is higher than Robin's so Mike's is added with the
+fourth highest score, and Robin's becomes the fifth highest.
+#+end_quote
+
+* PRACTICE Scoreboard Model 2
+
+[[../img/scoreboard_practice_2.png]]
+
+Answer:
+#+begin_quote
+[[../img/scoreboard_practice_2_solution.png]]
+
+*Why?* - Chrissy's score ties Will's for 2nd highest. The rule for equal
+score is that the older score appears first on the scoreboard, hence
+Will before Chrissy.
+#+end_quote
+
+* PRACTICE Scoreboard Model 3
+
+[[../img/scoreboard_practice_3.png]]
+
+Answer:
+#+begin_quote
+[[../img/scoreboard_practice_3_solution.png]]
+
+*Why?* - Murray's new score is added to the scoreboard in 2nd place, and
+Murray's original score remains as well.
+#+end_quote
+
+* Representing high score entries
+
+- We have to store a ~string~ =name= and an ~int~ =score= for each entry. We
+  could maintain two (parallel) separate arrays for names and scores.
+
+- What's the problem with this two-array approach?
+  #+begin_quote
+  If we fail to keep the array items aligned then this representation
+  would become inconsistent.
+  #+end_quote
+
+- Instead, we develop a single composite data type that encapsulates
+  both a =name= and a =score=, and a single array of those composite objects.
+
+- What's another advantage of this approach?
+  #+begin_quote
+  If we want to add another field for statistical purposes, e.g. the
+  date, or additional player data, we can adapt our class easily.
+  #+end_quote
+
+* Code implementation: High Score Entry
+
+- What does this ~class~ do, and what's in it?
+  #+name: class GameEntry
+  #+begin_src C++ :main yes :includes <iostream> <string> :namespaces std :results none
+    class GameEntry {
+
+    private:
+      string name;
+      int score;
+
+    public:
+      GameEntry(const string& n="", int s=0);
+      string getName() const;
+      int getScore() const;
+    };
+  #+end_src
+
+- Answer:
+  #+begin_quote
+  The code fragment shows a ~class~ called =GameEntry= that stores ~private~
+  information about the =name= and the =score= of a player. It "does"
+  nothing as such.
+
+  The ~class~ has one *constructor* with two default arguments: An empty
+  constant =name= and a zero =score=. There are two *accessor* (aka *getter*)
+  member functions: =getName= extracts the =name=, and =getScore= extracts
+  the score. Both are declared ~const~ (they're not changing anything).
+  #+end_quote
+
+* Using Org-mode to make C++ programming interactive
+
+- A few questions on the Org-mode header for the code block fragment:
+  1. Can you explain the header?
+  2. Is it necessary?
+  3. 3. How could you validate your answer?
+  #+begin_quote
+  1. The header sets up a C++ code block. It wraps the class
+     definition into a ~main~ program, adds ~#include~ for ~<iostream>~
+     (I/O) and ~<string>~ header files and =using namespace std;=. Output
+     is suppressed.
+  2. This header is not necessary but optional to quickly check that
+     the syntax is correct. =:main=, =:includes= and =:namespaces= arguments
+     could all be put into the code block.
+  3. Add =:tangle GameEntry.h= and open (=C-x C-f=) the file =GameEntry.h=
+     to check.
+  #+end_quote
+
+* PRACTICE Implementation of =GameEntry=
+
+- What do we need to bring this ~class~ to life?
+  #+begin_quote
+  1) Implementations for the three member functions. We can add the
+     implementation to the interface, or factor them out.
+  2) A ~main~ program to test the creation of a =GameEntry= object (with
+     the constructor) and the two getter functions.
+  #+end_quote
+
+- Write down the implementation of the constructor and the two
+  accessor functions now!
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <string> :namespaces std :results none
+    GameEntry::GameEntry(const string& n, int s)
+      : name(n), score(s) { }
+
+    string GameEntry::getName() const { return name; }
+
+    int GameEntry::getScore() const {return score; }
+  #+end_src
+
+- Explanations:
+  #+begin_quote
+  1) Externally defined member functions need to be brought in scope
+     with the scope resolution operator (~::~) so that the compiler
+     knows where to look for the ~class~ declaration.
+
+  2) The constructor initializes =name= and =score= with a list. An
+     alternative implementation would be:
+     #+begin_example C++
+      GameEntry::GameEntry(const string& n, int s)
+      {
+        name = n;
+        score = s;
+      }
+     #+end_example
+
+  3) The ~string~ argument is passed as a *reference*. References are
+     alternative names for an (existing) object (see code example).
+
+  4) The code block with the member function implementation will not
+     compile because it cannot find the ~class GameEntry~ declaration
+     without help.
+  #+end_quote
+
+  Code example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    string author = "Samuel Clemens";
+    string& penName = author;
+    penName = "Mark Twain";
+    cout << author << endl;
+    cout << penName;
+  #+end_src
+
+  #+RESULTS:
+  : Mark Twain
+  : Mark Twain
+
+* PRACTICE Testing a Class Implementation
+
+- Write down a simple file to test this!
+  #+begin_src C++ :noeval :main no :includes :results output
+    #include <iostream>
+    #include <string>
+    using namespace std;
+
+    // Class interface: GameEntry class declaration
+    //...
+    // Class implementation: GameEntry member function definitions
+    //...
+
+    int main()
+    {
+      GameEntry entry;
+      entry.getName();
+      entry.getScore();
+      return 0;
+    }
+  #+end_src
+
+- How can we get the test file to run?
+  #+begin_quote
+  1. In Org-mode with C-c C-c.
+  2. We could tangle the file with C-c C-v t and run it on the shell.
+  #+end_quote
+
+- Solution:
+  #+begin_src C++ :main no :includes :results output :tangle ../src/GameEntry.cpp
+    #include <iostream>
+    #include <string>
+    using namespace std;
+
+    // Class interface: GameEntry class declaration
+    class GameEntry {
+    private:
+      string name;
+      int score;
+    public:
+      GameEntry(const string& n="", int s=0);
+      string getName() const;
+      int getScore() const;
+    };
+
+    // Class implementation: GameEntry member function definitions
+    GameEntry::GameEntry(const string& n, int s)
+      : name(n), score(s) { }
+    string GameEntry::getName() const { return name; }
+    int GameEntry::getScore() const {return score; }
+
+    int main()
+    {
+      GameEntry entry("Mike Murray", 200);
+      cout << "Player's name  = " << entry.getName()  << endl
+           << "Player's score = " << entry.getScore() << endl;
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Player's name  = Mike Murray
+  : Player's score = 200
+
+- On the shell after (org-babel-tangle) [run C-x C-e right here]:
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ GameEntry.cpp -o score
+    ./score
+  #+end_src
+
+  #+RESULTS:
+  : Player's name  = Mike Murray
+  : Player's score = 200
+
+* Intermission: Testing a class with multiple files
+
+Usually, interface, implementation and test files are not put in one
+massive file but they're distributed and need to be compiled and
+linked separately. This can be tricky.
+
+See [[https://tinyurl.com/Hello-org][this handout (PDF) on GitHub]] for a detailed example, including:
+
+1. Creating a class interface file =Hello.h=
+2. Creating a class implementation file =Hello.cpp=
+3. Creating a class test file =HelloTest.cpp=
+4. Creating a =Makefile=
+5. Compiling and linking with ~make~
+
+* Developing a =Scoreboard= class for high scores
+
+The code is presented in named code chunks, which are concatenated for
+the full code further below. To do this, you need to have unique names
+and switch on the =:noweb yes= Org-mode code block header argument.
+
+The plan:
+
+- We represent a scoreboard as an array of =GameEntry= instances, and
+  use integers to represent current number of entries (=num_entries=)
+  and overall =capacity= (initially 10) for entries.
+
+- Since we do not know the array capacity (an argument to the
+  constructor) in advance, we manage the array with a pointer =board= to
+  a =GameEntry= object, and dynamically allocate the array during
+  construction when the =capacity= is known.
+
+- We provide accessor functions =get_capacity()=, =get_num_entries()=, and
+  =get_entry(i)=, each of which is declared as a ~const~ function of the
+
+- The ~class~ definition includes *inline* member function definitions.
+
+* The =Scoreboard= ~class~
+
+To recap: Each =Scoreboard= object has a =capacity=, a certain number of
+actual entries =num_entries=, and each entry is a =GameEntry= ~class~
+object, which is accessed through the =board= pointer.
+
+#+NAME: SCOREBOARD_H
+#+BEGIN_SRC C++ :tangle ../src/Scoreboard.h :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none :exports both :noweb yes
+  <<GAME_ENTRY_H>>
+
+  // Class for storing high scores ordered within an array
+  class Scoreboard {
+  private:
+    int capacity;           // capacity of the array
+    int num_entries{0};     // number of actual entries (init 0)
+    GameEntry* board;       // pointer to array of game
+
+  public:
+    // Constructs an empty scoreboard with given capacity for entries
+    Scoreboard(int cap = 10)
+      : capacity{cap}, board{new GameEntry[cap]} {};
+
+    // Returns the capacity of the scoreboard
+    int get_capacity() const { return capacity; }
+
+    // Returns the number of current entries stored
+    int get_num_entries() const { return num_entries; }
+
+    // Returns a reference to the entry at index i
+    const GameEntry& get_entry(int i) const { return board[i]; }
+  };
+#+END_SRC
+
+* Adding an entry
+
+- The update function =add= adds a new =score= entry for the player =name=.
+- Not every entry qualifies as a high score.
+- If the board is not yet full, any new entry will be retained.
+
+* Sorting an Array
+
+* Two-dimensional Arrays and Positional Games
+
+* Glossary
+
+| TERM                 | EXPLANATION                                       |
+|----------------------+---------------------------------------------------|
+| ~class~                | A data container                                  |
+| ~public~               | Data accessible from anywhere                     |
+| ~private~              | Data accessible only with class member functions  |
+| ~const~                | No changes are allowed                            |
+| member function      | A function inside the class to manipulate data    |
+| constructor          | A member function to create a class object        |
+| accessor/getter      | A member function to extract private data         |
+| Makefile, ~make~       | Utility program to build code with dependencies   |
+| pointer              | A special variable that holds an address as value |
+| dynamical allocation | Reserving memory at runtime using the ~new~ keyword |
+
+* Noweb chunks
+
+- We need =GameEntry.h= for the =Scoreboard= class:
+  #+name: GAME_ENTRY_H
+  #+begin_src C++ :tangle ../src/GameEntry.h :main no :includes :results none
+    #ifndef GAME_ENTRY_H
+    #define GAME_ENTRY_H
+    #include <iostream>
+    #include <string>
+
+    // Class interface: GameEntry class declaration
+    class GameEntry {
+    private:
+      string name;
+      int score;
+    public:
+      GameEntry(const string& n="", int s=0) : name(n), score(s) { }
+      string getName() const { return name; }
+      int getScore() const {return score; }
+    };
+    #endif
+  #+end_src
+
+- Tangle it before use: (org-babel-tangle)
+  #+begin_src bash :results output :exports both
+    cd ../src
+    ls -lt GameEntry*
+  #+end_src
+
+  #+RESULTS:
+  : -rw-rw-r-- 1 aletheia aletheia 685 Jul 19 08:11 GameEntry.cpp
+  : -rw-rw-r-- 1 aletheia aletheia 370 Jul 19 08:11 GameEntry.h
+
+* Sources
+
+The main source for this section is Goodrich, Tamassio, Mount (2e),
+Wiley 2011, chapter 3.1, and the accompanying material on the
+zybooks.com platform. A copy of this book is freely and legally
+accessible online at archive.org.

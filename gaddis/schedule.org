@@ -1,0 +1,65 @@
+#+STARTUP: overview hideblocks indent entitiespretty: 
+* CSC 240 Course Schedule 
+
+| Week | Session | Chapter | Topic                                                |
+|------+---------+---------+------------------------------------------------------|
+|    0 | S0      |         | C++ Review and course introduction                   |
+|    1 | S1      | Ch 7    | Arrays and Vectors                                   |
+|      | S2      | Ch 7    | Multidimensional Arrays, Vectors                     |
+|    2 | S3      |         | Introduction to Big-O Notation                       |
+|      | S4      | Ch 8    | Searching and Sorting Arrays (overview only)         |
+|    3 | S5      | Ch 9    | Pointers Basics, Pointer Arithmetic                  |
+|      | S6      | Ch 9    | Pointers and Arrays, Dynamic Memory Allocation       |
+|    4 | S7      | Ch 13   | Defining Classes, Member Functions                   |
+|      | S8      | Ch 13   | Private/Public, Constructors                         |
+|    5 | S9      | Ch 14   | Overloaded Operators, Friend Functions               |
+|      | S10     | Ch 14   | Static Members, Aggregation                          |
+|    6 | S11     | Ch 15   | Inheritance, Base and Derived Classes                |
+|      | S12     | Ch 15   | Polymorphism, Virtual Functions                      |
+|    7 | S13     | Ch 16   | Exceptions: try/catch, throw                         |
+|      | S14     | Ch 16   | Templates: Function and Class Templates              |
+|    8 | S15     | Ch 17   | STL Vectors, Iterators                               |
+|      | S16     | Ch 17   | STL Lists, Stacks, Queues                            |
+|    9 | S17     | Ch 18   | Linked List Basics, Traversal                        |
+|      | S18     | Ch 18   | Insertion, Deletion, and Advanced Operations         |
+|   10 | S19     | Ch 19   | Stack Operations and Implementation                  |
+|      | S20     | Ch 19   | Queue Operations and Circular Queues                 |
+|   11 | S21     | Ch 20   | Recursion: Basics and Classic Examples               |
+|      | S22     | Ch 20   | Recursive Algorithms and Efficiency                  |
+|   12 | S23     | Ch 21   | Binary Trees: Node Structs and Basic Operations      |
+|      | S24     | Ch 21   | Traversal (in/pre/post), Deletion, Tree Applications |
+|   13 | S25     |         | Hash Tables: Concepts, Collisions, Chaining          |
+|      | S26     |         | Hash Tables in STL: unordered_map, unordered_set     |
+|   14 | S27     |         | Graphs: Representation (adjacency list/matrix)       |
+|      | S28     |         | Graph Traversals: BFS and DFS                        |
+|   15 | S29     |         | Advanced Graph Topics (shortest path, cycles, etc.)  |
+|      | S30     |         | Final Review or Applied Problem                      |
+
+* Chapter Coverage Plan for CSC 240 (Data Structures in C++)
+
+** Chapter 7: Arrays and Vectors
+| Section | Title                                | Rec  | Notes                            |
+|---------+--------------------------------------+------+----------------------------------|
+| 7.1–7.6 | Arrays use                           | KEEP | Core foundational material       |
+|     7.7 | Arrays as Function Arguments         | SKIM | Likely covered earlier           |
+|     7.8 | Two-Dimensional Arrays               | SKIP | Only needed for matrices         |
+|     7.9 | Arrays with Three or More Dimensions | SKIP | Not necessary for this course    |
+|    7.10 | Case Study: Problem Solving          | KEEP | Good real-world illustration     |
+|    7.11 | Introduction to the STL vector       | KEEP | Transition to dynamic structures |
+
+** Chapter 8: Searching and Sorting Arrays
+| Section | Title                         | Recommendation   | Notes                           |
+|---------+-------------------------------+------------------+---------------------------------|
+| 8.1–8.2 | Search intro + case study     | KEEP SELECTIVELY | Teach linear and binary search  |
+| 8.3–8.4 | Sorting intro + case study    | KEEP SELECTIVELY | Cover sort if required          |
+| 8.5     | Sorting and Searching vectors | KEEP             | Useful STL-focused continuation |
+
+** Chapter 9: Pointers
+| Section | Title                               | Rec   | Notes                                |
+|---------+-------------------------------------+-------+--------------------------------------|
+| 9.1–9.4 | Foundations                         | KEEP  | Critical pointer fundamentals        |
+| 9.5–9.6 | Initializing and comparing pointers | SKIM  | Less commonly emphasized             |
+| 9.7–9.9 | Pointers as parameters etc.         | KEEP  | Required for dynamic data structures |
+| 9.10    | Smart Pointers                      | KEEP  | Show modern best practices; simplify |
+| 9.11    | Case Study                          | MAYBE | Use if helpful                       |
+
