@@ -198,7 +198,7 @@ standard..."Was man nicht im Kopf hat, muss man in den Beinen haben."
 [[../img/stroustrup.jpg]]
 
 #+name: C++ Versions through the years, and their key features
-| VVVV    | Year | Key Features                                                               |
+| V       | Year | Key Features                                                               |
 |-------+------+----------------------------------------------------------------------------|
 | C++98 | 1998 | First ISO standard; templates, STL, exceptions                             |
 | C++03 | 2003 | Bug fixes and minor improvements to C++98                                  |
@@ -239,7 +239,7 @@ standard..."Was man nicht im Kopf hat, muss man in den Beinen haben."
 
   3. Participate actively in the class.
 
-  4. Form study groups and/or join Lyon’s Programming Club.
+  4. Form study groups join the CSC 450 Programming Seminar
 
   5. Complete assignments well before the deadline.
 
@@ -358,7 +358,7 @@ Adapted to computer science:
    - Convince others that what they have built is correct, appropriate
      and worthwhile.
 
-* Want to learn more? Join CSC 450 (Thu 4-5 pm)
+* Want to learn more? Join CSC 450 (Thu 11-11:am)
 
 To learn more by doing, join my programming seminar (1 credit).
 
@@ -386,8 +386,7 @@ You can use any language that you know - no prerequisites otherwise.
 - Computer science is about abstractions that are used to bridge the
   gap between man and machine.
 
-- Abstractions represent the real world (like a President who
-  represents his people).
+- Abstractions do not represent the real world!
 
 - Only paying attention to detail leads to excellence in computing.
 
