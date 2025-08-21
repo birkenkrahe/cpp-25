@@ -32,8 +32,114 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
 * DONE Done Week 1: Introduction to data structures
 
-- C++ review: 10 sample programs (lab)
-- Overview of data structures
+- [Review] Last week (overview session)
+- [Review] C++ Entry Quiz
+- [Lab] C++ review: 10 sample programs
+- [Lecture] Overview of data structures
 - Extended use case: Pet emergency room
 - Target: Abstract Data Types (ADTs)
 
+** Review: Last week / Overview / First code
+
+1) What is an abstraction? Can you give an example (life, math or
+   code)? What's the price to be paid for "abstracting"?
+   #+begin_quote
+   - *Life*: Calling Jim, Joe, John and Jane "students" is an abstraction in
+     real life. It suppresses the details of their persons in order to
+     be to address them with one term.
+    
+   - *Math*: An integer is a mathematical abstraction. It captures the idea of
+     whole numbers ignoring their individual differences.
+
+   - *Code:* The ~int~ data type is a computing abstraction of an integer
+     number.
+
+   - *Price*: Abstractions remove detail thereby removing whatever
+     they're used for further from the real world of complexity.
+   #+end_quote
+
+2) Can you remember one topic of this course on data structures with
+   C++?
+   #+begin_quote
+   1. Understanding abstract data types.
+   2. Understanding memory control.
+   3. Understanding object-orientation.
+   4. Understanding containers and iterators.
+   #+end_quote
+
+3) Which tools and platforms will we be working with? Name three!
+   #+begin_quote
+   1. OneCompiler.com/cpp
+   2. Github.com/birkenkrahe/cpp-25
+   3. Canvas
+   4. GCC (The GNU C Compiler suite)
+   5. GDB (The GNU Debugger)
+   #+end_quote
+
+4) One term that you would like to know more about that was already
+   mentioned?
+   #+begin_quote
+
+   #+end_quote
+
+5) One C++ keyword, concept or function that you'd like to know more
+   about?
+   #+begin_quote
+
+   #+end_quote
+
+6) One problem that you can think of to solve with data structures in
+   C++?
+   #+begin_quote
+
+   #+end_quote
+
+7) One advice on how to study that you remember? Did you already apply
+   any of these since our last meeting?
+   #+begin_quote
+   1. Code every day no matter how little.
+   2. Review lecture notes and notebooks.
+   3. Participate actively in the class.
+   4. Form study groups join the CSC 450 Programming Seminar
+   5. Complete assignments well before the deadline.
+   6. Practice literate programming by documenting your process.
+   7. Focus on fundamentals, simple examples, solid understanding.
+   8. Drill yourself using the weekly quizzes, make small examples.
+   9. Seek help when needed, on the chat or during office hours.
+   10. Build a code & notebook repository at GitHub for your resume.
+  #+end_quote
+
+8) What does every C++ program have?
+   #+begin_src C++ :results none
+     // main function (does nothing)
+     int main()
+     {
+       return 0;
+     }
+   #+end_src
+
+9) What's the meaning of =return 0= - do you have to use it?
+   #+begin_quote
+   - =return 0;= uses the =return= statement to terminate the current
+     function (~main~ in this case) and return the value =0= to indicate
+     that the program ran successfully.
+   - 
+   #+end_quote
+
+10) What's the meaning of =std::cout=? Do you have to use it?
+    #+begin_quote
+    - This is actually quite complicated! The statement =std::cout=
+      consists of:
+      1) ~std~ for the standard C++ ~namespace~ (think of it as a library of
+         useful functions).
+      2) ~::~ the *scope resolution operator* which tells the compiler where
+         to look for names (like ~cout~).
+      3) ~cout~ is the *character output stream object* for console (stdout)
+         output.
+    - So the 1st answer is: =std::cout= is the standard output stream
+      object from the std namespace.
+    - Do you have to use it? No, you can use this instead: =using
+      namespace std; cout << "Hello";= - It's in the OneCompiler.com/cpp
+      template.
+    #+end_quote
+   
