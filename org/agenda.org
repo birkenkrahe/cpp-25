@@ -30,7 +30,7 @@ How did you do?
 CSC 240 is a complete redevelopment of a course that I first taught in
 Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
-* DONE Done Week 1: Introduction to data structures
+* Week 1: Introduction to data structures
 
 - [Review] Last week (overview session)
 - [Review] C++ Entry Quiz
