@@ -129,6 +129,38 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
      that the program ran successfully.
    - =return EXIT_SUCCESS;= is the same thing using a constant from
      ~<cstdlib>~ (which you must ~#include~.
+
+   Post-mortem:
+   
+   - There are many more ~return~ codes on Unix/POSIX-compliant systems that
+     the system can use. 
+     |  Code | Meaning                                   |
+     |-------+-------------------------------------------|
+     |     0 | Success                                   |
+     |     1 | General error (~EXIT_FAILURE~)              |
+     |     2 | Misuse of shell builtins (Bash)           |
+     |   126 | Command invoked cannot execute            |
+     |   127 | Command not found                         |
+     |   128 | Invalid exit argument                     |
+     | 128+n | Fatal error signal "n" (e.g., 130 = ^C)   |
+     |   255 | Exit status out of range / implementation |
+
+   - In networking, there are many more integer constants/flags used
+     in sockets to identify errors, options and connection states
+     (these are not ~return~ codes as such though). A few examples:
+     | Code | Name          | Meaning                         |
+     |------+---------------+---------------------------------|
+     |   98 | EADDRINUSE    | Address already in use          |
+     |   99 | EADDRNOTAVAIL | Cannot assign requested address |
+     |  111 | ECONNREFUSED  | Connection refused              |
+     |  113 | EHOSTUNREACH  | No route to host                |
+     |  104 | ECONNRESET    | Connection reset by peer        |
+     |  110 | ETIMEDOUT     | Connection timed out            |
+     |  107 | ENOTCONN      | Socket is not connected         |
+     |  106 | EISCONN       | Socket is already connected     |
+     |   32 | EPIPE         | Broken pipe (write on closed)   |
+     |  101 | ENETUNREACH   | Network is unreachable          |
+
    #+end_quote
 
 9) What's the meaning of =std::cout=? Do you have to use it?
