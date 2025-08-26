@@ -67,9 +67,9 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
 3) Which tools and platforms will we be working with? Name three!
    #+begin_quote
-   1. OneCompiler.com/cpp
-   2. Github.com/birkenkrahe/cpp-25
-   3. Canvas
+   1. OneCompiler.com/cpp and Google Cloud Shell (coding)
+   2. Github.com/birkenkrahe/cpp-25 (materials)
+   3. Canvas (tests)
    4. GCC (The GNU C Compiler suite)
    5. GDB (The GNU Debugger)
    #+end_quote
@@ -147,7 +147,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
      template.
    #+end_quote
 
-10) Do I have to use the output stream object to print in C++?
+10) Do I have to use the output stream object ~cout~ to print in C++?
     #+begin_quote
     No, the trusty old C function ~printf~ works just as well and gives
     you a lot more flexibility, too. Recall that it requires format
