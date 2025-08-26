@@ -396,19 +396,7 @@ You can use any language that you know - no prerequisites otherwise.
 
 - You should study without AI until you know what you're doing.
 
-* C++ review
-
-** Poll on High Level Languages
-
-- "Data structures" is language agnostic
-- C vs. C++
-- Java vs. JavaScript
-- Python vs. R
-- [[https://tiobe.com/index][TIOBE Programming Index 08/25]] vs. [[https://spectrum.ieee.org/top-programming-languages-2024][IEEE Programming languages 2024]]
-- Why C/C++? https://benjdd.com/languages/
-- My suggestion: Check out the free C++ primer [[https://tinyurl.com/cpp-primer][tinyurl.com/cpp-primer]]
-
-** 10 super simple sample programs
+* C++ review - 10 super simple sample programs
 
 - I designed these originally for 2024 but did not work through them
   in class, alas. I wish I had.
@@ -426,24 +414,24 @@ You can use any language that you know - no prerequisites otherwise.
 
 - Program stubs: *Disable editor autocompletion when you first log in!*
   
-  1. Variables: tinyurl.com/cpp-review-1
+  1. [ ] Variables: tinyurl.com/cpp-review-1
 
-  2. Integer arithmetic: tinyurl.com/cpp-review-2
+  2. [ ] Integer arithmetic: tinyurl.com/cpp-review-2
 
-  3. Floating-point numbers. tinyurl.com/cpp-review-3
+  3. [ ] Floating-point numbers. tinyurl.com/cpp-review-3
 
-  4. Floating-point arithmetic: tinyurl.com/cpp-review-4
+  4. [ ] Floating-point arithmetic: tinyurl.com/cpp-review-4
 
-  5. Input/Output/comments: tinyurl.com/cpp-review-5
+  5. [ ] Input/Output/comments: tinyurl.com/cpp-review-5
 
-  6. Conversion/compound operator: tinyurl.com/cpp-review-6
+  6. [ ] Conversion/compound operator: tinyurl.com/cpp-review-6
 
-  7. Conditional statements: tinyurl.com/cpp-review-7
+  7. [ ] Conditional statements: tinyurl.com/cpp-review-7
 
-  8. Loops: tinyurl.com/cpp-review-8
+  8. [ ] Loops: tinyurl.com/cpp-review-8
 
-  9. Arrays: tinyurl.com/cpp-review-9
+  9. [ ] Arrays: tinyurl.com/cpp-review-9
 
-  10. Functions: tinyurl.com/cpp-review-10
+  10. [ ] Functions: tinyurl.com/cpp-review-10
 
-
+- I will give you 10 more just like these to test yourself at home.

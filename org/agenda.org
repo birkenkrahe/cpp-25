@@ -30,14 +30,12 @@ How did you do?
 CSC 240 is a complete redevelopment of a course that I first taught in
 Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
-* Week 1: Introduction to data structures
+* Week 1: C++ Review / Introduction to data structures
 
-- [Review] Last week (overview session)
-- [Review] C++ Entry Quiz
-- [Lab] C++ review: 10 sample programs
-- [Lecture] Overview of data structures
-- Extended use case: Pet emergency room
-- Target: Abstract Data Types (ADTs)
+- [ ] Review: Last week (overview session)
+- [ ] Review: C++ Entry Quiz
+- [ ] Lab: C++ review: 10 sample programs
+- [ ] Lecture: Overview of data structures
 
 ** Review: Last week / Overview / First code
 
@@ -76,25 +74,15 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
    5. GDB (The GNU Debugger)
    #+end_quote
 
-4) One term that you would like to know more about that was already
-   mentioned?
+4) Can you name at least one problem that you can think of to solve
+   with data structures in C++?
    #+begin_quote
-
+   - Sorting and searching through data collections.
+   - Speeding programs up (especially with big data).
+   - Allocating memory at run-time (when you know how much you need).
    #+end_quote
 
-5) One C++ keyword, concept or function that you'd like to know more
-   about?
-   #+begin_quote
-
-   #+end_quote
-
-6) One problem that you can think of to solve with data structures in
-   C++?
-   #+begin_quote
-
-   #+end_quote
-
-7) One advice on how to study that you remember? Did you already apply
+5) One advice on how to study that you remember? Did you already apply
    any of these since our last meeting?
    #+begin_quote
    1. Code every day no matter how little.
@@ -109,7 +97,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
    10. Build a code & notebook repository at GitHub for your resume.
   #+end_quote
 
-8) What does every C++ program have?
+6) What does every C++ program have?
    #+begin_src C++ :results none
      // main function (does nothing)
      int main()
@@ -117,29 +105,123 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
        return 0;
      }
    #+end_src
-
-9) What's the meaning of =return 0= - do you have to use it?
+   
+7) What's the meaning of ~{ }~?
    #+begin_quote
+   The curly braces group a *block* of statements together. The compiler
+   treats these as one unit. They also define a *scope*, a region where
+   a variable exists and can be used.
+   
+   - After a function declaration, ={}= mark the block of code belonging
+     to that function: =main() {}= or =void hello(string & name) {};=
+   - After ~if~, or ~else if~, the statements in ={}= form the block of code
+     that runs only if the condition is ~true~, after ~else~ only if the
+     condition is ~false~. Also: ~switch~.
+   - After ~for~, ~while~ or ~do~ (~while~), the statements in ={}= are repeated
+     as long as the loop condition is ~true~.
+   #+end_quote
+
+8) What's the meaning of =return 0= - do you have to use it?
+   #+begin_quote
+   You don't have to (compiler-dependent) but you should use it:
    - =return 0;= uses the =return= statement to terminate the current
      function (~main~ in this case) and return the value =0= to indicate
      that the program ran successfully.
-   - 
+   - =return EXIT_SUCCESS;= is the same thing using a constant from
+     ~<cstdlib>~ (which you must ~#include~.
    #+end_quote
 
-10) What's the meaning of =std::cout=? Do you have to use it?
+9) What's the meaning of =std::cout=? Do you have to use it?
+   #+begin_quote
+   - The statement =std::cout= consists of:
+     1) ~std~ for the standard C++ ~namespace~ (think of it as a library of
+        useful functions).
+     2) ~::~ the *scope resolution operator* which tells the compiler where
+        to look for names (like ~cout~).
+     3) ~cout~ is the *character output stream object* for console (stdout)
+        output.
+   - So the 1st answer is: =std::cout= is the standard output stream
+     object from the std namespace.
+   - Do you have to use it? No, you can use this instead: =using
+     namespace std; cout << "Hello";= - It's in the OneCompiler.com/cpp
+     template.
+   #+end_quote
+
+10) Do I have to use the output stream object to print in C++?
     #+begin_quote
-    - This is actually quite complicated! The statement =std::cout=
-      consists of:
-      1) ~std~ for the standard C++ ~namespace~ (think of it as a library of
-         useful functions).
-      2) ~::~ the *scope resolution operator* which tells the compiler where
-         to look for names (like ~cout~).
-      3) ~cout~ is the *character output stream object* for console (stdout)
-         output.
-    - So the 1st answer is: =std::cout= is the standard output stream
-      object from the std namespace.
-    - Do you have to use it? No, you can use this instead: =using
-      namespace std; cout << "Hello";= - It's in the OneCompiler.com/cpp
-      template.
+    No, the trusty old C function ~printf~ works just as well and gives
+    you a lot more flexibility, too. Recall that it requires format
+    specifiers like ~%d~ and ~%s~ and arguments to work, and that it is a C
+    function.
     #+end_quote
-   
+
+    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+      char name[19]="Marcus Birkenkrahe";
+      printf("%s\n", name);
+
+      int i=100; float f=3.14;
+      printf("%d %.2f \n", i, f);
+    #+end_src
+
+    #+RESULTS:
+    : Marcus Birkenkrahe
+    : 100 3.14 
+
+** Review: C++ Entry Quiz
+
+- Let's go through the questions and answers briefly.
+
+- How should you deal with your quiz result?
+  #+begin_quote
+  1. Go through the quiz and make sure that you actually understand
+     the correct answer (and what's wrong about the other three).
+  2. Pick out your wrong answers and look up what you're missing -
+     either in your CSC 100 notes, or on cppreference.com, or by
+     googleing it, or even by asking AI for an explanation.
+  3. Especially if you use AI for an explanation, always follow up
+     with a short code example if you can. And if you cannot but you
+     only grasp the concept, start a list of things still to learn.
+  #+end_quote
+
+** Continue: 10 Super-Simple Sample Programs
+
+[[./0_overview.org::* C++ review - 10 super simple sample programs][Overview - links to OneCompiler.com starter code.]]
+
+** 10 More Super-Simple Sample Programs
+
+Solutions will be made available to you next week (as a video).
+
+1. Declare two ~double~ variables, assign them values, and print their
+   sum, difference, product, and quotient, each on a separate line
+   with a label.
+
+2. Write a program that prompts the user for their =first_name= and =age=.
+   Print a message like: ="Hello Alice, you are 20 years old."=
+
+3. Create a program that declares a =const int DAYS_IN_WEEK = 7=. Ask
+   the user for a number of days and print how many full weeks and
+   remaining days that corresponds to.
+
+4. Write a program that uses a =for= loop to compute the =sum= of all
+   integers from 1 to 100, then print the =result=.
+
+5. Ask the user to enter a single character. If it’s a vowel, print
+   "You entered a vowel." Otherwise, print "You entered a consonant or
+   symbol."
+
+6. Declare an integer array of size 5. Initialize it with values in the
+   declaration. Use a loop to print the values in reverse order.
+
+7. Write a program with a function =square(int n)= that returns the square
+   of =n=. In ~main~, call the function with a user-provided integer and
+   print the result.
+
+8. Prompt the user to enter 10 integers. Count how many of them are
+   negative, positive, and zero, and print the results.
+
+9. Write a program that simulates rolling a six-sided die 20 times using
+   ~rand()~. Print the results in a single line separated by spaces.
+
+10. Define a ~struct~ called =Book= with members: =title= (string), =author=
+    (string), and =pages= (int). In ~main~, declare one =Book= variable,
+    assign values, and print its details.
