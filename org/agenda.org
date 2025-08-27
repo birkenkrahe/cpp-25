@@ -32,12 +32,12 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
 * Week 1: C++ Review / Introduction to data structures
 
-- [ ] Review: Last week (overview session)
-- [ ] Review: C++ Entry Quiz
+- [X] Review: Last week (overview session)
+- [X] Review: C++ Entry Quiz
 - [ ] Lab: C++ review: 10 sample programs
 - [ ] Lecture: Overview of data structures
 
-** Review: Last week / Overview / First code
+** DONE Review: Last week / Overview / First code
 
 1) What is an abstraction? Can you give an example (life, math or
    code)? What's the price to be paid for "abstracting"?
@@ -199,7 +199,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
     : Marcus Birkenkrahe
     : 100 3.14 
 
-** Review: C++ Entry Quiz
+** DONE Review: C++ Entry Quiz
 
 - Let's go through the questions and answers briefly.
 
@@ -215,13 +215,14 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
      only grasp the concept, start a list of things still to learn.
   #+end_quote
 
-** Continue: 10 Super-Simple Sample Programs
+** IN-PROGRESS 10 Super-Simple Sample Programs
 
 [[./0_overview.org::* C++ review - 10 super simple sample programs][Overview - links to OneCompiler.com starter code.]]
 
-** 10 More Super-Simple Sample Programs
+** Bonus: 10 More Super-Simple Sample Programs
 
-Solutions will be made available to you next week (as a video).
+Solutions will be made available to you next week (as a video). You
+can solve these yourself and upload the solutions to Canvas.
 
 1. Declare two ~double~ variables, assign them values, and print their
    sum, difference, product, and quotient, each on a separate line
