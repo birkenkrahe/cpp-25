@@ -34,10 +34,10 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
 - [X] Review: Last week (overview session)
 - [X] Review: C++ Entry Quiz
-- [ ] Lab: C++ review: 10 sample programs
+- [X] Lab: C++ review: 10 sample programs
 - [ ] Lecture: Overview of data structures
 
-** DONE Review: Last week / Overview / First code
+** Review: Last week / Overview / First code
 
 1) What is an abstraction? Can you give an example (life, math or
    code)? What's the price to be paid for "abstracting"?
@@ -199,7 +199,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
     : Marcus Birkenkrahe
     : 100 3.14 
 
-** DONE Review: C++ Entry Quiz
+** Review: C++ Entry Quiz
 
 - Let's go through the questions and answers briefly.
 
@@ -215,46 +215,260 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
      only grasp the concept, start a list of things still to learn.
   #+end_quote
 
-** IN-PROGRESS 10 Super-Simple Sample Programs
+** Review: Tuesday (Super-simple sample programs)
 
-[[./0_overview.org::* C++ review - 10 super simple sample programs][Overview - links to OneCompiler.com starter code.]]
+1. Name (at least) one place where you can get C++ help
+   #+begin_quote
+   - *cppreference.com for full documentation*
+   - stackoverflow.com for discussions
+   - cplusplus.com/forum for discussion
+   #+end_quote
 
-** Bonus: 10 More Super-Simple Sample Programs
+2. What should you put in the header of every program?
+   #+begin_quote
+   - Purpose of the program
+   - Input data types and sample output
+   - [Copyrights, author name and date]
+   #+end_quote
+   
+3. What does =using namespace std;= do?
+   #+begin_quote
+   This statement tells the compiler that when you write a name like
+   ~cout~, ~cin~, ~string~ etc. it should look in the ~std~ name space first.
+   #+end_quote
+   
+4. What's the main difference between printing with ~cout~ vs. ~printf~?
+   #+begin_quote
+   The main difference between printing with ~cout~ vs. ~printf~ is that
+   ~cout~ can chain output with ~<<~, and that ~printf~ requires format
+   specifiers (like ~%d~ or ~%f~) to print data (like ~int~ or ~float~).
+   #+end_quote
 
-Solutions will be made available to you next week (as a video). You
-can solve these yourself and upload the solutions to Canvas.
+5. What is ~i/=10~ if =i = 100= ?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     int i = 100;
+     cout << (i/=10);
+   #+end_src
 
-1. Declare two ~double~ variables, assign them values, and print their
-   sum, difference, product, and quotient, each on a separate line
-   with a label.
+   #+RESULTS:
+   : 10
+   
+6. What is =*&*p= if =p= is a pointer to =int i=10=?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     int i = 10;   // i has the value 10
+     int *p = &i;  // p points to i
+     cout << (*&*p);
+   #+end_src
 
-2. Write a program that prompts the user for their =first_name= and =age=.
-   Print a message like: ="Hello Alice, you are 20 years old."=
+   #+RESULTS:
+   : 10
+   
+** 10 Super-Simple Sample Programs
 
-3. Create a program that declares a =const int DAYS_IN_WEEK = 7=. Ask
-   the user for a number of days and print how many full weeks and
-   remaining days that corresponds to.
+- [[file:~/GitHub/cpp-25/org/0_overview.org::* C++ review - 10 super simple sample programs][Overview - links to OneCompiler.com starter code.]]
+- [[https://youtu.be/UiQZThq39nc?si=kzWRLeJcBYIQgh42][Link to solutions video (YouTube)]]
 
-4. Write a program that uses a =for= loop to compute the =sum= of all
-   integers from 1 to 100, then print the =result=.
+** NEXT Tuesday: [Scheduled] Popquiz on "10 super-simple sample programs"
+#+attr_html: :width 250px :float nil:
+[[../img/popquiz2.png]]
 
-5. Ask the user to enter a single character. If it’s a vowel, print
-   "You entered a vowel." Otherwise, print "You entered a consonant or
-   symbol."
+- 10 super-simple sample code fragments!
 
-6. Declare an integer array of size 5. Initialize it with values in the
-   declaration. Use a loop to print the values in reverse order.
+- Paper, no computers! Less pop, more pep!
 
-7. Write a program with a function =square(int n)= that returns the square
-   of =n=. In ~main~, call the function with a user-provided integer and
-   print the result.
+- Review this week's programs!
 
-8. Prompt the user to enter 10 integers. Count how many of them are
-   negative, positive, and zero, and print the results.
+- Graded! Brutal!
 
-9. Write a program that simulates rolling a six-sided die 20 times using
-   ~rand()~. Print the results in a single line separated by spaces.
+** TODO Practice assignments: upload your results to Canvas (by Sept 2)
 
-10. Define a ~struct~ called =Book= with members: =title= (string), =author=
-    (string), and =pages= (int). In ~main~, declare one =Book= variable,
-    assign values, and print its details.
+- Download your practice files from the 10 Super-Simple Sample Programs.
+
+- Each program is a separate .cpp file
+
+- Bundle all files into one ZIP file named =lastname_firstname_practice1.zip=
+  containing files =p1.cpp= to =p10.cpp=.
+
+- Upload your ZIP file to Canvas.
+
+** TODO First online test due next week (by Sept 7)
+
+- Based on this week's material
+
+- Multiple choice
+
+- Easy-peasy lemon-squeezy if you know where to look
+
+- Remember for code questions to fire up your compiler
+
+** TODO Homework assignment: 10 More Super-Simple Sample Programs (by Sept 7)
+
+- Solutions will be made available to you next week (as a video). You
+  can solve these yourself and upload the solutions to Canvas. Feel
+  free to code along with the video (try to find a solution yourself
+  first).
+
+- For this batch of problems, don't try to be super clever. But do
+  give every program a minimal header explaining what it does,
+  input/output and your name as author, and next to it "(pledged)" for
+  honesty.
+
+- Expect to spend 3-4 hours on this homework (reading carefully: 15
+  min, each small program: 15-20 min, wrap-up/submission: 15 min).
+
+*- Goal*: Reinforce variables, I/O, conditionals, loops, small
+functions, and simple structs. No advanced features.
+
+- *General rules*
+  - Each program is a *separate* =.cpp= file with a short header
+    (purpose, I/O, your name + *(pledged)*).
+  - Use OneCompiler.com (C++). Download each =.cpp=, bundle all into *one ZIP*,
+    and upload to Canvas.
+  - Use either =std::cout= or =printf= (your choice).
+  - If you use =rand()=, also use =srand(time(nullptr))= once.
+
+- *What to submit*
+  - A ZIP named =lastname_firstname_hw1.zip= containing files =p1.cpp …
+    p10.cpp=.
+  - Each file should compile and run on OneCompiler without edits.
+
+- *Grading (10 pts)*
+  - Compiles & runs (6) — each file 0.6 pt
+  - Meets spec & sampale format (3) — labels/wording/order
+  - Minimal header present in all files (1)
+
+*** Problems
+
+1. *Basic arithmetic on doubles*
+   
+   Declare two ~double~ vars, assign values, print *Sum*, *Difference*,
+   *Product*, *Quotient* on separate labeled lines.
+
+   Sample (x=3.14, y=2.71):
+   #+begin_example
+   Sum        = 5.85
+   Difference = 0.43
+   Product    = 8.5094
+   Quotient   = 1.15867
+   #+end_example
+
+2. *Greeting with name and age*
+
+   Prompt for =first_name= and =age=. Print:
+   ="Hello Alice, you are 20 years old."=
+
+   #+begin_example
+   Enter your first name and your age:
+   Hello Alice, you are 20 years old.
+   #+end_example
+
+3. *Days to weeks+days*
+   
+   Use =const int DAYS_IN_WEEK = 7;=. Read days, print full weeks and
+   remaining days.
+
+   #+begin_example
+   Enter a number of days:
+   44 days are 6 weeks and 2 days.
+   #+end_example
+
+4. *Sum 1..100 with a for-loop*
+
+   Compute the sum of integers 1..100 and print the result (=5050=).
+
+5. *Vowel checker*
+
+   Read a single character. If it’s a vowel (a,e,i,o,u — upper or
+   lower), print "You entered a vowel." Else print "You entered a
+   consonant or symbol."
+
+6. *Reverse print a small fixed array*
+   
+   Declare =int a[5]={100,200,300,400,500};= and print in *reverse*
+   order, space-separated, one line.
+
+   Correct sample output:
+   #+begin_example
+   500 400 300 200 100
+   #+end_example
+
+7. *Square via function*
+
+   Write =int square(int n)= returning =n*n=. In =main=, read an int,
+   call =square=, print the result.
+
+8. *Count signs in 10 integers*
+
+   Read 10 integers. Count positives, negatives, zeros. Print exactly:
+
+   #+begin_example
+   Enter 10 integers: 2 3 -5 0 0 3 -100 5 0 1
+   Number of positive values = 5
+   Number of negative values = 2
+   Number of zero values     = 3
+   #+end_example
+
+9. *Roll a die 10 times*
+
+   Use ~srand(time(nullptr));~ to set the seed then generate 10 values
+   in [1..6] using ~rand()%6 + 1~. Print one line, space-separated.
+
+   Example:
+   #+begin_example
+   1 4 3 1 5 1 4 6 3 1
+   #+end_example
+
+10. *Simple struct*
+
+    Define:
+    #+begin_src C++
+    struct Book {
+      string title;
+      string author;
+      int pages;
+    };
+    #+end_src
+
+    In =main=, declare one =Book=, assign values, and print:
+
+    #+begin_example
+    Title: War and Peace
+    Author: Leo Tolstoy
+    Pages: 1300
+    #+end_example
+
+* Week 2 - Pepquiz / Data structures introduction 
+#+attr_html: :width 300px :float nil:
+[[../img/pepquiz2.png]]
+
+- [ ] Home programming assignment solution video published ([[https://youtu.be/UiQZThq39nc?si=kzWRLeJcBYIQgh42][YouTube]])
+
+  + Solve the programs on your own (without AI).
+
+  + Check the solution before submitting.
+
+  + Bag 100% for your grade!
+
+- [ ] *Pepquiz! - Declarations / Arithmetic / Conditionals / Loops*
+
+  + You have 30 minutes to complete the test on paper (no help)
+
+  + You take the test home with you and run the code to test it.
+
+  + You compare your answers to my sample answers.
+
+  + You grade yourself and tell me your grade next time.
+
+  + You need to be prepared to show me your graded test.
+
+- [ ] *C++ review: Arrays and Functions*
+
+  + You may need this to complete the homework assignment.
+
+  + The homework assignment is due on Sunday, September 7.
+
+  + This will be short because we'll be seeing a lot of it.
+
+- [ ] *Introduction to data structures*
+
+- [ ] *C-style arrays and vectors*
