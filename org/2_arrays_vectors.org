@@ -60,7 +60,6 @@
 * Two types of initialization
 
 
-
 * PRACTICE Extended example: Declare and Display Product Prices
 
 You need to upload the URL for this practice file to Canvas.
@@ -127,105 +126,14 @@ dashboard preview.
     int main()
     {
       // set SIZE of array
-      const int SIZE = 5;
+
       // Define array `prices` and assign product prices
-      double prices[SIZE] {10., 100., 45.99, 30., 200.};
+
       // Print array values on one line separated by one space
-      for (int i=0;i<SIZE;i++) cout << prices[i] << " ";
+
       return 0;
     }
   #+end_src
-
-  #+RESULTS:
-  : 10 100 45.99 30 200 
-
-- Challenge solution: https://onecompiler.com/cpp/43vgcyjh7
-  #+name: product price array challenge
-  #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :results output :exports both
-    // Store product prices in an array: Get five prices as user input
-    // Validate that input is positive - otherwise abort with message
-    // Expected output:
-    // 10 100 45.99 30 200
-    // Author: Marcus Birkenkrahe (pledged)
-
-    #include <iostream>
-    using namespace std;
-
-    int main()
-    {
-      // set SIZE of array
-      const int SIZE = 5;
-      // define double array
-      double prices[SIZE];
-      // declare input
-      double input;
-      // declare loop variable
-      int product=0;
-      // get user input
-      while (cin>>input)
-        {
-          if (input>=0)
-    	{
-    	  prices[product] = input;
-    	  cout << prices[product] << " ";
-    	  product++;
-    	} else {
-    	cout << "\nAbort: Negative input.";
-    	break;
-          }
-        }
-      return 0;
-    }
-#+end_src
-
-#+RESULTS: product price array challenge
-: 10 100 45.99 30 200 
-
-- Generate InputFile:
-  #+begin_src bash :results output :exports both
-    cd ../data
-    echo "10. 100. 45.99 30. 200." > inputFile
-    cat inputFile
-  #+end_src
-
-  #+RESULTS:
-  : 10. 100. 45.99 30. 200.
-
-  1) Let user enter 5 product prices instead of hardcoding them.
-
-     #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :results output
-       #include <iostream>
-       #include <iomanip>
-       using namespace std;
-
-       int main()
-       {
-         const int SIZE = 5;
-         // Define array `prices`
-         double prices[SIZE];
-         // Let user enter product prices and print values as entered
-         cout << fixed << showpoint << setprecision(2);
-         for (int i=0; i<SIZE; i++)
-           {
-             cout << "Enter price for product #"
-                  << (i+1) << ": ";
-             cin >> prices[i];
-             cout << prices[i] << endl;
-           }
-         // Print array values on one line separated by one space
-         cout << "Product prices (USD): ";
-         for (int i=0;i<SIZE;i++) cout << prices[i] << " ";
-         return 0;
-       }
-     #+end_src
-
-     #+RESULTS:
-     : Enter price for product #1: 10.00
-     : Enter price for product #2: 100.00
-     : Enter price for product #3: 45.99
-     : Enter price for product #4: 30.00
-     : Enter price for product #5: 200.00
-     : Product prices (USD): 10.00 100.00 45.99 30.00 200.00
 
 * Inputting array content element-wise
 
@@ -265,53 +173,28 @@ dashboard preview.
     // entered on the command-line. Values are stored in an array and
     // printed separated by one space. Do not use loops at all.
     // Author: Marcus Birkenkrahe (pledged)
-    
-    // include header file
-    #include <iostream>
-    // use std namespace
-    using namespace std;
-    // main program
-    int main()
-    {
-      // define array size declarator
-      const int NUM_EMPLOYEES = 6;
-      // define array
-      int hours[NUM_EMPLOYEES];
-      // ask user for keyboard input
-      cout << "Enter the hours worked by "
-           << NUM_EMPLOYEES << " employees: ";
-      // get array input from keyboard
-      cin >> hours[0];
-      cin >> hours[1];
-      cin >> hours[2];
-      cin >> hours[3];
-      cin >> hours[4];
-      cin >> hours[5];
-      // print output
-      cout << "\nThe hours you entered were:";
-      cout << " " << hours[0];
-      cout << " " << hours[1];
-      cout << " " << hours[2];
-      cout << " " << hours[3];
-      cout << " " << hours[4];
-      cout << " " << hours[5];
 
-      return 0;
+    // include header file
+
+    // use std namespace
+
+    // main program
+
+      // define array size declarator
+      // define array
+      // ask user for keyboard input
+      // get array input from keyboard
+      // print output
+
+    return 0;
     }
   #+end_src
-
-  #+RESULTS:
-  : Enter the hours worked by 6 employees:
-  : The hours you entered were: 20 12 40 30 30 15
 
   Input file:
   #+begin_src bash :results output :exports both
     echo "20 12 40 30 30 15" > input
     cat input
   #+end_src
-
-  #+RESULTS:
-  : 20 12 40 30 30 15
 
 * Stepping through an array
 
@@ -332,31 +215,22 @@ dashboard preview.
     int main()
     {
       // define array size declarator
-      const int NUM_EMPLOYEES = 6;
+
       // define array
-      int hours[NUM_EMPLOYEES];
+
       // ask user for keyboard input
-      cout << "Enter the hours worked by "
-           << NUM_EMPLOYEES << " employees: ";
       // get array input from keyboard with a loop
-      for (int i=0; i<NUM_EMPLOYEES; i++) cin >> hours[i];
       // print output
-      cout << "\nThe hours you entered were:";
-      for (int i=0; i<NUM_EMPLOYEES; i++) cout << " " << hours[i];
-      cout << endl;
+
       return 0;
     }
   #+end_src
-
-  #+RESULTS:
-  : Enter the hours worked by 6 employees: 
-  : The hours you entered were: 20 12 40 30 30 15
 
   #+begin_src bash :results none :exports both
     echo "20 12 40 30 30 15" > input
   #+end_src
 
-* Running C++ on the command-line (CLI)
+* PRACTICE Running C++ on the command-line (CLI)
 
 1) Open the Google Cloud Shell at ide.cloud.google.com
 
@@ -372,5 +246,7 @@ dashboard preview.
 5) Compile the file with =make hours=
 
 6) Run the file with =./hours= and enter 20 12 40 30 30 15
+
+7) Upload screenshot of your terminal with the result to Canvas.
 
 
