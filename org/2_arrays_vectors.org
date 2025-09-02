@@ -1,0 +1,376 @@
+#+TITLE: Arrays and Vectors
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 240 Data Structures Fall 2025
+#+OPTIONS: toc:1 num:1 ^:nil:
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+- [ ] Array declaration and initialization
+- [ ] Array input without loops
+- [ ] Stepping through an array with ~for~
+- [ ] Running C++ on the command-line with ~make~
+
+* Simple example: Array declaration
+
+- Complete the following program:
+
+  1) Supply the definition for an integer array named =values= of size
+     =NUM_ELEMENTS=, and assign the values 100, 200, 300, 400, 500.
+  2) Print the values of the array on one line separated by a space.
+
+- Starter code: https://tinyurl.com/array-declaration
+  #+begin_src C++ :main no :includes :results output
+    // Declare, initialize and print an array of 5 elements
+    #include <iostream>
+    using namespace std;
+
+    int main()
+    {
+      // Define size of array NUM_ELEMENTS
+      
+      // Define int array `values` of size NUM_ELEMENTS and assign
+      // 100...500 to the array
+      
+      // Print the array elements on one line separated by a space
+      return 0;
+    }
+  #+end_src
+
+- Solution: https://onecompiler.com/cpp/43vgaj8dc  
+  #+begin_src C++ :main no :includes :results output
+    #include <iostream>
+    using namespace std;
+
+    int main()
+    {
+      // Define size of array NUM_ELEMENTS      
+
+      // Define integer array `values` of size NUM_DECLARATOR
+      // Assign 100...500 to the array
+
+      // Print the array elements on one line separated by a space
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 100 200 300 400 500 
+
+* Two types of initialization
+
+
+
+* PRACTICE Extended example: Declare and Display Product Prices
+
+You need to upload the URL for this practice file to Canvas.
+
+** Scenario
+
+You’ve joined the IT support team at a small e-commerce startup,
+QuickCart.  Your first task is to write a simple C++ program that
+stores the fixed prices of five featured products.  These prices must
+be stored in an array and displayed on a single line for the company
+dashboard preview.
+
+** Task
+
+- Complete the program below:
+  1. Define an floating-point array named =prices= with size =SIZE=.
+  2. Assign the values 10.0 100.0 45.99 30.00 200.00 to the array
+     (these represent product prices in dollars).
+  3. Print the array elements on one line separated by one space.
+
+- *Expected Output:*
+  #+begin_example
+  #+RESULTS:
+  : 10 100 45.99 30 200
+  #+end_example
+
+** Starter Code: [[https://tinyurl.com/array-product-prices][tinyurl.com/array-product-prices]]
+#+begin_src C++ :main no :includes :results output
+  // Store product prices in an array
+  // Author: 
+
+  #include <iostream>
+  using namespace std;
+
+  int main()
+  {
+    // Set SIZE of array
+   
+    // Define array `prices` and assign product prices
+   
+    //Print prices on one line
+    
+    return 0;
+  }
+#+end_src
+
+** Tip
+
+- Remember to use brace list initialization for the array.
+- You can use a loop to print each element with a trailing space.
+
+** Challenges
+
+1) Let the user enter 5 product prices instead of hardcoding them
+2) Validate that each input is a positive number.
+
+** Solution
+
+- Code: https://onecompiler.com/cpp/43vgbsg5f
+  #+begin_src C++ :main no :includes :results output
+    #include <iostream>
+    using namespace std;
+
+    int main()
+    {
+      // set SIZE of array
+      const int SIZE = 5;
+      // Define array `prices` and assign product prices
+      double prices[SIZE] {10., 100., 45.99, 30., 200.};
+      // Print array values on one line separated by one space
+      for (int i=0;i<SIZE;i++) cout << prices[i] << " ";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 10 100 45.99 30 200 
+
+- Challenge solution: https://onecompiler.com/cpp/43vgcyjh7
+  #+name: product price array challenge
+  #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :results output :exports both
+    // Store product prices in an array: Get five prices as user input
+    // Validate that input is positive - otherwise abort with message
+    // Expected output:
+    // 10 100 45.99 30 200
+    // Author: Marcus Birkenkrahe (pledged)
+
+    #include <iostream>
+    using namespace std;
+
+    int main()
+    {
+      // set SIZE of array
+      const int SIZE = 5;
+      // define double array
+      double prices[SIZE];
+      // declare input
+      double input;
+      // declare loop variable
+      int product=0;
+      // get user input
+      while (cin>>input)
+        {
+          if (input>=0)
+    	{
+    	  prices[product] = input;
+    	  cout << prices[product] << " ";
+    	  product++;
+    	} else {
+    	cout << "\nAbort: Negative input.";
+    	break;
+          }
+        }
+      return 0;
+    }
+#+end_src
+
+#+RESULTS: product price array challenge
+: 10 100 45.99 30 200 
+
+- Generate InputFile:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "10. 100. 45.99 30. 200." > inputFile
+    cat inputFile
+  #+end_src
+
+  #+RESULTS:
+  : 10. 100. 45.99 30. 200.
+
+  1) Let user enter 5 product prices instead of hardcoding them.
+
+     #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :results output
+       #include <iostream>
+       #include <iomanip>
+       using namespace std;
+
+       int main()
+       {
+         const int SIZE = 5;
+         // Define array `prices`
+         double prices[SIZE];
+         // Let user enter product prices and print values as entered
+         cout << fixed << showpoint << setprecision(2);
+         for (int i=0; i<SIZE; i++)
+           {
+             cout << "Enter price for product #"
+                  << (i+1) << ": ";
+             cin >> prices[i];
+             cout << prices[i] << endl;
+           }
+         // Print array values on one line separated by one space
+         cout << "Product prices (USD): ";
+         for (int i=0;i<SIZE;i++) cout << prices[i] << " ";
+         return 0;
+       }
+     #+end_src
+
+     #+RESULTS:
+     : Enter price for product #1: 10.00
+     : Enter price for product #2: 100.00
+     : Enter price for product #3: 45.99
+     : Enter price for product #4: 30.00
+     : Enter price for product #5: 200.00
+     : Product prices (USD): 10.00 100.00 45.99 30.00 200.00
+
+* Inputting array content element-wise
+
+- *Task*: Write a program that asks for the number of hours worked by
+  six employees to be entered on the command line. Store the values in
+  an array, and then print them on one line separated by one
+  space. Constraint: *Do not use loops.*
+
+- *Sample input:* 20 12 40 30 30 15
+
+- *Sample output:*
+  #+begin_example
+  Enter the hours worked by 6 employees:
+  The hours you entered were: 20 12 40 30 30 15
+  #+end_example
+
+- *C++ starter code:* [[https://tinyurl.com/employee-hours][tinyurl.com/employee-hours]]
+  #+begin_src C++ :noeval :cmdline < input :main no :includes  :results output
+    // Program asks for number of hours worked by six employees to be
+    // entered on the command-line. Values are stored in an array and
+    // printed separated by one space. Do not use loops at all.
+    // Author:
+
+    // include header file
+    // use std namespace
+    // main program
+    // define array size declarator NUM_EMPLOYEES
+    // define array `hours`
+    // ask user for keyboard input
+    // get array input from keyboard
+    // print output
+  #+end_src
+
+- Solution: https://onecompiler.com/cpp/43vgeh56g
+  #+begin_src C++ :cmdline < input :main no :includes :results output
+    // Program asks for number of hours worked by six employees to be
+    // entered on the command-line. Values are stored in an array and
+    // printed separated by one space. Do not use loops at all.
+    // Author: Marcus Birkenkrahe (pledged)
+    
+    // include header file
+    #include <iostream>
+    // use std namespace
+    using namespace std;
+    // main program
+    int main()
+    {
+      // define array size declarator
+      const int NUM_EMPLOYEES = 6;
+      // define array
+      int hours[NUM_EMPLOYEES];
+      // ask user for keyboard input
+      cout << "Enter the hours worked by "
+           << NUM_EMPLOYEES << " employees: ";
+      // get array input from keyboard
+      cin >> hours[0];
+      cin >> hours[1];
+      cin >> hours[2];
+      cin >> hours[3];
+      cin >> hours[4];
+      cin >> hours[5];
+      // print output
+      cout << "\nThe hours you entered were:";
+      cout << " " << hours[0];
+      cout << " " << hours[1];
+      cout << " " << hours[2];
+      cout << " " << hours[3];
+      cout << " " << hours[4];
+      cout << " " << hours[5];
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Enter the hours worked by 6 employees:
+  : The hours you entered were: 20 12 40 30 30 15
+
+  Input file:
+  #+begin_src bash :results output :exports both
+    echo "20 12 40 30 30 15" > input
+    cat input
+  #+end_src
+
+  #+RESULTS:
+  : 20 12 40 30 30 15
+
+* Stepping through an array
+
+- Change the previous solution to get the keyboard input and generate
+  the output using a loop to step through the array.
+
+- Solution: [[https://tinyurl.com/employee-hours-2][tinyurl.com/employee-hours-2]]
+  #+begin_src C++ :tangle ~/GitHub/cpp-25/src/hours.cpp :cmdline < input :main no :includes :results output
+    // Program asks for number of hours worked by six employees to be
+    // entered on the command-line. Values are stored in an array and
+    // printed separated by one space. Use for loops.
+    // Author: Marcus Birkenkrahe (pledged)    
+    // include header file
+    #include <iostream>
+    // use std namespace
+    using namespace std;
+    // main program
+    int main()
+    {
+      // define array size declarator
+      const int NUM_EMPLOYEES = 6;
+      // define array
+      int hours[NUM_EMPLOYEES];
+      // ask user for keyboard input
+      cout << "Enter the hours worked by "
+           << NUM_EMPLOYEES << " employees: ";
+      // get array input from keyboard with a loop
+      for (int i=0; i<NUM_EMPLOYEES; i++) cin >> hours[i];
+      // print output
+      cout << "\nThe hours you entered were:";
+      for (int i=0; i<NUM_EMPLOYEES; i++) cout << " " << hours[i];
+      cout << endl;
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Enter the hours worked by 6 employees: 
+  : The hours you entered were: 20 12 40 30 30 15
+
+  #+begin_src bash :results none :exports both
+    echo "20 12 40 30 30 15" > input
+  #+end_src
+
+* Running C++ on the command-line (CLI)
+
+1) Open the Google Cloud Shell at ide.cloud.google.com
+
+2) Open the terminal
+
+3) Download the source code from the web:
+   #+begin_quote sh
+   wget -O hours.cpp tinyurl.com/employee-hours-cli
+   #+end_quote
+
+4) Check the file with =cat hours.cpp=
+
+5) Compile the file with =make hours=
+
+6) Run the file with =./hours= and enter 20 12 40 30 30 15
+
+
