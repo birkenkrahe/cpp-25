@@ -21,5 +21,6 @@ int main()
   // print output
   cout << "\nThe hours you entered were:";
   for (int i=0; i<NUM_EMPLOYEES; i++) cout << " " << hours[i];
+  cout << endl;
   return 0;
 }
