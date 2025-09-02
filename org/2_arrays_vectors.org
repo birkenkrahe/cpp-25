@@ -58,8 +58,6 @@
   : 100 200 300 400 500 
 
 * Two types of initialization
-
-
 * PRACTICE Extended example: Declare and Display Product Prices
 
 You need to upload the URL for this practice file to Canvas.
@@ -113,12 +111,12 @@ dashboard preview.
 
 ** Challenges
 
-1) Let the user enter 5 product prices instead of hardcoding them
+1) Let a user enter 5 product prices instead of hardcoding them
 2) Validate that each input is a positive number.
 
 ** Solution
 
-- Code: https://onecompiler.com/cpp/43vgbsg5f
+- Code: 
   #+begin_src C++ :main no :includes :results output
     #include <iostream>
     using namespace std;

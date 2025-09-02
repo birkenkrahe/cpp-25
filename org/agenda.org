@@ -268,7 +268,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 - [[file:~/GitHub/cpp-25/org/0_overview.org::* C++ review - 10 super simple sample programs][Overview - links to OneCompiler.com starter code.]]
 - [[https://youtu.be/UiQZThq39nc?si=kzWRLeJcBYIQgh42][Link to solutions video (YouTube)]]
 
-** NEXT Tuesday: [Scheduled] Popquiz on "10 super-simple sample programs"
+** Tuesday: [Scheduled] Popquiz on "10 super-simple sample programs"
 #+attr_html: :width 250px :float nil:
 [[../img/popquiz2.png]]
 
@@ -280,7 +280,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
 - Graded! Brutal!
 
-** TODO Practice assignments: upload your results to Canvas (by Sept 2)
+** Practice assignments: upload your results to Canvas (by Sept 7)
 
 - Download your practice files from the 10 Super-Simple Sample Programs.
 
@@ -291,7 +291,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
 - Upload your ZIP file to Canvas.
 
-** TODO First online test due next week (by Sept 7)
+** First online test due next week (by Sept 7)
 
 - Based on this week's material
 
@@ -301,7 +301,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
 - Remember for code questions to fire up your compiler
 
-** TODO Homework assignment: 10 More Super-Simple Sample Programs (by Sept 7)
+** Homework assignment: 10 More Super-Simple Sample Programs (by Sept 7)
 
 - Solutions will be made available to you next week (as a video). You
   can solve these yourself and upload the solutions to Canvas. Feel
@@ -441,11 +441,11 @@ functions, and simple structs. No advanced features.
 #+attr_html: :width 300px :float nil:
 [[../img/pepquiz2.png]]
 
-- [ ] Home programming assignment solution video published ([[https://youtu.be/UiQZThq39nc?si=kzWRLeJcBYIQgh42][YouTube]])
+- [ ] *Home assignment solution video published* (30' [[https://youtu.be/UiQZThq39nc?si=kzWRLeJcBYIQgh42][YouTube]])
 
-  + Solve the programs on your own (without AI).
+  + Solve the programs on your own (without AI) first.
 
-  + Check the solution before submitting.
+  + Check the video solution before submitting if you want.
 
   + Bag 100% for your grade!
 
@@ -457,18 +457,20 @@ functions, and simple structs. No advanced features.
 
   + You compare your answers to my sample answers.
 
-  + You grade yourself and tell me your grade next time.
+  + You grade yourself and bring your self-graded test to class.
 
-  + You need to be prepared to show me your graded test.
+  + I will briefly check your self-assessment and enter the grade.
 
 - [ ] *C++ review: Arrays and Functions*
 
-  + You may need this to complete the homework assignment.
+  + Remember: The homework assignment is due on Sunday, September 7.
 
-  + The homework assignment is due on Sunday, September 7.
+  + Remember: There's also a test available until Sunday, September 7.
 
-  + This will be short because we'll be seeing a lot of it.
+  + Remember to compress the practice & upload the ZIP file to Canvas.
 
-- [ ] *Introduction to data structures*
+  + I will check individual practice assignments sporadically.
 
-- [ ] *C-style arrays and vectors*
+- [ ] *Introduction to data structures* (lecture)
+
+- [ ] *C-style arrays and vectors* (code along)
