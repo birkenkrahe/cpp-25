@@ -39,7 +39,7 @@ how would you store them?
 
 - These are data structures:
   #+begin_quote
-  1. Arrays like ~a[] = {1,2,3,4}~ in C/C++
+  1. Arrays like ~a[] = {1,2,3,4}~ in C/C++ 
   2. Lists like ~foo = [1,2,3,4]~ in Python
   3. Vectors like ~c(1,2,3,4} -> foo~ in R
   4. Matrices like ~M <- diag(4)~ in R
@@ -59,7 +59,7 @@ how would you store them?
   4. Operators (~+=~, ~++~, ~==~ etc.)
   5. Control flow (~if~, ~else if~, ~else~, ~switch~)
   6. Functions (=int f(int x) { return x*x; }=)
-  7. Pointers (=int *p = &i;=)
+  7. Pointers (=int *p = &i;=) - variables that hold addresses
   8. References (=int & ref = x;=)
   9. Exceptions (~try~, ~catch~, ~throw~)
   10. Preprocessor directives (~#include~, ~#define~, ~#ifndef~)
@@ -460,7 +460,7 @@ start to end for every participant of a process.
 - You can see that the procedural shape of these processes is much the
   same.
 
-* Abstract Data Types
+* NEXT Abstract Data Types
 
 - Mastering the chosen data structure involves mastering a set of
   operations, actions to perform with them.
@@ -481,6 +481,55 @@ start to end for every participant of a process.
   #+attr_html: :width 400px:
   #+caption: Image source: Scott Barrett @Udemy
   [[../img/linkedListInsert.png]]
+
+* Containers vs. Container adaptors
+
+- Since ~vector~ has push and pop functions, isn't it just a stack, too?
+  #+begin_quote
+  No - a ~vector~ is a container, and a ~stack~ is a container 
+  adaptor. Both of these are available in the C++ Standard Template
+  Library.
+  #+end_quote  
+- What's a container?
+  #+begin_quote
+  A *container* owns its own data, defines how elements are organized
+  (e.g. array-like for a ~vector~, or linked like a ~list~).
+  #+end_quote  
+- What's a container adaptor?
+  #+begin_quote
+  A *container adaptor* is only a wrapper around a container - built on
+  top of a container (~stack~ and ~queue~ default to ~deque~, and
+  ~priority_queue~ defaults to ~vector~), and does not expose the full
+  container interface - e.g. the ~stack~ only allows push, pop, top, the
+  ~queue~ only push, pop, front, back.
+
+  A container adaptor also enforces an ADT discipline: LIFO for ~stack~,
+  FIFO for ~queue~, priority ordering for ~priority_queue~.
+  #+end_quote
+
+- Here is a code example:
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <vector>
+    #include <stack>
+    #include <queue>
+    #include <iostream>
+    using namespace std;
+
+    int main() {
+      vector<int> v = {1, 2, 3};   // container
+      cout << v[1] << endl;        // 2; direct random access
+
+      stack<int> s;                // container adaptor
+      s.push(10);
+      s.push(20);
+      cout << s.top() << endl;     // 20; only top is accessible (LIFO)
+        
+      queue<int> q;                // container adaptor
+      q.push(5);
+      q.push(15);
+      cout << q.front() << endl;   // 5; FIFO: access front
+    }
+  #+end_src
 
 * The need for efficiency ([[https://opendatastructures.org/ods-cpp/1_1_Need_Efficiency.html][Morin]])
 

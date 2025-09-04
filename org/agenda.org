@@ -471,7 +471,7 @@ functions, and simple structs. No advanced features.
 
   + I will check individual practice assignments sporadically.
 
-- [ ] *Introduction to data structures* (lecture)
+- [X] *Introduction to data structures* (lecture)
 
 - [ ] *C-style arrays and vectors* (code along)
 
@@ -545,6 +545,94 @@ functions, and simple structs. No advanced features.
    changed at run-time).
    #+end_quote
 
+
+** Review (Thursday)
+
+1. Strings are data structures, right?
+   #+begin_quote
+   The answer depends on the language: In C, strings are arrays + ~'\0'~
+   (there is no ~string~ keyword); in other low-level languages like
+   Assembly or FORTRAN, they're also not first-level data structures.
+
+   In other high-level languages than C, like C++, Python, R, and
+   Java, strings are proper data structures.
+   #+end_quote
+
+2. Can you name one C++ data structure that you heard about last time
+   and that was new to you?
+   #+begin_quote
+   We talked about: vectors, stacks, queues, priority queues - all of
+   these are C++ data structures. In C++, these are part of the
+   "Standard Template Library" (STL) but they come in two flavors:
+   True containers, and container adaptors. Containers are like Swiss
+   army knives, while container adaptors are like (specialized)
+   kitchen knives.
+   #+end_quote
+     #+begin_src C++ :main no :includes :results output :exports both
+    #include <vector>
+    #include <stack>
+    #include <queue>
+    #include <iostream>
+    using namespace std;
+
+    int main() {
+      vector<int> v = {1, 2, 3};   // container
+      cout << v[1] << endl;        // 2; direct random access
+
+      stack<int> s;                // container adaptor
+      s.push(10);
+      s.push(20);
+      cout << s.top() << endl;     // 20; only top is accessible (LIFO)
+        
+      queue<int> q;                // container adaptor
+      q.push(5);
+      q.push(15);
+      cout << q.front() << endl;   // 5; FIFO: access front
+    }
+  #+end_src
+
+3. If you want to explain a new concept (like "vector") to someone,
+   how could you approach it?
+   #+begin_quote
+   1) *Top-down* (abstract view): A ~vector~ is a container class in the
+      STL that represents a dynamic array.
+   2) *Bottom-up* (implementation view): A ~vector~ wraps a pointer to a
+      block of heap memory. It keeps track of ~size~ and ~capacity~, etc.
+   3) *Example/analogy* (concrete view): Imagine a row of lockers. Each
+      locker is a vector element. If more students arrive (~new~
+      elements), and all lockers are full, you rent a bigger row of
+      lockers, move everything, then continue.
+   #+end_quote
+
+4. What is the "scale" issue in computer and data science?
+   #+begin_quote
+   The scale issue is the potential mismatch between design choice and
+   problem size.
+
+   Problems that look easy at small input sizes may be become
+   infeasible as input grows (relates to algorithmic complexity).
+
+   To beat scale for any size input, you need to pick the right
+   language, the right data structures, the right algorithm.
+   #+end_quote
+
+5. Which of these are (not) data structures?
+   - [ ] Array
+   - [ ] Operator
+   - [ ] Exception
+   - [ ] Matrix
+   - [ ] Table
+   - [ ] Pointer
+   - [ ] Function
+   - [ ] Class
+   - [ ] List
+   - [ ] Boolean
+
+6. What's a good way to keep "data structure" and "algorithm" apart?
+   #+begin_quote
+   Algorithms transform data like verbs acting on nouns (La Rocca):
+   e.g. to sort an unsorted array.
+   #+end_quote
 
 * Week 3 (Sep 9, 11)
 * Week 4 (Sep 16, 18)
