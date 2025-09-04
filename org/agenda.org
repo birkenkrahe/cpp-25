@@ -634,6 +634,41 @@ functions, and simple structs. No advanced features.
    e.g. to sort an unsorted array.
    #+end_quote
 
+7. What's a "stack" data structure?
+   #+begin_quote
+   Data are pushed on the stack and popped from the top of the stack
+   using the LIFO (Last-In-First-Out) principle.
+   #+end_quote
+
+8. What's a "queue" data structure?
+   #+begin_quote
+   Data are stored in order, with the oldest at the end, and the
+   newest at the top, implementing a FIFO (First-In-First-Out)
+   principle.
+   #+end_quote
+
+9. How is computer memory (RAM) abstractly (not actually) organized?
+   #+begin_quote
+   #+attr_html: :width 400px :float nil:
+   #+caption: Source: Medium.com
+   [[../img/memory.png]]
+   #+end_quote
+
+10. How do humans read vs. how do machines read?
+    #+begin_quote
+    Humans read actively for comprehension, forming mental models,
+    with their eyes jumping around, taking in spatial cues supporting
+    memory recall and understanding. Humans read with meaning and
+    intent to make an experience.
+
+    Machines parse symbols as sequences of bytes, tokenize and apply
+    statistical models to identify patterns. Machines read with
+    structure (not of the text) and probability (imposed models) to
+    solve a pattern recognition problem.
+    #+end_quote
+
+   
+
 * Week 3 (Sep 9, 11)
 * Week 4 (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
