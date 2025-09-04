@@ -30,35 +30,51 @@ Why?
 - Data need to be found (fast).
 #+end_quote
 
-* Which data structures do you already know (from introductory programming)?
+* Which data structures do you already know?
 
 That is, if you think about data (numbers, names, characters, etc.)
 how would you store them?
 
-Examples:
-#+begin_quote
-1) Arrays like ~a[] = {1,2,3,4}~ in C/C++
-2) Lists like ~foo = [1,2,3,4]~ in Python
-3) Vectors like ~c(1,2,3,4} -> foo~ in R
-4) Matrices like ~M <- diag(4)~ in R
-5) Dictionaries like ~d = {"key":[1,2,3,4]}~ in Python
-6) Structures like ~struct Person { std::string name; int age;}~ in C/C++
-7) Enumeration like ~enum Color { RED, GREEN, BLUE }~ in C/C++
-8) Data frames like ~df = pd.DataFrame([1,2],["a","b"])~ in Python
-9) Class like ~public class Person~ in Java
-10) Table like ~CREATE TABLE t (int ID, name TEXT);~ in SQL
-#+end_quote
+** Examples
 
-What about media like videos, images, graphs etc.? Are these data, and
-how are they stored?
-#+begin_quote
-Also as arrays, lists or dictionaries (key-value pairs) in code and for storage:
-- Images: as files in different formats (PNG, JPG, GIF, etc.), or as
-  pixel matrices for programming and analytics purposes.
-- Videos: as sequences of images (frames) with audio data, in
-  different file formats (MP4, MOV, AVI, etc.)
-- Graphs: collections of nodes and edges. 
-#+end_quote
+- These are data structures:
+  #+begin_quote
+  1. Arrays like ~a[] = {1,2,3,4}~ in C/C++
+  2. Lists like ~foo = [1,2,3,4]~ in Python
+  3. Vectors like ~c(1,2,3,4} -> foo~ in R
+  4. Matrices like ~M <- diag(4)~ in R
+  5. Dictionaries like ~d = {"key":[1,2,3,4]}~ in Python
+  6. Structures like ~struct Person { std::string name; int age;}~ in C/C++
+  7. Enumeration like ~enum Color { RED, GREEN, BLUE }~ in C/C++
+  8. Data frames like ~df = pd.DataFrame([1,2],["a","b"])~ in Python
+  9. Class like ~public class Person~ in Java
+  10. Table like ~CREATE TABLE t (int ID, name TEXT);~ in SQL
+  #+end_quote
+
+- These are *not* data structures:
+  #+begin_quote
+  1. Data types (~int~, ~double~, ~char~, ~string~, ~bool~)
+  2. Variables (=int x = 5=)
+  3. Constants (=const float PI = 3.14=)
+  4. Operators (~+=~, ~++~, ~==~ etc.)
+  5. Control flow (~if~, ~else if~, ~else~, ~switch~)
+  6. Functions (=int f(int x) { return x*x; }=)
+  7. Pointers (=int *p = &i;=)
+  8. References (=int & ref = x;=)
+  9. Exceptions (~try~, ~catch~, ~throw~)
+  10. Preprocessor directives (~#include~, ~#define~, ~#ifndef~)
+  #+end_quote
+
+- What about media like videos, images, graphs etc.? Are these data,
+  and how are they stored?
+  #+begin_quote
+  Also as arrays, lists or dictionaries (key-value pairs) in code and for storage:
+  - Images: as files in different formats (PNG, JPG, GIF, etc.), or as
+    pixel matrices for programming and analytics purposes.
+  - Videos: as sequences of images (frames) with audio data, in
+    different file formats (MP4, MOV, AVI, etc.)
+  - Graphs: collections of nodes and edges.
+  #+end_quote
 
 * Data structures are necessary
 
@@ -170,7 +186,7 @@ following data structures:
      stored in contiguous memory locations. They are used to store
      multiple values in one variable. Values can be accessed using an
      index. The size of the array is determined at *compile-time*.
-     
+
   2) *Vectors* are *dynamic* arrays provided by the C++ Standard Template
      Library (STL). They can grow and shrink in size dynamically as
      elements are added or removed, that is at *run-time*. They offer
@@ -190,41 +206,41 @@ following data structures:
     for (int value : array) cout << value << " ";
   #+end_src
 
- - *Vector* code example:
-  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
-    #include <vector>
+  - *Vector* code example:
+    #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
+      #include <vector>
 
-    int main() {
-      // create integer vector
-      vector<int> myVector;
+      int main() {
+        // create integer vector
+        vector<int> myVector;
 
-      // Adding elements to the vector
-      for (int i = 0; i < 5; ++i) {
-        myVector.push_back(i + 100);
+        // Adding elements to the vector
+        for (int i = 0; i < 5; ++i) {
+          myVector.push_back(i + 100);
+        }
+
+        // Accessing and printing elements
+        for (int i = 0; i < myVector.size(); ++i) {
+          cout << myVector[i] << " ";
+        }
+
+        return 0;
       }
-
-      // Accessing and printing elements
-      for (int i = 0; i < myVector.size(); ++i) {
-        cout << myVector[i] << " ";
-      }
-
-      return 0;
-    }
-  #+end_src
+    #+end_src
 
 * Example: Python
 
 - If C++ is not (yet) your mojo, think of the difference between
   *lists*, *tuples*, and *dictionaries* in Python:
-  
+
   1) *list* elements can be of any data type, but *tuple* elements must
      have the same data type.
-     
+
   2) *list* elements are ordered (indexed), but *dictionaries* are
      unordered.
-     
+
   3) *lists* are mutable (can be modified), but *tuples* are immutable.
-     
+
   4) *lists* are passed by reference, but *tuples* are passed by value.
 
 - Code examples:
@@ -238,7 +254,7 @@ following data structures:
     # lists are mutable
     foo[2] = 'B'
     print(foo)
-    
+
     # lists are passed by reference (not by value)
     bar = foo; bar[1]=2; print(foo) # change value in bar - copied to foo
   #+end_src
@@ -255,7 +271,7 @@ following data structures:
     foo / 2 # vectorization: element-wise operations and implicit conversion
     matrix(1:16,4) # a 4 x 4 matrix. Full command: matrix(data=1:16,nrow=4)
   #+end_src
-  
+
 - Unlike C/C++ and Python, a lot of visualization options are already
   built into R.
 
@@ -287,10 +303,10 @@ following data structures:
 
 1) Searching through a large collection of baseball cards (binary
    search on sorted arrays)
-   
+
 2) Keeping track of logged-in users and their IP addresses (at scale,
    and securely - hash tables).
-   
+
 3) Modeling relationships between social media network users
    (persistent and scalable - graphs).
 
@@ -308,7 +324,7 @@ following data structures:
 By building up algorithmic muscle: solve *many problems* in *different
 ways* and with *different data structures*:
 
-Example: "Hello" program that greets the user by name: 
+Example: "Hello" program that greets the user by name:
 #+begin_src C++ :noeval :tangle hello.cpp :main yes :includes <iostream> :results output :exports both
   std::string name;
   std::getline(std::cin, name);
@@ -421,22 +437,22 @@ start to end for every participant of a process.
   the forms, and pulls them from the stack before calling upon the
   next patient.
 
-- "Bag" solution  
-   #+attr_html: :width 600px:
-   #+caption: BPMN models for "Pet Emergency Room" use case: Bag
-   [[../img/bag.png]]
+- "Bag" solution
+  #+attr_html: :width 600px:
+  #+caption: BPMN models for "Pet Emergency Room" use case: Bag
+  [[../img/bag.png]]
 
-- "Stack" solution    
+- "Stack" solution
   #+attr_html: :width 600px:
   #+caption: BPMN models for "Pet Emergency Room" use case: Stack
   [[../img/stack.png]]
 
-- "Queue" solution  
+- "Queue" solution
   #+attr_html: :width 600px:
   #+caption: BPMN models for "Pet Emergency Room" use case: Queue
   [[../img/queue.png]]
 
-- "Priority queue" solution  
+- "Priority queue" solution
   #+attr_html: :width 600px:
   #+caption: BPMN models for "Pet Emergency Room" use case: Priority Queue
   [[../img/priority_queue.png]]
@@ -445,9 +461,9 @@ start to end for every participant of a process.
   same.
 
 * Abstract Data Types
-  
+
 - Mastering the chosen data structure involves mastering a set of
-  operations, actions to perform with them. 
+  operations, actions to perform with them.
 
 - A data structure together with basic operations like /insert/, /remove/,
   /traverse/, /count/ etc. is called an *Abstract Data Type* (ADT).
@@ -463,7 +479,7 @@ start to end for every participant of a process.
   [[../img/linkedListInsert2.png]]
 
   #+attr_html: :width 400px:
-  #+caption: Image source: Scott Barrett @Udemy  
+  #+caption: Image source: Scott Barrett @Udemy
   [[../img/linkedListInsert.png]]
 
 * The need for efficiency ([[https://opendatastructures.org/ods-cpp/1_1_Need_Efficiency.html][Morin]])
@@ -526,7 +542,7 @@ start to end for every participant of a process.
   your solution until you meet all of your requirements.
 
 - Abstract Data Types are Data Structures with their operations,
-  e.g. a list with insertion, removing, counting, traversing. 
+  e.g. a list with insertion, removing, counting, traversing.
 
 * References
 
@@ -537,7 +553,7 @@ start to end for every participant of a process.
 - [[https://www.geeksforgeeks.org/trie-insert-and-search/][Trie Data Structure - GeeksforGeeks]]
 - Morin, [[https://opendatastructures.org/ods-cpp/ods-cpp-html.html][Open Data Structures in C++]] (2024)
 - Rocca, [[https://livebook.manning.com/book/grokking-data-structures][Grokking Data Structures]] (2024)
-  
+
 * Footnotes
 
 [fn:1]Though there is no standard, efficient pseudocode is not

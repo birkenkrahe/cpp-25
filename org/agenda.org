@@ -437,11 +437,11 @@ functions, and simple structs. No advanced features.
     Pages: 1300
     #+end_example
 
-* Week 2 - Pepquiz / Data structures introduction 
+* Week 2 - Pepquiz / Data structures introduction (Sep 2, 4)
 #+attr_html: :width 300px :float nil:
 [[../img/pepquiz2.png]]
 
-- [ ] *Home assignment solution video published* (30' [[https://youtu.be/UiQZThq39nc?si=kzWRLeJcBYIQgh42][YouTube]])
+- [X] *Home assignment solution video published* (30' [[https://youtu.be/UiQZThq39nc?si=kzWRLeJcBYIQgh42][YouTube]])
 
   + Solve the programs on your own (without AI) first.
 
@@ -449,7 +449,7 @@ functions, and simple structs. No advanced features.
 
   + Bag 100% for your grade!
 
-- [ ] *Pepquiz! - Declarations / Arithmetic / Conditionals / Loops*
+- [X] *Pepquiz! - Declarations / Arithmetic / Conditionals / Loops*
 
   + You have 30 minutes to complete the test on paper (no help)
 
@@ -461,7 +461,7 @@ functions, and simple structs. No advanced features.
 
   + I will briefly check your self-assessment and enter the grade.
 
-- [ ] *C++ review: Arrays and Functions*
+- [X] *C++ review: Arrays and Functions*
 
   + Remember: The homework assignment is due on Sunday, September 7.
 
@@ -474,3 +474,80 @@ functions, and simple structs. No advanced features.
 - [ ] *Introduction to data structures* (lecture)
 
 - [ ] *C-style arrays and vectors* (code along)
+
+** Review (Tuesday)
+
+1. What does the keyword ~auto~ do?
+   #+begin_quote
+  The keyword ~auto~ tells the compiler to deduce the type of a declared
+  variable from its initializer (the value initially stored in it).
+   #+end_quote
+   #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
+     auto foo = 42;       // deduced as int
+     auto bar = 3.14;     // deduced as double
+     auto baz = "Bob"; // deduced as const char*
+
+     printf("foo = %d\nbar = %g\nbaz = %s\n", 
+            foo, bar, baz);
+   #+end_src
+
+   #+RESULTS:
+   : foo = 42
+   : bar = 3.14
+   : baz = Bob
+
+2. What's an "exception"?
+   #+begin_quote
+   An exception is a run-time error that can be thrown and caught to
+   handle errors without crashing the program.
+   #+end_quote
+   #+begin_src C++ :main no :includes
+     #include <iostream>
+     using namespace std;
+
+     int main()
+     {
+       try { 
+         int x = 10;
+         if (x == 0) // throw an exception for div by zero
+           throw "Division by zero not allowed!";
+         cout << 10 / x << endl; // x is not 0
+       }
+       catch (const char *msg)
+         { // catch the exception if x is 0
+           cout << "Exception caught: " << msg << endl;
+         }
+       return 0;
+     }
+   #+end_src
+
+3. How should you approach writing functions?
+   #+begin_quote
+   1. Write and test the function body without the function.
+   2. Identify the ~return~ type (if none: ~void~)
+   3. Identify the argument list (if empty: ~void~)
+   4. Create a prototype, e.g. =void hello(void);= (no body)
+   5. Create a definition with body between ~{ }~
+   #+end_quote
+
+4. What are ~stdin~, ~stdout~ and ~stderr~?
+   #+begin_quote
+    ~stdin~, ~stdout~ and ~stderr~ are data streams for input, output and
+    error data. They are connected to devices like keyboard, screen
+    file, network socket, etc. They can be redirected anywhere.
+   #+end_quote
+
+5. What does it mean that C-style arrays are "static"?
+   #+begin_quote
+   C-style arrays are called "static" because the size of the array
+   must be known at compile-time (e.g. =int a[10];=), and the memory for
+   all array elements is allocated in one block (that cannot be
+   changed at run-time).
+   #+end_quote
+
+
+* Week 3 (Sep 9, 11)
+* Week 4 (Sep 16, 18)
+#+attr_html: :width 200px :float nil:
+[[../img/expo.png]]
+
