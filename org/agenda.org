@@ -546,6 +546,10 @@ functions, and simple structs. No advanced features.
    #+end_quote
 
 
+* Week 3 (Sep 9, 11)
+#+attr_html: :width 400px :float nil:
+[[../img/c_style_arrays.png]]
+
 ** Review (Thursday)
 
 1. Strings are data structures, right?
@@ -667,9 +671,14 @@ functions, and simple structs. No advanced features.
     solve a pattern recognition problem.
     #+end_quote
 
-   
+** C-style arrays I
 
-* Week 3 (Sep 9, 11)
+- [ ] Array declaration and initialization
+- [ ] Array input without loops
+- [ ] Stepping through an array with ~for~
+- [ ] Running C++ on the command-line with ~make~
+
+
 * Week 4 (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
