@@ -475,12 +475,15 @@ functions, and simple structs. No advanced features.
 
 - [ ] *C-style arrays and vectors* (code along)
 
-** Review (Tuesday)
+** Review
 
 1. What does the keyword ~auto~ do?
    #+begin_quote
   The keyword ~auto~ tells the compiler to deduce the type of a declared
   variable from its initializer (the value initially stored in it).
+
+  Not recommended at the start - highly recommended for production
+  code: because it is safer and shorter.
    #+end_quote
    #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
      auto foo = 42;       // deduced as int
@@ -498,8 +501,8 @@ functions, and simple structs. No advanced features.
 
 2. What's an "exception"?
    #+begin_quote
-   An exception is a run-time error that can be thrown and caught to
-   handle errors without crashing the program.
+   An exception is a run-time error that can be "thrown" and "caught"
+   to handle errors without crashing the program.
    #+end_quote
    #+begin_src C++ :main no :includes
      #include <iostream>
@@ -508,7 +511,7 @@ functions, and simple structs. No advanced features.
      int main()
      {
        try { 
-         int x = 10;
+         int x = 0;
          if (x == 0) // throw an exception for div by zero
            throw "Division by zero not allowed!";
          cout << 10 / x << endl; // x is not 0
@@ -520,6 +523,9 @@ functions, and simple structs. No advanced features.
        return 0;
      }
    #+end_src
+
+   #+RESULTS:
+   : Exception caught: Division by zero not allowed!
 
 3. How should you approach writing functions?
    #+begin_quote
@@ -545,139 +551,71 @@ functions, and simple structs. No advanced features.
    changed at run-time).
    #+end_quote
 
+6. What's the difference between compile-time and run-time? What about
+   errors?
+   #+begin_quote
+   - Compile-time is when the compiler translates source code (C++)
+     into machine code. Errors are: syntax errors, missing semicolons,
+     undeclared variables, type mismatches.
+   - Run-time is when the program is actually executed. Errors are:
+     division by zero, invalid memory access, file not found.
+   #+end_quote
+
+* Week 3 - C-style arrays and vectors
+#+attr_html: :width 400px :float nil:
+[[../img/starship-launch.jpg]]
+
+- [ ] Guest lecture on Wednesday 1 pm in Derby 239
+- [ ] Test 2 and Assignment 2 are live (by: Sunday Sept 14)
+- [ ] This week: C-style arrays and C++ ~vector~ data structures
+- [ ] If you need to catch up: see me for office hours:
+  + This week only Friday is officially available
+    (tinyurl.com/fa25-booking)
+  + You can see me at other times, too - just make a suggestion when -
+    email me! (If I come out just to see you: Better be there!)
+  
+** Guest speaker: Brandon Smith (Wednesday 1 pm in Derby 239)
+#+attr_html: :width 600px :float nil:
+[[../img/first_light.png]]
+
+
+
+
+
+
+** C-Style arrays
+
+- What do we want to know for a data structure when we first encounter
+  it?
+  #+begin_quote
+  1. What is its purpose?
+  2. How are the data stored?
+  3. How do you define it?
+  4. How do you access it?
+  5. How do you copy it?
+  6. How do you extend it?
+  7. How do you delete it?
+  8. What else is worth knowing about it?
+  #+end_quote
+
+- Can you answer these questions for C-style arrays?
+  #+begin_quote
+  1. What is its purpose? -> Store values of one data type
+  2. How are the data stored? -> Contiguously in memory
+  3. How do you define it? -> Data type + name + size
+  4. How do you access it? -> With the index operator `[]`
+  5. How do you copy it? -> Element-wise
+  6. How do you extend it? -> Cannot be extended at run-time
+  7. How do you delete it? -> Automatically  
+  8. What else is worth knowing about it?  -> Out-of-bounds errors,
+     different initializations, string specialties, functions
+  #+end_quote
 
 * Week 3 (Sep 9, 11)
-#+attr_html: :width 400px :float nil:
-[[../img/c_style_arrays.png]]
 
-** Review (Thursday)
+** Review
 
-1. Strings are data structures, right?
-   #+begin_quote
-   The answer depends on the language: In C, strings are arrays + ~'\0'~
-   (there is no ~string~ keyword); in other low-level languages like
-   Assembly or FORTRAN, they're also not first-level data structures.
-
-   In other high-level languages than C, like C++, Python, R, and
-   Java, strings are proper data structures.
-   #+end_quote
-
-2. Can you name one C++ data structure that you heard about last time
-   and that was new to you?
-   #+begin_quote
-   We talked about: vectors, stacks, queues, priority queues - all of
-   these are C++ data structures. In C++, these are part of the
-   "Standard Template Library" (STL) but they come in two flavors:
-   True containers, and container adaptors. Containers are like Swiss
-   army knives, while container adaptors are like (specialized)
-   kitchen knives.
-   #+end_quote
-     #+begin_src C++ :main no :includes :results output :exports both
-    #include <vector>
-    #include <stack>
-    #include <queue>
-    #include <iostream>
-    using namespace std;
-
-    int main() {
-      vector<int> v = {1, 2, 3};   // container
-      cout << v[1] << endl;        // 2; direct random access
-
-      stack<int> s;                // container adaptor
-      s.push(10);
-      s.push(20);
-      cout << s.top() << endl;     // 20; only top is accessible (LIFO)
-        
-      queue<int> q;                // container adaptor
-      q.push(5);
-      q.push(15);
-      cout << q.front() << endl;   // 5; FIFO: access front
-    }
-  #+end_src
-
-3. If you want to explain a new concept (like "vector") to someone,
-   how could you approach it?
-   #+begin_quote
-   1) *Top-down* (abstract view): A ~vector~ is a container class in the
-      STL that represents a dynamic array.
-   2) *Bottom-up* (implementation view): A ~vector~ wraps a pointer to a
-      block of heap memory. It keeps track of ~size~ and ~capacity~, etc.
-   3) *Example/analogy* (concrete view): Imagine a row of lockers. Each
-      locker is a vector element. If more students arrive (~new~
-      elements), and all lockers are full, you rent a bigger row of
-      lockers, move everything, then continue.
-   #+end_quote
-
-4. What is the "scale" issue in computer and data science?
-   #+begin_quote
-   The scale issue is the potential mismatch between design choice and
-   problem size.
-
-   Problems that look easy at small input sizes may be become
-   infeasible as input grows (relates to algorithmic complexity).
-
-   To beat scale for any size input, you need to pick the right
-   language, the right data structures, the right algorithm.
-   #+end_quote
-
-5. Which of these are (not) data structures?
-   - [ ] Array
-   - [ ] Operator
-   - [ ] Exception
-   - [ ] Matrix
-   - [ ] Table
-   - [ ] Pointer
-   - [ ] Function
-   - [ ] Class
-   - [ ] List
-   - [ ] Boolean
-
-6. What's a good way to keep "data structure" and "algorithm" apart?
-   #+begin_quote
-   Algorithms transform data like verbs acting on nouns (La Rocca):
-   e.g. to sort an unsorted array.
-   #+end_quote
-
-7. What's a "stack" data structure?
-   #+begin_quote
-   Data are pushed on the stack and popped from the top of the stack
-   using the LIFO (Last-In-First-Out) principle.
-   #+end_quote
-
-8. What's a "queue" data structure?
-   #+begin_quote
-   Data are stored in order, with the oldest at the end, and the
-   newest at the top, implementing a FIFO (First-In-First-Out)
-   principle.
-   #+end_quote
-
-9. How is computer memory (RAM) abstractly (not actually) organized?
-   #+begin_quote
-   #+attr_html: :width 400px :float nil:
-   #+caption: Source: Medium.com
-   [[../img/memory.png]]
-   #+end_quote
-
-10. How do humans read vs. how do machines read?
-    #+begin_quote
-    Humans read actively for comprehension, forming mental models,
-    with their eyes jumping around, taking in spatial cues supporting
-    memory recall and understanding. Humans read with meaning and
-    intent to make an experience.
-
-    Machines parse symbols as sequences of bytes, tokenize and apply
-    statistical models to identify patterns. Machines read with
-    structure (not of the text) and probability (imposed models) to
-    solve a pattern recognition problem.
-    #+end_quote
-
-** C-style arrays I
-
-- [ ] Array declaration and initialization
-- [ ] Array input without loops
-- [ ] Stepping through an array with ~for~
-- [ ] Running C++ on the command-line with ~make~
-
+1. 
 
 * Week 4 (Sep 16, 18)
 #+attr_html: :width 200px :float nil:

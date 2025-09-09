@@ -12,7 +12,7 @@
 
 * Simple example: Array declaration
 
-- Complete the following program:
+- Complete the following program (let's do this together as a warmup):
 
   1) Supply the definition for an integer array named =values= of size
      =NUM_ELEMENTS=, and assign the values 100, 200, 300, 400, 500.
@@ -109,7 +109,7 @@ dashboard preview.
 - Remember to use brace list initialization for the array.
 - You can use a loop to print each element with a trailing space.
 
-** Challenges
+** Challenges (for home - bonus points)
 
 1) Let a user enter 5 product prices instead of hardcoding them
 2) Validate that each input is a positive number.
