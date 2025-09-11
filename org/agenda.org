@@ -565,25 +565,20 @@ functions, and simple structs. No advanced features.
 #+attr_html: :width 400px :float nil:
 [[../img/starship-launch.jpg]]
 
-- [ ] Guest lecture on Wednesday 1 pm in Derby 239
-- [ ] Test 2 and Assignment 2 are live (by: Sunday Sept 14)
-- [ ] This week: C-style arrays and C++ ~vector~ data structures
-- [ ] If you need to catch up: see me for office hours:
+- [X] Guest lecture on Wednesday 1 pm in Derby 239
+- [X] Test 2 and Assignment 2 are live (by: Sunday Sept 14)
+- [X] If you need to catch up: see me for office hours:
   + This week only Friday is officially available
     (tinyurl.com/fa25-booking)
   + You can see me at other times, too - just make a suggestion when -
     email me! (If I come out just to see you: Better be there!)
+- [ ] This week: C-style arrays and C++ ~vector~ data structures
   
-** Guest speaker: Brandon Smith (Wednesday 1 pm in Derby 239)
+** DONE Guest speaker: Brandon Smith (Wednesday 1 pm in Derby 239)
 #+attr_html: :width 600px :float nil:
 [[../img/first_light.png]]
 
-
-
-
-
-
-** C-Style arrays
+** DONE C-Style arrays
 
 - What do we want to know for a data structure when we first encounter
   it?
@@ -605,17 +600,85 @@ functions, and simple structs. No advanced features.
   3. How do you define it? -> Data type + name + size
   4. How do you access it? -> With the index operator `[]`
   5. How do you copy it? -> Element-wise
-  6. How do you extend it? -> Cannot be extended at run-time
+  6. How do you extend it? -> Cannot be extended at run-timeg
   7. How do you delete it? -> Automatically  
   8. What else is worth knowing about it?  -> Out-of-bounds errors,
      different initializations, string specialties, functions
   #+end_quote
 
-* Week 3 (Sep 9, 11)
+** TODO Review (Tuesday)
 
-** Review
+1. What is widening vs. narrow conversion? Example?
+   #+begin_src C++ :main yes :includes <iostream> <typeinfo> :namespaces std :results output :exports both
+     // widening conversion: int to double (implicit)
+     double x = 31.4;
+     int y = 10;
+     cout << x / y << endl; 
 
-1. 
+     // narrowing conversion: double to int (implicit)
+     int z = x;
+     cout << z << endl; 
+   #+end_src
+
+2. What is the purpose of an array?
+   #+begin_src C++ :main yes :includes <iostream> :namespaces std :results none :exports both
+     // group and store values of the same data type
+     int score[5] {90,70,65,44,99};
+   #+end_src
+
+3. How are array data stored?
+   #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
+     // Arrays are stored contiguously in memory
+     // (elements sit next to one another)
+     int a[3] {10,20,30};
+     cout << &a[0] << endl
+          << &a[1] << endl
+          << &a[2] << "\n"
+          << "sizeof(int)=" << sizeof(int) << endl;
+   #+end_src
+
+   Hexnote
+   #+begin_example
+   [0xAC] 10 * 16^1 + 12 = 172 
+                           172 + 4 = 176
+   [0xB0] 11 * 16^1      = 176
+   #+end_example
+
+4. How do you copy arrays?
+   #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
+     // Raw C-style arrays do not support assignment
+     // You must use a loop to copy by element
+     int src[4] {1,2,3,4}; // source array
+     int dst[4] {};        // destination array
+     for (int i=0;i<4;i++) dst[i] = src[i]; // copy source to destination
+     for (int x : dst) cout << x << " "; // print destination array
+     cout << endl;
+   #+end_src
+
+5. How should you initialize arrays? Why?
+   #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
+     // Prefer explicit list-based initialization
+     // Avoids implicit narrowing type conversions
+     // Avoids indeterminate (undefined) garbage values
+     int zeros[5] {}; // value-initialized to all zeros
+     int first3[5] {1,2,3}; // remaining elements become 0
+     for (int x : zeros) cout << x << " "; cout << "\n";
+     for (int x : first3) cout << x << " "; cout << endl;     
+   #+end_src
+
+   #+RESULTS:
+   : 0 0 0 0 0 
+   : 1 2 3 0 0 
+
+** More about C-style arrays
+
+- [ ] Partial initialization
+- [ ] Range-base ~for~ loops [programming assignment]
+- [ ] Output formatting with ~<iomanip>~
+- [ ] Copying arrays
+- [ ] Summing, averaging, max/min on arrays
+- [ ] Filling arrays partially with sentinel control
+- [ ] Comparing arrays
 
 * Week 4 (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
