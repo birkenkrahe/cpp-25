@@ -27,23 +27,23 @@ g#+TITLE: Arrays and Vectors
     int main()
     {
       // Define size of array NUM_ELEMENTS
-      
+
       // Define int array `values` of size NUM_ELEMENTS and assign
       // 100...500 to the array
-      
+
       // Print the array elements on one line separated by a space
       return 0;
     }
   #+end_src
 
-- Solution: https://onecompiler.com/cpp/43vgaj8dc  
+- Solution: https://onecompiler.com/cpp/43vgaj8dc
   #+begin_src C++ :main no :includes :results output
     #include <iostream>
     using namespace std;
 
     int main()
     {
-      // Define size of array NUM_ELEMENTS      
+      // Define size of array NUM_ELEMENTS
       const int NUM_ELEMENTS = 5;
       // Define integer array `values` of size NUM_DECLARATOR
       // Assign 100...500 to the array
@@ -51,13 +51,17 @@ g#+TITLE: Arrays and Vectors
 
       // Print the array elements on one line separated by a space
       for (int i=0; i<NUM_ELEMENTS; i++) cout << values[i] << " ";
-      
+
       return 0;
     }
   #+end_src
 
   #+RESULTS:
-  : 100 200 300 400 500 
+  :
+  : Enter name:
+  : Enter name:
+  : Enter name:
+  : Full name: James Earl Jones
 
 * Two types of initialization
 
@@ -104,7 +108,7 @@ dashboard preview.
 #+name: product prices 1
 #+begin_src C++ :main no :includes :results output
   // Store product prices in an array
-  // Author: 
+  // Author:
 
   #include <iostream>
   using namespace std;
@@ -112,11 +116,11 @@ dashboard preview.
   int main()
   {
     // Set SIZE of array
-    
+
     // Define array `prices` and assign product prices
-   
+
     //Print prices on one line
-    
+
     return 0;
   }
 #+end_src
@@ -133,8 +137,6 @@ dashboard preview.
 
 
 ** Solution in class
-
-
 
 * Inputting array content element-wise
 
@@ -180,16 +182,16 @@ dashboard preview.
     // Author: Marcus Birkenkrahe (pledged)
 
     // include header file
-    
+
     // use std namespace
 
     // main program
 
-      // define array size declarator
-      // define array
-      // ask user for keyboard input
-      // get array input from keyboard
-      // print output
+    // define array size declarator
+    // define array
+    // ask user for keyboard input
+    // get array input from keyboard
+    // print output
 
     return 0;
     }
@@ -214,7 +216,7 @@ dashboard preview.
     // Program asks for number of hours worked by six employees to be
     // entered on the command-line. Values are stored in an array and
     // printed separated by one space. Use for loops.
-    // Author: Marcus Birkenkrahe (pledged)    
+    // Author: Marcus Birkenkrahe (pledged)
     // include header file
     #include <iostream>
     // use std namespace
@@ -258,3 +260,285 @@ dashboard preview.
 7) Upload screenshot of your terminal with the result to Canvas.
 
 
+* Initializing a string array
+
+- Write a program that *safely* initializes a ~string~ array named =planets=
+  with the names of the planets of our solar system (ordered by
+  distance from the Sun). Print the result. Make sure that you can
+  tangle the source code file as =planets.cpp= if needed.
+
+- Sample output:
+  #+begin_example
+  Planets of our solar system:
+  Mercury
+  Venus
+  Earth
+  Mars
+  Jupiter
+  Saturn
+  Uranus
+  Neptune
+  #+end_example
+
+- Starter code: https://tinyurl.com/string-array
+  #+begin_src C++ :main no :includes :results output :exports both
+    // Initialize string array `planets` with the names of the 8 planets
+    // of our solar system (ordered by distance from the sun). Print it.
+    // header files
+    // use std namespace
+    // main pgm
+    // define array SIZE
+    // define and and initialize string array planets
+    // print the names of the planets of our solar system
+  #+end_src
+
+* Partial array initialization
+
+- You can partially initialize arrays. Example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- You can implicitly size arrays if you initialize them with a
+  list. Example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- An alternative size check uses ~std::size~ from ~<iterator>~:
+  #+begin_src C++ :main yes :includes <iterator> <ranges> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+* The Range-based ~for~ loop
+
+- This loop iterates once for each element in an array. It was
+  introduced in C++11.
+
+- General form:
+  #+begin_example
+  for (dataType rangeVariable : array)
+      statement
+  #+end_example
+
+- Here, `dataType` is the data type of the `rangeVariable`, which
+  receives a different array element during each loop iteration.
+
+- `array` is the array the loop operates on, and `statement` is what
+  you want to do in an iteration.
+
+- Example: Use range-based iteration to display the array: 3,6,9.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- You can use the ~auto~ key word to infer the data type of the range
+  variable:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- Example: Display the elements of a ~string~ array.
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+* Range-based ~for~ Loop temperature conversion
+
+Write a small C++ program that does the following:
+
+1. Define an array of six floating-point temperatures in Celsius:
+   22.5, 25.0, 19.5, 21.0, 23.5, 26.1.
+
+2. Use a range-based ~for~ loop with ~auto~ to:
+   - Convert each temperature to Fahrenheit using the formula: ~F = C * 9/5 + 32~
+   - Print each converted temperature on a new line.
+   - Sample output line: "22.5C = 72.5F"
+
+*Bonus:* Use ~std::setprecision~ from ~<iomanip>~ to format the output to
+one decimal precision.
+
+- Solution: Code along in onecompiler.com/cpp
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- Bonus solution:
+  1) ~fixed~: Forces output to use fixed-point notation (not scientific).
+  2) ~showpoint~: Always show a decimal point, even for whole numbers.
+  3) ~setprecision(1)~: Set number of digits after decimal point to one.
+  #+begin_src C++ :main no :includes <iostream> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+* Modifying an array with a Range-Based ~for~ Loop
+
+- As the range-based loop executes, the range variable receives a copy
+  of an array element. To change the contents of an array, the range
+  variable needs to be declared as a *reference*.
+
+- What is a reference?
+  #+begin_quote
+
+  #+end_quote
+
+- Code example:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- Example: Declare integer array of =SIZE= 5, get values for the array
+  from =inputFile= in the =../data= directory, and display the array
+  values. Use a range-based ~for~ loop for both iterations.
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+    // set array SIZE to 5
+    // declare array `numbers`
+    // declare input file
+    // Get values for the array from input file
+    // Display values in the array
+  #+end_src
+
+- Input file:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "101 102 103 104 105" > inputFile
+    cat inputFile
+  #+end_src
+
+  #+RESULTS:
+  : 101 102 103 104 105
+
+- Why does the first loop use =&val= while the second loop uses =val=?
+  #+begin_quote
+
+  #+end_quote
+
+- What's the advantage of range-based loops?
+  #+begin_quote
+
+  #+end_quote
+
+- What's the disadvantage of range-based loops?
+  #+begin_quote
+
+  #+end_quote
+
+* PRACTICE Range-based ~for~ loop
+
+- What will be displayed if the user enters the value =5=?
+  #+begin_src C++ :tangle ../src/values.cpp :main yes :includes <iostream> :namespaces std :results output :exports both
+
+  #+end_src
+
+- Tangle the code: (org-babel-tangle)
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ values.cpp -o val
+    echo 5 | ./val
+  #+end_src
+
+- Answer:
+  #+begin_quote
+
+  #+end_quote
+
+  #+begin_src C++ :tangle ../src/values2.cpp :main yes :includes <iostream> :namespaces std :results output :exports both
+
+  #+end_src
+
+- Tangle the code: (org-babel-tangle)
+  #+begin_src bash :results output :exports both
+    cd ../src
+    g++ values2.cpp -o val2
+    echo 5 | ./val2
+  #+end_src
+
+* PRACTICE Store and display strings using range-based loops
+
+- *Task:* Write a C++ program that prompts the user to enter their first,
+  middle, and last names. Store these values in an array of three
+  ~string~ objects. Then display the full name.
+
+- *Sample input*:
+  #+begin_example
+  James Earl Jones
+  #+end_example
+
+- *Sample output:*
+  #+begin_example
+  Enter name:
+  Enter name:
+  Enter name:
+  Full name: James Earl Jones
+  #+end_example
+
+- *Starter code:* The program below does this with a regular ~for~
+  loop. Modify it to work with a range-based loop instead.
+
+  #+begin_example C++
+
+  #+end_example
+
+  Link: https://tinyurl.com/range-based
+
+  #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :namespaces std :results output :exports both
+    // Get first, middle and last user name and print full name.
+    // TODO: Modify the program to work with range-based loops.  #include <iostream>
+    #include <string>
+    using namespace std;
+
+    int main() {
+      const int SIZE {3};     // string array length
+      string fullName[SIZE];  // string array declaration
+
+      // get array elements from keyboard
+      for (int count=0; count<SIZE; count++) {
+        cout << "\nEnter name: ";
+        cin >> fullName[count];
+      }
+
+      // print result from array
+      cout << "\nFull name: ";
+      for (int count=0; count<SIZE; count++)
+        cout << fullName[count] << " ";
+
+      return 0;
+    }
+  #+end_src
+
+- Create =inputFile=:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "James Earl Jones" > inputFile
+    cat inputFile
+  #+end_src
+
+  #+RESULTS:
+  : James Earl Jones
+
+- *Solution:*
+
+  #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :namespaces std :results output :exports both :noweb yes
+    // Get first, middle and last user name and print full name
+    #include <iostream>
+    #include <string>
+    using namespace std;
+
+    int main() {
+      const int SIZE {3}; // string array length
+      string fullName[SIZE];  // string array declaration
+
+      // get array elements from inputFile
+
+      // print result from array
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  :
+  : Enter name:
+  : Enter name:
+  : Enter name:
+  : Full name: James Earl Jones
