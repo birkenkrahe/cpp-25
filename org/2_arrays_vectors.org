@@ -296,19 +296,34 @@ dashboard preview.
 
 - You can partially initialize arrays. Example:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
-
+    const int SIZE = 7;
+    int num[SIZE] {1,2,3,4};
+    for (int i=0; i<SIZE; i++) cout << num[i] << " ";
   #+end_src
+
+  #+RESULTS:
+  : 1 2 3 4 0 0 0 
 
 - You can implicitly size arrays if you initialize them with a
   list. Example:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
-
+    double ratings[] {1.3, 6.6, 8.4, 2.2};
+    cout << sizeof(ratings)/sizeof(ratings[0]);
   #+end_src
+
+  #+RESULTS:
+  : 4
 
 - An alternative size check uses ~std::size~ from ~<iterator>~:
   #+begin_src C++ :main yes :includes <iterator> <ranges> <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
-
+    #include <iterator>
+    double ratings[] {1.3, 6.6, 8.4, 2.2};
+    cout << std::size(ratings);
   #+end_src
+
+  #+RESULTS:
+  : 4
+
 * The Range-based ~for~ loop
 
 - This loop iterates once for each element in an array. It was
@@ -327,22 +342,46 @@ dashboard preview.
   you want to do in an iteration.
 
 - Example: Use range-based iteration to display the array: 3,6,9.
-  #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
-
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both :noweb yes
+    int numbers[] {3,6,9};
+    for (int val : numbers)  // loop with val over numbers
+      cout << val << " ";    // give me each val 
   #+end_src
+
+  #+RESULTS:
+  : 3 6 9 
 
 - You can use the ~auto~ key word to infer the data type of the range
   variable:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> :namespaces std :results output :exports both :noweb yes
-
+    int numbers[] {3,6,9};
+    for (auto val : numbers)  // compiler will identify int
+      cout << val << " ";    
   #+end_src
+
+  #+RESULTS:
+  : 3 6 9 
 
 - Example: Display the elements of a ~string~ array.
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both :noweb yes
-
+    std::string names[] {"Jim", "Joe", "Jane", "Jack"};
+    for(std::string name : names) cout << name << endl;
+    for(auto name : names) cout << name << endl;    
   #+end_src
 
-* Range-based ~for~ Loop temperature conversion
+  #+RESULTS:
+  : Jim
+  : Joe
+  : Jane
+  : Jack
+  : Jim
+  : Joe
+  : Jane
+  : Jack
+
+* PRACTICE Range-based ~for~ Loop temperature conversion
+
+(PRACTICE = upload the URL of your program(s) later to Canvas).
 
 Write a small C++ program that does the following:
 
@@ -359,16 +398,45 @@ one decimal precision.
 
 - Solution: Code along in onecompiler.com/cpp
   #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both :noweb yes
-
+    double temps[] {22.5, 25, 19.5, 21.0, 23.5, 26.1};
+    for (auto temperature : temps) // loop over the array
+      cout << temperature << "C = "
+           << temperature * 9./5. + 32. << "F." << endl;
   #+end_src
+
+  #+RESULTS:
+  : 22.5C = 72.5F.
+  : 25C = 77F.
+  : 19.5C = 67.1F.
+  : 21C = 69.8F.
+  : 23.5C = 74.3F.
+  : 26.1C = 78.98F.
 
 - Bonus solution:
   1) ~fixed~: Forces output to use fixed-point notation (not scientific).
   2) ~showpoint~: Always show a decimal point, even for whole numbers.
   3) ~setprecision(1)~: Set number of digits after decimal point to one.
   #+begin_src C++ :main no :includes <iostream> :namespaces std :results output :exports both :noweb yes
-
+    #include <iostream>
+    #include <iomanip>
+    int main()
+    {
+      double temps[] {22.5, 25, 19.5, 21.0, 23.5, 26.1};
+      for (double temperature : temps) // loop over the array
+         cout << fixed << showpoint << setprecision(2)
+              << temperature << "C = "
+      	<< temperature * 9./5. + 32. << "F." << endl;
+      return 0;
+    }
   #+end_src
+
+  #+RESULTS:
+  : 22.50C = 72.50F.
+  : 25.00C = 77.00F.
+  : 19.50C = 67.10F.
+  : 21.00C = 69.80F.
+  : 23.50C = 74.30F.
+  : 26.10C = 78.98F.
 
 * Modifying an array with a Range-Based ~for~ Loop
 
@@ -378,25 +446,50 @@ one decimal precision.
 
 - What is a reference?
   #+begin_quote
-
+  A reference in C++ is an ALIAS for an existing variable:
+  1. It must be initialized when it is declared.
+  2. It cannot be changed to refer to something else.
+  3. Any operation on the reference affects the original.
+  Syntax: ~&~ (address-of-operator)
   #+end_quote
 
 - Code example:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-
+    int x = 10;  // integer variable
+    int &ref = x; // ref is a reference variable referencing x
+    ref = 20;
+    cout << "x = " << x << endl;
   #+end_src
+
+  #+RESULTS:
+  : x = 20
 
 - Example: Declare integer array of =SIZE= 5, get values for the array
   from =inputFile= in the =../data= directory, and display the array
   values. Use a range-based ~for~ loop for both iterations.
 
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+    #include <fstream>  // contains ifstream and ofstream
     // set array SIZE to 5
+    const int SIZE {5};
     // declare array `numbers`
+    int numbers[SIZE];
     // declare input file
+    ifstream inputFile;
     // Get values for the array from input file
+    inputFile.open("../data/inputFile");
+
+    for (int &val : numbers)
+      inputFile >> val;     // read data from the filestream
+
+    inputFile.close();    
     // Display values in the array
+    for (int val : numbers)
+      cout << val << " ";  // stream data to stdout
   #+end_src
+
+  #+RESULTS:
+  : 101 102 103 104 105 
 
 - Input file:
   #+begin_src bash :results output :exports both
@@ -410,18 +503,24 @@ one decimal precision.
 
 - Why does the first loop use =&val= while the second loop uses =val=?
   #+begin_quote
+  The first loop modifies the original array: =&val= is alias for
+  the element that the loop is working on.
 
+  The second loop only displays the array elements but does not alter
+  them.
   #+end_quote
 
 - What's the advantage of range-based loops?
   #+begin_quote
-
+  Easier to read and safer because there is no out-of-bounds possible.
   #+end_quote
 
 - What's the disadvantage of range-based loops?
   #+begin_quote
-
+  When using range-based loops you do not have access to individual
+  subscripts.
   #+end_quote
+
 
 * PRACTICE Range-based ~for~ loop
 
