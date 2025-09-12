@@ -574,11 +574,11 @@ functions, and simple structs. No advanced features.
     email me! (If I come out just to see you: Better be there!)
 - [ ] This week: C-style arrays and C++ ~vector~ data structures
   
-** DONE Guest speaker: Brandon Smith (Wednesday 1 pm in Derby 239)
+** Guest speaker: Brandon Smith (Wednesday 1 pm in Derby 239)
 #+attr_html: :width 600px :float nil:
 [[../img/first_light.png]]
 
-** DONE C-Style arrays
+** C-Style arrays
 
 - What do we want to know for a data structure when we first encounter
   it?
@@ -606,24 +606,28 @@ functions, and simple structs. No advanced features.
      different initializations, string specialties, functions
   #+end_quote
 
-** TODO Review (Tuesday)
+** Review (Tuesday)
 
 1. What is widening vs. narrow conversion? Example?
    #+begin_src C++ :main yes :includes <iostream> <typeinfo> :namespaces std :results output :exports both
      // widening conversion: int to double (implicit)
      double x = 31.4;
      int y = 10;
-     cout << x / y << endl; 
+     cout << x / y << endl; // result is a double
 
      // narrowing conversion: double to int (implicit)
      int z = x;
-     cout << z << endl; 
+     cout << z << endl;  // truncation - result is intx
    #+end_src
+
+   #+RESULTS:
+   : 3.14
+   : 31
 
 2. What is the purpose of an array?
    #+begin_src C++ :main yes :includes <iostream> :namespaces std :results none :exports both
      // group and store values of the same data type
-     int score[5] {90,70,65,44,99};
+     int score[5] = {90,70,65,44,99};
    #+end_src
 
 3. How are array data stored?
@@ -635,7 +639,19 @@ functions, and simple structs. No advanced features.
           << &a[1] << endl
           << &a[2] << "\n"
           << "sizeof(int)=" << sizeof(int) << endl;
+     // Or you can force the compiler to print address values
+     // in base 10
+     printf("%d\n%d\n%d\n",&a[0],&a[1],&a[2]);
    #+end_src
+
+   #+RESULTS:
+   : 0x7ffc7253bc1c
+   : 0x7ffc7253bc20
+   : 0x7ffc7253bc24
+   : sizeof(int)=4
+   : 1918090268
+   : 1918090272
+   : 1918090276
 
    Hexnote
    #+begin_example
@@ -655,6 +671,9 @@ functions, and simple structs. No advanced features.
      cout << endl;
    #+end_src
 
+   #+RESULTS:
+   : 1 2 3 4 
+
 5. How should you initialize arrays? Why?
    #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
      // Prefer explicit list-based initialization
@@ -672,15 +691,252 @@ functions, and simple structs. No advanced features.
 
 ** More about C-style arrays
 
-- [ ] Partial initialization
-- [ ] Range-base ~for~ loops [programming assignment]
-- [ ] Output formatting with ~<iomanip>~
+- [X] Partial initialization
+- [X] Reference variables
+- [X] Range-base ~for~ loops [programming assignment]
+- [X] Output formatting with ~<iomanip>~
 - [ ] Copying arrays
 - [ ] Summing, averaging, max/min on arrays
 - [ ] Filling arrays partially with sentinel control
 - [ ] Comparing arrays
 
+** Post-mortem: Generative AI is not a search engine
+
+ [[https://www.matthewedgar.net/generative-ai-vs-traditional-search-technical-differences/][This article (Edgar, 2025)]] goes through how search engines (like
+ Google) work versus generative AI tools. It clearly lays out that a
+ Google query retrieves and ranks existing documents, whereas a
+ generative AI prompt composes a response based on what it's been
+ trained on, often without live references.
+
+** Post-mortem: Reverse range-base ~for~ loops
+
+Range-based ~for~ loops can be reversed but it's complicated: The
+container needs to have a ~begin()~ and ~end()~ iterator. ~std::string~ in
+the example below does. And you need the C++20 standard, so you need
+to compile with =g++ -std=c++20=:
+
+#+begin_src C++ :tangle ../src/rev.cpp :main no :includes :results output :flags -std=c++20
+  #include <iostream>
+  #include <ranges>
+
+  int main()
+  {
+    std::string str;
+    std::cin >> str;
+
+    for (char c : str | std::views::reverse)
+      std::cout << c;
+      
+    return 0;
+  }
+#+end_src
+
+Test:
+#+begin_src bash :results output
+  cd ../src
+  g++ -std=c++20 rev.cpp -o rev
+  echo "Hello there" | ./rev
+#+end_src
+
+#+RESULTS:
+: olleH
+
+** Post-mortem: Pointers as loop variables in range-based loops
+
+In a range-based for loop, the loop variable is bound to each element
+of the range. If you declare it as a pointer, you'll just be iterating
+over the values, and they have to be pointers already. Here is an
+example:
+
+#+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+  int a=10,b=20,c=30;
+  int arr[] {a,b,c};
+  // loop variable is an integer
+    for (int x : arr) 
+      cout << x << " ";
+  // loop variable is a reference
+  cout << endl;
+  for (int &x : arr)
+    {
+      x++; // modifies array elements
+      cout << x << " ";
+    }
+  cout << endl;  
+  // loop variable is a pointer only works for pointer arrays
+  int * arr2[] {&a,&b,&c}; // array of addresses
+  for (int *p : arr2) // arr decays to int*
+     cout << *p << " ";
+#+end_src
+
+#+RESULTS:
+: 10 20 30 
+: 11 21 31 
+: 10 20 30 
+
+
 * Week 4 (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
 
+- [ ] Test 3
+- [ ] Home assignment
+- [ ] Review of last week
+- [ ] C-style arrays continued
+- [ ] Introduction to vectors
+
+** Why (and how) should you attend the Lyon Career Expo?
+
+- Explore opportunities for future career paths.
+- Build connections with local employers.
+- Show initiative. Dress the part. Bring your resume.
+
+** Review (Thursday)
+
+1. What's a hexadecimal number? What is =0x10= in decimals (=0x= indicates
+   that =10= is a hexadecimal)? Can every number be expressed that way?
+   #+begin_quote
+   A hexadecimal (hexa = six, decimus) is a number written with base
+   16, just like a decimal is a number written with base 10.
+
+   =0x10=, also written 10_{16} , corresponds to 1 * 16^1 + 0 * 16^0 = 1_{16}
+
+   Yes, every number can be expressed as a hexadecimal (one can prove
+   this for any base greater than 1). Binary numbers are base 2
+   numbers.
+   #+end_quote
+
+2. What's partial list-based initialization of a ~double~ array?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     // non-initialized values are set to zero
+     double arr[5] {3.14, 2.71, 1/167};
+     for (double val : arr)
+       cout << val << " ";
+   #+end_src
+
+   #+RESULTS:
+   : 3.14 2.71 0 0 0 
+   
+3. Does partial initialization also work for ~string~ arrays?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     std::string name[3] {"John","Williams"};
+     for (std::string val : name)
+       cout << val << " ";
+   #+end_src
+
+   #+RESULTS:
+   : John Williams  
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     #include <typeinfo>
+     std::string name[3] {"John","Williams"};
+     if (name[2]=="") cout << "Empty string." << endl;
+     // print the implementation-specific (mangled) name for the string:
+     cout << typeid(name[2]).name(); // name[2] is an empty string
+   #+end_src
+
+   #+RESULTS:
+   : Empty string.
+   : NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE
+
+4. What's a preprocessor macro?
+   #+begin_quote
+   A preprocessor macro like =#define PI 3.14= is a text substitution
+   rule: every occurrence of =PI= is (blindly) replaced by =3.14=.
+   #+end_quote
+
+5. How can I read a name from a file =name.txt= into a C++ program?
+   #+begin_src bash :results output :exports both
+     echo "Birkenkrahe" > name.txt
+     cat name.txt
+   #+end_src
+
+   #+RESULTS:
+   : Birkenkrahe
+   
+   #+begin_src C++ :cmdline < num.txt :main no :includes <iostream> :namespaces std :results output :exports both
+     #include <fstream> // include file stream header file
+
+     int main()
+     {
+       std::string name; // string variable to catch the input data
+       ifstream iFile; // declare input file stream variable
+       iFile.open("name.txt"); // open input file stream
+       iFile >> name; // stream input data from the file
+       iFile.close(); // close the data stream
+       cout << name; // display the input data on stdout
+       
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS:
+   : Birkenkrahe
+   
+6. Can you loop over =bool arr[5]= using a range-based ~for~ loop?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     bool arr[] {true, true, false}; // list-base initializer
+     for (bool val : arr)
+       cout << boolalpha << val << endl; 
+   #+end_src
+
+   #+RESULTS:
+   : true
+   : true
+   : false
+
+7. When should you not use a range-based ~for~ loop?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     // Don't use range-base for loops if you need to access subscripts
+     int x[] {10, 20, 30};
+     for (int i=0;i<sizeof(x)/sizeof(x[0]);++i)
+       {
+         x[i] *= 20;
+         cout << x[i] << " ";
+       }
+   #+end_src
+
+   #+RESULTS:
+   : 200 400 600 
+   
+8. If =pi= is a floating-point variable of value =3.14=, and =refPi= is its
+   reference variable, what is =pi= after the statement =refPi = 0.;=
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     double pi = 3.14;  // a double variable
+     double &refPi = pi;  // a reference (alias) of pi
+     refPi = 0.; // set refPi and pi to zero
+     cout << showpoint << pi << endl;
+   #+end_src
+
+   #+RESULTS:
+   : 0.00000
+   
+9. What's the problem with the following program that tries to double
+   the elements of an array?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     int arr[] {10,20,30};
+     for (int val : arr)
+       {
+         val*=2;
+       }
+     for (int val : arr)
+       {
+         cout << val << " ";
+       }
+   #+end_src
+
+   #+RESULTS:
+   : 10 20 30 
+   
+10. How can you display =3.14592= to only two decimal places?
+    #+begin_src C++ :main yes :includes <iostream> <iomanip> :namespaces std :results output :exports both :noweb yes
+      // Use printf with the %.2f format specificer
+      printf("%.2f\n", 3.14592);
+      // Use std::setprecision(3) from <iomanip>
+      std::cout << setprecision(3) << 3.14592;
+    #+end_src
+
+    #+RESULTS:
+    : 3.15
+    : 3.15
+
+    
