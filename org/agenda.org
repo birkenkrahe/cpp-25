@@ -561,7 +561,7 @@ functions, and simple structs. No advanced features.
      division by zero, invalid memory access, file not found.
    #+end_quote
 
-* Week 3 - C-style arrays and vectors
+* Week 3 - C-style arrays
 #+attr_html: :width 400px :float nil:
 [[../img/starship-launch.jpg]]
 
@@ -774,7 +774,7 @@ example:
 : 10 20 30 
 
 
-* Week 4 (Sep 16, 18)
+* Week 4 (Sep 16, 18) - More about arrays & vectors
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
 
@@ -940,3 +940,9 @@ example:
     : 3.15
 
     
+** More about C-style arrays
+
+- [ ] Copying arrays
+- [ ] Summing, averaging, max/min on arrays
+- [ ] Filling arrays partially with sentinel control
+- [ ] Comparing arrays

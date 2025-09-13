@@ -522,7 +522,7 @@ one decimal precision.
   #+end_quote
 
 
-* PRACTICE Range-based ~for~ loop
+* PRACTICE Range-based ~for~ loop (command-line & ~make~)
 
 - What will be displayed if the user enters the value =5=?
   #+begin_src C++ :tangle ../src/values.cpp :main yes :includes <iostream> :namespaces std :results output :exports both
@@ -572,15 +572,12 @@ one decimal precision.
 - *Starter code:* The program below does this with a regular ~for~
   loop. Modify it to work with a range-based loop instead.
 
-  #+begin_example C++
-
-  #+end_example
-
   Link: https://tinyurl.com/range-based
 
   #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :namespaces std :results output :exports both
     // Get first, middle and last user name and print full name.
-    // TODO: Modify the program to work with range-based loops.  #include <iostream>
+    // TODO: Modify the program to work with range-based loops.
+    #include <iostream>
     #include <string>
     using namespace std;
 
@@ -617,6 +614,7 @@ one decimal precision.
 
   #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :namespaces std :results output :exports both :noweb yes
     // Get first, middle and last user name and print full name
+    // Author: Marcus Birkenkrahe (pledged)
     #include <iostream>
     #include <string>
     using namespace std;
