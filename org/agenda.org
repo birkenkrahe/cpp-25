@@ -437,7 +437,7 @@ functions, and simple structs. No advanced features.
     Pages: 1300
     #+end_example
 
-* Week 2 - Pepquiz / Data structures introduction (Sep 2, 4)
+* Week 2: Pepquiz / Data structures introduction (Sep 2, 4)
 #+attr_html: :width 300px :float nil:
 [[../img/pepquiz2.png]]
 
@@ -561,7 +561,7 @@ functions, and simple structs. No advanced features.
      division by zero, invalid memory access, file not found.
    #+end_quote
 
-* Week 3 - C-style arrays
+* Week 3: C-style arrays
 #+attr_html: :width 400px :float nil:
 [[../img/starship-launch.jpg]]
 
@@ -773,23 +773,25 @@ example:
 : 11 21 31 
 : 10 20 30 
 
-
-* Week 4 (Sep 16, 18) - More about arrays & vectors
+* Week 4: Vectors (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
 
-- [ ] Test 3
-- [ ] Home assignment
-- [ ] Review of last week
-- [ ] C-style arrays continued
+- [ ] Test 3 (30 questions) due Sunday, Sept 21
+- [ ] Programming assignment (range-based loops) due Sunday, Sept 21
+- [ ] Review of last week Thursday
+- [ ] C-style arrays continued (
 - [ ] Introduction to vectors
 
 ** Why (and how) should you attend the Lyon Career Expo?
+#+attr_html: :width 400px:
+[[../img/careerFair.png]]
 
 - Explore opportunities for future career paths.
 - Build connections with local employers.
 - Show initiative. Dress the part. Bring your resume.
-
+- See our new career center director, Cassidy Mitchell
+  
 ** Review (Thursday)
 
 1. What's a hexadecimal number? What is =0x10= in decimals (=0x= indicates
@@ -812,15 +814,12 @@ example:
      for (double val : arr)
        cout << val << " ";
    #+end_src
-
-   #+RESULTS:
-   : 3.14 2.71 0 0 0 
    
 3. Does partial initialization also work for ~string~ arrays?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-     std::string name[3] {"John","Williams"};
+     std::string name[3] {"John","Williams"}; // array of 3 strings
      for (std::string val : name)
-       cout << val << " ";
+       cout << val << " "; // last string is empty
    #+end_src
 
    #+RESULTS:
@@ -938,11 +937,15 @@ example:
     #+RESULTS:
     : 3.15
     : 3.15
-
     
-** More about C-style arrays
+** Review (Tuesday)
 
-- [ ] Copying arrays
-- [ ] Summing, averaging, max/min on arrays
-- [ ] Filling arrays partially with sentinel control
-- [ ] Comparing arrays
+- An easy mistake is to confuse operations on the value with
+  operations on the subscript:
+  #+begin_example C++
+    count = 1;
+    value[count--];  // value[1] -> value[0]
+    value[count]--;  // value[1] -> value[1] - 1
+  #+end_example
+
+
