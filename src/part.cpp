@@ -11,7 +11,7 @@ int main() {
 const int SIZE {100};
 int numbers[SIZE];
 int count = 0;
-int num;
+int num;  // this is a sentinel value
 
 // fetch first number
 cout << "Enter a number or -1 to quit: ";

@@ -10,11 +10,11 @@ int main() {
 // Input: 5
 // Output: 17
 int values[] {12};
-for (int value : values)
+for (int &value : values)
   {
     cout << "Enter a value: ";
     std::cin >> value;
-    }
+  }
 cout << '\n' << values[0] << endl;
 return 0;
 }

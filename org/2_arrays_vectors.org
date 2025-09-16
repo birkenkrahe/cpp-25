@@ -531,7 +531,13 @@ one decimal precision.
     // Change value of an array using a range-based loop
     // Input: 5
     // Output: 17
-
+    int values[] {12};
+    for (int value : values)
+      {
+        cout << "Enter a value: ";
+        std::cin >> value;
+        }
+    cout << '\n' << values[0] << endl;
   #+end_src
 
 - Tangle the code: (org-babel-tangle) then build it with ~make~
@@ -545,22 +551,40 @@ one decimal precision.
 
   #+RESULTS:
   : g++     values.cpp   -o values
-  : Enter value: 
+  : Enter a value: 
   : 12
 
 - Answer:
   #+begin_quote
-
+  The array =values= will not be modified. 
   #+end_quote
 
   #+begin_src C++ :tangle ../src/values2.cpp :main yes :includes <iostream> :namespaces std :results output :exports both
-
+    // Change value of an array using a range-based loop
+    // Input: 5
+    // Output: 17
+    int values[] {12};
+    for (int &value : values)
+      {
+        cout << "Enter a value: ";
+        std::cin >> value;
+      }
+    cout << '\n' << values[0] << endl;
   #+end_src
 
 - Tangle the code: (org-babel-tangle) - build using ~make~
   #+begin_src bash :results output :exports both
-
+    cd ../src                              # change to directory ../src
+    [ -f Makefile ] && rm Makefile         # if exists, remove Makefile
+    [ -f values2.cpp ] && touch values2.cpp  # if exists, touch values.cpp
+    make values2                            # build executable `values`
+    echo 5 | ./values2                      # run `values` with input 5
   #+end_src
+
+  #+RESULTS:
+  : g++     values2.cpp   -o values2
+  : Enter a value: 
+  : 5
 
 * PRACTICE Store and display strings using range-based loops
 
@@ -632,8 +656,17 @@ one decimal precision.
 - Example: Increase score values in an array
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both :noweb yes
     int score[] {7,8,9,10,11};
-    
+    cout << score[2] << endl;
+    cout << ++score[2] << endl;
+    cout << score[4]++ << endl;
+    cout << score[4] << endl;    
   #+end_src
+
+  #+RESULTS:
+  : 9
+  : 10
+  : 11
+  : 12
 
 - An easy mistake is to confuse operations on the value with
   operations on the subscript:
@@ -653,30 +686,57 @@ one decimal precision.
     newValues = oldValues;
   #+end_src
 
+  #+RESULTS:
+
 - Answer:
   #+begin_quote
-
+  The only way to assign one C-style array to another is to
+  assign the individual elements in the array.
   #+end_quote
 
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both     
-    
+    const int SIZE {4};
+    int oldValues[SIZE] {10,100,200,300};
+    int newValues[SIZE];
+
+    for (int count=0; count<SIZE; count++)
+      {
+        newValues[count] = oldValues[count];
+        cout << newValues[count] << " ";
+      }
   #+end_src
+
+  #+RESULTS:
+  : 10 100 200 300 
 
 - Explanation:
   #+begin_quote
+  The reason why the array assignment does not work is that you
+  would have to change the STARTING MEMORY ADDRESS of the array.
 
+  Using =newValues= in code means that the compiler sees:
+  =&newValues[0]=
+
+  =newValues = oldValues= is seen as 8012 = 8024
   #+end_quote
   #+attr_html: :width 600px :float nil:
   [[../img/array_copy.png]]
 
 - If =num= is an array of =int= numbers, what will =cout << num;= print?
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both :noweb yes
-    
+    int num[] {10,20,30,40,50};
+    cout << num;  // this is the starting address
+    cout << '\n' << &num[1]; // one int = 4 bytes forward
   #+end_src
+
+  #+RESULTS:
+  : 0x7ffd5ea5b350
+  : 0x7ffd5ea5b354
 
 - Explanation:
   #+begin_quote
-
+  Notice that the address of =num[1]= is 4 bytes = length of an =int=
+  in memory forward from the address of =num[0]=.
   #+end_quote  
   
 * Summing the Values in a Numeric Array
@@ -688,14 +748,27 @@ one decimal precision.
 
 - *Sample output:*
   #+begin_example
-  #+RESULTS:
-  : Sum = 36
+  Sum = 36
   #+end_example
 
 - *Solution:*
-  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both :noweb yes
-    
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    using namespace std;
+
+    int main()
+    {
+      int arr[] {1,2,3,4,5,6,7,8};
+      int sum = 0;
+      for (int val : arr)
+        sum += val;
+      cout << "Sum = " << sum;
+      return 0;
+    }
   #+end_src
+
+  #+RESULTS:
+  : Sum = 36
 
 * [Bonus program] Getting the Average of the Values in a Numeric Array
 
@@ -710,7 +783,6 @@ one decimal precision.
 
 - *Sample output:*
   #+begin_example
-  #+RESULTS:
   Average = 405/8 = 50.625
   #+end_example
 
@@ -743,7 +815,8 @@ one decimal precision.
 - What if you want to store items in an array but you don't know how
   many items there are exactly?
   #+begin_quote
-
+  You could make the array very large, large enough for the largest
+  possible number of items. Not efficient!
   #+end_quote
 
 - Example: The =count= variable acts like a sentinel. We'll tangle and
@@ -752,7 +825,7 @@ one decimal precision.
     const int SIZE {100};
     int numbers[SIZE];
     int count = 0;
-    int num;
+    int num;  // this is a sentinel value
 
     // fetch first number
     cout << "Enter a number or -1 to quit: ";
@@ -775,6 +848,15 @@ one decimal precision.
     g++ part.cpp -o part
     echo "1 3 4 77 8 33 -1" |./part
   #+end_src
+
+  #+RESULTS:
+  : Enter a number or -1 to quit: 
+  : Enter a number or -1 to quit: 
+  : Enter a number or -1 to quit: 
+  : Enter a number or -1 to quit: 
+  : Enter a number or -1 to quit: 
+  : Enter a number or -1 to quit: 
+  : Enter a number or -1 to quit: 1 3 4 77 8 33 
 
 * [Bonus program] Fill array partially with sentinel control
 
@@ -828,12 +910,19 @@ one decimal precision.
     (firstArray == secondArray) ? (cout<<"same"):(cout<<"different");
   #+end_src
 
+  #+RESULTS:
+  : different
+
 - Explanation:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both :noweb yes
     int firstArray [] {5,10,15,20,25};
     int secondArray [] {5,10,15,20,25};
     cout << firstArray << endl << secondArray;
   #+end_src
+
+  #+RESULTS:
+  : 0x7ffcfc57ceb0
+  : 0x7ffcfc57ced0
 
 - To compare the contents of two arrays, you must compare their elements.
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> :namespaces std :results output :exports both :noweb yes
@@ -853,6 +942,9 @@ one decimal precision.
     cout << boolalpha << "Arrays equal? " << arraysEqual;
   #+end_src
 
+  #+RESULTS:
+  : Arrays equal? false
+
 * Arrays as Function Arguments
 
 - To pass an array as an argument to a function, pass the name of the
@@ -868,8 +960,8 @@ one decimal precision.
     int main()
     {
       const int ARRAY_SIZE=8;
-      int numbers[ARRAY_SIZE]={5,10,15,20,25,30,35,40};
-      showValues(numbers,ARRAY_SIZE);
+      int numbers[ARRAY_SIZE] {5,10,15,20,25,30,35,40};
+      showValues(numbers,ARRAY_SIZE); // function call
       return 0;
     }
     // function definition
@@ -879,6 +971,9 @@ one decimal precision.
         cout << num[i] << " ";
     }
   #+end_src
+
+  #+RESULTS:
+  : 5 10 15 20 25 30 35 40 
 
 - Would a range-based loop work in ~showValues~, too?
   #+begin_example C++
@@ -891,7 +986,9 @@ one decimal precision.
 
 - Answer:
   #+begin_quote
-
+  The loop inside =showValues2= is invalid because it does not know the
+  end of the range. =ARRAY_SIZE= is not passed on. And even if it was
+  passed on, it would not be used in the loop
   #+end_quote
 
 
