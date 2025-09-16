@@ -259,7 +259,6 @@ dashboard preview.
 
 7) Upload screenshot of your terminal with the result to Canvas.
 
-
 * Initializing a string array
 
 - Write a program that *safely* initializes a ~string~ array named =planets=
@@ -520,7 +519,6 @@ one decimal precision.
   When using range-based loops you do not have access to individual
   subscripts.
   #+end_quote
-
 
 * PRACTICE Range-based ~for~ loop (command-line & ~make~)
 
@@ -991,5 +989,49 @@ one decimal precision.
   passed on, it would not be used in the loop
   #+end_quote
 
+- Don't believe me? Let's try it:
+  #+begin_src C++ :main no :includes :results output
+    #include <iostream>
+    using namespace std;
+
+    void showValues2(const int []); // prototype
+
+    int main()
+    {
+      const int ARRAY_SIZE=8;
+      int numbers[ARRAY_SIZE] {5,10,15,20,25,30,35,40};
+      showValues2(numbers); // function call
+      return 0;
+    }
+    // function definition
+    void showValues2(int num[])
+    {
+      for (int val : num)
+        cout << val;
+    }
+  #+end_src
+
+- Result (some stuff deleted):
+  #+begin_example
+ In function ‘void showValues2(int*)’:
+ 23:18: error: ‘begin’ was not declared in this scope;
+ did you mean ‘std::begin’?
+   23 |   for (int val : num)
+      |                  ^~~
+      |                  std::begin
+/usr/include/c++/11/bits/range_access.h:108:37:
+  note: ‘std::begin’ declared here
+  template<typename _Tp> const _Tp* begin(const valarray<_Tp>&) noexcept;
+      |                                     ^~~~~
+23:18: error: ‘end’ was not declared in this scope; did you mean ‘std::end’?
+   23 |   for (int val : num)
+      |                  ^~~
+      |                  std::end
+/usr/include/c++/11/bits/range_access.h:110:37:
+  note: ‘std::end’ declared here
+  template<typename _Tp> const _Tp* end(const valarray<_Tp>&) noexcept;
+      |                                     ^~~
+  #+end_example
+  
 
   

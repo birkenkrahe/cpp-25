@@ -777,13 +777,15 @@ example:
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
 
-- [ ] Test 3 (30 questions) due Sunday, Sept 21
-- [ ] Programming assignment (range-based loops) due Sunday, Sept 21
-- [ ] Review of last week Thursday
-- [ ] C-style arrays continued (
+- [X] Test 3 (30 questions) due Sunday, Sept 21
+- [X] Programming assignment (range-based loops) due Sunday, Sept 21
+- [X] Review of last week Thursday: range-based loops
+- [X] C-style arrays continued
+- [ ] Bonus: Where do C++ come from?
+- [ ] Review of Tuesday: copying and passing arrays to functions
 - [ ] Introduction to vectors
 
-** Why (and how) should you attend the Lyon Career Expo?
+** DONE Why (and how) should you attend the Lyon Career Expo?
 #+attr_html: :width 400px:
 [[../img/careerFair.png]]
 
@@ -792,7 +794,7 @@ example:
 - Show initiative. Dress the part. Bring your resume.
 - See our new career center director, Cassidy Mitchell
   
-** Review (Thursday)
+** DONE Review (Thursday)
 
 1. What's a hexadecimal number? What is =0x10= in decimals (=0x= indicates
    that =10= is a hexadecimal)? Can every number be expressed that way?
@@ -810,10 +812,13 @@ example:
 2. What's partial list-based initialization of a ~double~ array?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
      // non-initialized values are set to zero
-     double arr[5] {3.14, 2.71, 1/167};
+     double arr[5] {3.14, 2.71, 1/167}; // 2 elements not initialized
      for (double val : arr)
        cout << val << " ";
    #+end_src
+
+   #+RESULTS:
+   : 3.14 2.71 0 0 0 
    
 3. Does partial initialization also work for ~string~ arrays?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
@@ -867,9 +872,6 @@ example:
        return 0;
      }
    #+end_src
-
-   #+RESULTS:
-   : Birkenkrahe
    
 6. Can you loop over =bool arr[5]= using a range-based ~for~ loop?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
@@ -889,7 +891,7 @@ example:
      int x[] {10, 20, 30};
      for (int i=0;i<sizeof(x)/sizeof(x[0]);++i)
        {
-         x[i] *= 20;
+         x[i] *= 20; 
          cout << x[i] << " ";
        }
    #+end_src
@@ -913,9 +915,9 @@ example:
    the elements of an array?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
      int arr[] {10,20,30};
-     for (int val : arr)
+     for (int &val : arr)
        {
-         val*=2;
+         val*=2;  // val = val * 2
        }
      for (int val : arr)
        {
@@ -924,10 +926,11 @@ example:
    #+end_src
 
    #+RESULTS:
-   : 10 20 30 
+   : 20 40 60 
    
 10. How can you display =3.14592= to only two decimal places?
     #+begin_src C++ :main yes :includes <iostream> <iomanip> :namespaces std :results output :exports both :noweb yes
+     #include <iomanip> // formatting manipulation header file
       // Use printf with the %.2f format specificer
       printf("%.2f\n", 3.14592);
       // Use std::setprecision(3) from <iomanip>
@@ -938,14 +941,100 @@ example:
     : 3.15
     : 3.15
     
+** Bonus: Where do C++ rules come from?
+
+For example: "When passing a C-style array to a C++ function, the
+array decays to a pointer to its first element." Where is that
+written?
+
+When you pass an array to a function in C++, the array does not get
+copied as a whole. Instead, the language requires array-to-pointer
+conversion. The *standard* says:
+
+- [[https://eel.is/c++draft/conv.array][conv.array]] (C++23 §7.3.3.4): *An lvalue or rvalue of type “array of
+  T” can be converted to a prvalue of type “pointer to T”. The result
+  is a pointer to the first element of the array.*
+- [[https://eel.is/c++draft/dcl.fct][dcl.fct]] (C++23 §9.3.5.6): A parameter declared as “array of T” is
+  adjusted to be “pointer to T”.
+
+There is no built-in notion of a pointer to an entire array in
+function calls; the array decays to the address of its first
+element. If you want to treat the whole collection as a copyable
+object, you must use types like =std::array= or =std::vector=.
+
+The machine-level *heuristic* ("the computer can only point at one
+address at a time") helps explain why the language designers chose
+this rule.
+
+*Sources:* The links point to unofficial mirrors of the ISO C++ standard
+text: for example, [[https://eel.is/c++draft/][eel.is/c++draft ]] is maintained by Richard Smith (a
+C++ committee member). It’s a continuously updated draft that matches
+the official ISO C++ standard (like C++20, C++23), but is freely
+browsable online. The official standard is published by ISO
+(e.g. ISO/IEC 14882:2023 – Programming Language C++), but ISO sells it
+as a paid PDF. That’s why most people use the draft mirrors (eel.is,
+or sometimes cppreference’s summaries).
+
 ** Review (Tuesday)
 
-- An easy mistake is to confuse operations on the value with
-  operations on the subscript:
-  #+begin_example C++
-    count = 1;
-    value[count--];  // value[1] -> value[0]
-    value[count]--;  // value[1] -> value[1] - 1
-  #+end_example
+1. What does a range-based loop iterate over in this statement:
+   =for (int value :  values)=?
+   #+begin_quote
+   A copy of each element in the array.
+   #+end_quote
 
+2. How do you modify array elements with a range-based loop?
+   #+begin_quote
+   Use references: =for (int &value : values)=.
+   #+end_quote
 
+3. Which is true about =++score[2]= and =score[2]++=?
+   #+begin_quote
+   First increments before printing; second prints then increments.
+   #+end_quote
+
+4. Why does =newValues = oldValues;= fail for C-style arrays?
+   #+begin_quote
+   Array names are non-assignable; you must copy elements.
+   Why: The array name decays into a pointer to the first element
+   and each array resides at a different memory address.
+   #+end_quote
+
+5. What does =cout << boolalpha << (3==4);= display?
+   #+begin_quote
+   =false=
+   #+end_quote
+
+6. What does =cout << num;= print for =int num[] {10,20,30};=?
+   #+begin_quote
+   The starting memory address of the array.
+   #+end_quote
+
+7. Why is =&num[1]= typically 4 bytes after =num= on many systems?
+   #+begin_quote
+   Because =num= is =&num[0]= and =sizeof(int)= is commonly 4 bytes.
+   #+end_quote
+
+8. In a sentinel-input pattern with =count= tracking elements, why do we
+   loop on ~while (num != -1 && count < SIZE)~ ?
+   #+begin_quote
+   To stop on sentinel (-1) or when the array is full.
+   #+end_quote
+
+9. What happens to the array =num= when it is passed like this:
+   #+begin_example C++
+   void showValues(num, NUM_SIZE) {...}
+   #+end_example
+   #+begin_quote
+   It decays to a pointer to the first element.
+   #+end_quote
+
+10. Why is this invalid for unknown-size arrays?
+    #+begin_example C++
+    void showValues2(int num[]) { for (int v : num) cout << v; }
+    #+end_example
+    #+begin_quote
+    Range-based loop needs a known range; size isn’t available.
+    #+end_quote
+
+    
