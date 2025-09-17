@@ -1,4 +1,4 @@
-g#+TITLE: Arrays and Vectors
+#+TITLE: Arrays and Vectors
 #+AUTHOR: Marcus Birkenkrahe
 #+SUBTITLE: CSC 240 Data Structures Fall 2025
 #+OPTIONS: toc:1 num:1 ^:nil:
@@ -1034,4 +1034,6 @@ one decimal precision.
   #+end_example
   
 
+* NEXT Vectors
   
+
