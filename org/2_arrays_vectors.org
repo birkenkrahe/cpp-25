@@ -1,4 +1,4 @@
-#+TITLE: Arrays and Vectors
+#+TITLE: Arrays and vectors
 #+AUTHOR: Marcus Birkenkrahe
 #+SUBTITLE: CSC 240 Data Structures Fall 2025
 #+OPTIONS: toc:1 num:1 ^:nil:
@@ -9,6 +9,11 @@
 - [ ] Array input without loops
 - [ ] Stepping through an array with ~for~
 - [ ] Running C++ on the command-line with ~make~
+- [ ] Range-based ~for~ loops
+- [ ] Assigning and comparing arrays
+- [ ] Partially filled arrays
+- [ ] Sentinel controlled arrays
+- [ ] Arrays as function arguments
 
 * Simple example: Array declaration
 
@@ -1034,6 +1039,389 @@ one decimal precision.
   #+end_example
   
 
-* NEXT Vectors
+* NEXT Introduction to the STL ~vector~
+
+- The ~vector~ data type of the Standard Template Library (STL) is
+  similar to an array:
+  #+begin_quote
+  1. Holds a sequence of values or elements (of one type).
+  2. Stores its elements in contiguous memor locations.
+  3. Can be accessed using the subscript operator ~[]~ (only on existing
+     ~vector~ elements).
+  #+end_quote
+
+- Some differences:
+  #+begin_quote
+  1. You don't have to declare the number of elements that the ~vector~
+     will have.
+  2. If you add a value to a ~vector~ that's already full, the ~vector~
+     will automatically increase its size to accommodate the new
+     value.
+  3. A ~vector~ can report the number of elements it contains.
+  4. To use ~vector~ you need ~using namespace std;~ in your program (or
+     otherwise declare ~std::vector~.
+  5. You need to ~#include <vector>~.
+  #+end_quote
+
+- What the doc says:
+  #+begin_quote
+  You need to ~#include <vector>~ - check out ~cppreference~: "~std::vector~
+  is a sequence container that encapsulates dynamic size arrays."
+  
+  Further down the page, you see some notes on the algorithmic
+  complexity (aka efficiency) of common ~vector~ operations:
+  1. Random access (pick any element): O(1)
+  2. Insertion or removal of elements at the end: O(1)
+  3. Insertion or removal of elements anywhere: O(n)
+  #+end_quote
+
+- Important member functions: ~swap~, ~clear~, ~empty~, ~push_back~, ~insert~,
+  ~resize~, ~pop_back~, ~at~.
+
+* Declaring vectors
+
+- Example: We define =numbers= as a ~vector~ of integers ~vector<int>~.
+
+  #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> <string> <fstream> :namespaces std :results none
+    vector<int> numbers;
+    vector<int> numbers2(10); // Declaring a starting size is optional.
+    vector<int> numbers3(10,2); // Initializes 10 numbers to the value 2.
+    vector<int> numbers4(numbers3); // Copies vector numbers3 into vector numbers4
+    vector<int> num {10,20,30,40}; // Initializes vector with value set.
+  #+end_src
+
+- Overview of ~vector~ definitions:
+  #+name: Table 7-3 Gaddis page 444
+  #+attr_html: :width 600px :float nil:
+  [[../img/vector_definitions.png]]
+
+* PRACTICE Storing values in a ~vector~: Payroll program (Canvas)
+
+- We write a program to compute the =grossPay= of =NUM_EMPLOYEES=
+  employees based on the number of =hours= each employee has worked, and
+  on the =payRate= each employee receives.
+
+- Sample input: (hours and pay rate for 5 employees)
+  #+begin_example
+  10 9.75 15 8.62 20 10.50 40 18.75 40 15.65
+  #+end_example
+
+- Starter code: [[https://tinyurl.com/payroll-cpp][tinyurl.com/payroll-cpp]]
+
+  #+name: tinyurl.com/payroll-cpp
+  #+begin_src C++ :noeval :tangle ../src/payroll2.cpp :main no :includes :results output :exports both
+    // Compute the grossPay of NUM_EMPLOYEES who work certain hours and
+    // receive a certain payRate.
+    // Input: integer hours and double payRate for each employee
+    // Sample output: Hours worked/payRate/grossPay received for each employee
+    // Author: Marcus Birkenkrahe (based on Gaddis, p.444)
+    #include <iostream>
+    // input/output manipulation
+    // vectors
+    using namespace std;
+
+    int main()
+    {
+      // Declare variables and constants
+      // number of employees (5)
+      // hours vector
+      // payRate vector
+      // Loop index 
+      // Hours x pay rate
+
+      // Ask for user input.
+      // Get the hours worked and the hourly payrate for each employee.
+      // Print the input after receiving it.
+
+      // Display each employee's gross pay (hours x pay rate).
+      // Set the precision to 2 decimals after the point.
+
+      return 0;
+    }
+  #+end_src
+
+- Solution: https://onecompiler.com/cpp/43x2syux9
+
+* Using the range-based ~for~ loop with a ~vector~ (from C++11)
+
+- Example 1:
+  #+begin_src C++ :main no :includes :results output :exports both
+    // Display vector elements using a range-base for loop
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define and initialize a vector.
+
+      // Display the vector elements.
+
+      return 0;
+    }
+  #+end_src
+  
+- Example 2:
+  #+begin_src C++ :cmdline < ../data/inputFile :tangle vectorFill.cpp :main no :includes :results output :exports both
+    // Using a range-based for loop, fill a vector with user input
+    // and display the elements of the vector
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define a vector.
+
+      // Get values for the vector elements.
+
+      // Display the vector elements.
+
+      return 0;
+    }
+  #+end_src
+
+- Input file:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "10 20 30 40 50" > inputFile
+    cat inputFile
+  #+end_src
+
+  #+RESULTS:
+  : 10 20 30 40 50
+
+* PRACTICE Using the ~push_back~ member function (payroll pgm modified)
+
+- You use ~push_back~ to store a value in a ~vector~ without starting
+  size, or to append it at the end of a ~vector~ that is already full.
+
+- Example:
+  #+begin_src C++ :main no :includes :results output :exports both
+
+    
+  #+end_src
+
+- Let's modify the payroll program: Change the ~vector~ definitions to
+  vectors without starting size, and use ~push_back~ to fill the
+  vectors.
+
+- Sample input: number of employees | hours | pay rate for each
+  #+begin_example
+  5 10 9.75 15 8.62 20 10.50 40 18.75 40 15.65
+  #+end_example
+
+- Starter code: tinyurl.com/payroll-2-cpp
+
+  #+begin_src C++ :noeval :tangle ../src/payroll2.cpp :main no :includes :results output :exports both
+    // Program stores, in two vectors, the hours worked by the employees
+    // and their hourly pay rates, and computes and displays the gross pay
+    // for each employee.
+    // header files
+
+    // main program
+
+      // Declare variables: hours, pay rate, number of employees
+
+      // Get the number of employees.
+
+      // Input the data.
+
+      // Display each employee's gross pay (hours x pay rate)
+  #+end_src
+
+- Solution: https://onecompiler.com/cpp/43x2uk9xg
+
+- Why can't you use ~.push_back~ directly in a ~cout <<~ stream?
+  #+begin_quote
+
+  #+end_quote
+
+* Determining the ~size~ of a ~vector~
+
+- Example: Demonstrates the ~vector~ method ~size~. Notice that the
+  function arguments does not need to include the size since ~vector~ is
+  dynamically allocated. Expected output: 0 2 4 6 8 10 12
+ 
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    // Function prototype
+
+    int main()
+    {
+      // Define a vector.
+
+      // Put a series of numbers in the vector.
+
+      // Display the numbers.
+
+      return 0;
+    }
+
+    //***********************************************************
+    // showValues accepts an integer vector as its argument.    *
+    // The value of each of the vector's elements is displayed. *
+    //***********************************************************
+
+  #+end_src
+
+* Removing elements from a ~vector~ with ~pop.back~
+
+- ~.pop_back()~ removes the last element from the ~vector~.
+
+- Example:
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define an empty vector
+      vector<int> values;
+
+      // Store values in the vector, then display size.
+
+      // Remove a value from the vector, then display size.
+
+      // Remove a value from the vector then display size.
+
+      // Remove a value from the vector then display size.
+
+      return 0;
+    }
+  #+end_src
+
+- What if we were to try and remove another value from the empty ~vector~?
+  #+begin_quote
+
+  #+end_quote
+
+* Clearing a ~vector~
+
+- To clear the contents of a ~vector~, use the ~.clear()~ member function.
+
+- Example:
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // define a vector of 100 elements
+
+      // display vector size
+
+      // clear vector
+
+      // display vector size
+
+      return 0;
+    }
+  #+end_src
+
+* Detecting an empty ~vector~
+
+- To determine if a ~vector~ has no content (that is no memory reserved
+  for it), use the ~.empty~ member function.
+
+- Example: To demonstrate the use of the ~empty~ function, we store
+  values in a ~vector~, and then determine the average of these
+  values. If the vector is not empty, there are no values to average
+  and we set the average to zero.
+
+  #+name: Program 7-31 Gaddis page 453
+  #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    #include <iomanip>
+    using namespace std;
+
+    // Function prototype
+    double avgVector(vector<int>);
+
+    int main()
+    {
+      // define empty vector, number of values, and average
+
+      // Get the number of values to average.
+
+      // Get the values and store them in the vector.
+
+      // Get the average of the values and display it.
+
+      return 0;
+    }
+
+    //******************************************************
+    // avgVector accepts an integer vector as its argument *
+    // If the vector contains values, the function returns *
+    // the average of those values as a double. Otherwise, *
+    // an error message is displayed and 0.0 is returned.  *
+    //******************************************************
+
+  #+end_src
+
+- InputFile:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "5 12 18 3 7 9" > inputFile
+    #echo "0" > inputFile
+    cat inputFile
+  #+end_src
+
+* PRACTICE Summary of ~vector~ member functions
+
+- Open a new C++ file and code along with me.
+  
+- =at(element)= returns the value of the element located at =element= in
+  the ~vector~:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- ~clear()~ clears a ~vector~ of all its elements:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- ~empty()~ returns ~true~ if the ~vector~ is empty, and ~false~ otherwise.
+  #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- ~pop.back~ removes the last element from the ~vector~ thus reducing its
+  ~size~ by one.
+  #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- =push_back(value)= stores =value= in the last element of the ~vector~. If
+  the ~vector~ is full or empty, a new element is created.
+  #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- =resize(num, value)= resizes a ~vector~ by =num= elements and initializes
+  each of the new elements with =value=. If =num= is the same as the
+  current ~size~, it does nothing.
+
+  #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- =swap(vector2)= swaps the content of the ~vector~ with the contents of
+  =vector2=.
+  #+begin_src C++ :main yes :includes <vector> <iostream> <cstdlib> <string> <fstream> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+
   
 
+
+ 
