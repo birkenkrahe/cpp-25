@@ -1095,7 +1095,7 @@ one decimal precision.
   #+attr_html: :width 600px :float nil:
   [[../img/vector_definitions.png]]
 
-* PRACTICE Storing values in a ~vector~: Payroll program (Canvas)
+* PRACTICE Storing values in a ~vector~: Payroll program -> CANVAS
 
 - We write a program to compute the =grossPay= of =NUM_EMPLOYEES=
   employees based on the number of =hours= each employee has worked, and
@@ -1141,7 +1141,7 @@ one decimal precision.
   #+end_src
 
 - Solution: https://onecompiler.com/cpp/43x2syux9
-
+  
 * Using the range-based ~for~ loop with a ~vector~ (from C++11)
 
 - Example 1:
@@ -1191,7 +1191,7 @@ one decimal precision.
   #+RESULTS:
   : 10 20 30 40 50
 
-* PRACTICE Using the ~push_back~ member function (payroll pgm modified)
+* PRACTICE Using the ~push_back~ member function (payroll pgm modified) -> CANVAS
 
 - You use ~push_back~ to store a value in a ~vector~ without starting
   size, or to append it at the end of a ~vector~ that is already full.
