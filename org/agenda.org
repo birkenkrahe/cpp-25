@@ -7,7 +7,7 @@
 #+property: header-args:python :session *Python* :python python3 :results output :exports both
 #+property: header-args:R      :session *R* :results graphics output file :exports both
 #+property: header-args:C++    :main yes :includes <iostream> :results output :exports both
-* New attendance taking (DIY with Canvas app)
+* DONE New attendance taking (DIY with Canvas app)
 #+attr_html: :width 400px :float nil:
 
 - Open your Canvas mobile app
@@ -17,20 +17,20 @@
 - You are now marked present
 - Do this from now on at the beginning of class
 
-* Entry test - 30 light questions
+* DONE Entry test - 30 light questions
 #+attr_html: :width 400px :float nil:
 [[../img/entryTest.png]]
 
 How did you do?
 
-* Week 0: Overview
+* DONE Week 0: Overview
 #+attr_html: :width 400px :float nil:
 [[../img/The_Reckoning2.png]]
 
 CSC 240 is a complete redevelopment of a course that I first taught in
 Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
-* Week 1: C++ Review / Introduction to data structures
+* DONE Week 1: C++ Review / Introduction to data structures
 
 - [X] Review: Last week (overview session)
 - [X] Review: C++ Entry Quiz
@@ -437,7 +437,7 @@ functions, and simple structs. No advanced features.
     Pages: 1300
     #+end_example
 
-* Week 2: Pepquiz / Data structures introduction (Sep 2, 4)
+* DONE Week 2: Pepquiz / Data structures introduction (Sep 2, 4)
 #+attr_html: :width 300px :float nil:
 [[../img/pepquiz2.png]]
 
@@ -561,7 +561,7 @@ functions, and simple structs. No advanced features.
      division by zero, invalid memory access, file not found.
    #+end_quote
 
-* Week 3: C-style arrays
+* DONE Week 3: C-style arrays
 #+attr_html: :width 400px :float nil:
 [[../img/starship-launch.jpg]]
 
@@ -773,7 +773,7 @@ example:
 : 11 21 31 
 : 10 20 30 
 
-* Week 4: Vectors (Sep 16, 18)
+* DONE Week 4: Vectors (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
 
@@ -1047,6 +1047,7 @@ or sometimes cppreference’s summaries).
     : False
 
 * Week 5: Vectors II & Time complexity (Sep 23, 25)
+
 
 ** Review (Thursday)
 

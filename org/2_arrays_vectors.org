@@ -1269,7 +1269,9 @@ one decimal precision.
 
   #+end_quote
 
-* Determining the ~size~ of a ~vector~
+* NEXT Determining the ~size~ of a ~vector~
+
+- Code along with me. Open a new C++ file to do it.
 
 - Example: Demonstrates the ~vector~ method ~size~. Notice that the
   function arguments does not need to include the size since ~vector~ is
@@ -1301,6 +1303,8 @@ one decimal precision.
   #+end_src
 
 * Removing elements from a ~vector~ with ~pop.back~
+
+- Code along with me. Open a new C++ file to do it.
 
 - ~.pop_back()~ removes the last element from the ~vector~.
 
@@ -1334,6 +1338,8 @@ one decimal precision.
 
 * Clearing a ~vector~
 
+- Code along with me. Open a new C++ file to do it.
+
 - To clear the contents of a ~vector~, use the ~.clear()~ member function.
 
 - Example:
@@ -1357,6 +1363,8 @@ one decimal precision.
   #+end_src
 
 * Detecting an empty ~vector~
+
+- Code along with me. Open a new C++ file to do it.
 
 - To determine if a ~vector~ has no content (that is no memory reserved
   for it), use the ~.empty~ member function.
@@ -1408,7 +1416,8 @@ one decimal precision.
 
 * PRACTICE Summary of ~vector~ member functions
 
-- Open a new C++ file and code along with me.
+- Open a new C++ file and code along with me. For each new member
+  function, delete the old code. You can find the solutions in GitHub.
   
 - =at(element)= returns the value of the element located at =element= in
   the ~vector~:
