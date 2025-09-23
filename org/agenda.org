@@ -785,7 +785,7 @@ example:
 - [ ] Review of Tuesday: copying and passing arrays to functions
 - [ ] Introduction to vectors
 
-** DONE Why (and how) should you attend the Lyon Career Expo?
+** Why (and how) should you attend the Lyon Career Expo?
 #+attr_html: :width 400px:
 [[../img/careerFair.png]]
 
@@ -794,7 +794,7 @@ example:
 - Show initiative. Dress the part. Bring your resume.
 - See our new career center director, Cassidy Mitchell
   
-** DONE Review (Thursday)
+** Review (Thursday)
 
 1. What's a hexadecimal number? What is =0x10= in decimals (=0x= indicates
    that =10= is a hexadecimal)? Can every number be expressed that way?
@@ -1016,7 +1016,7 @@ or sometimes cppreference’s summaries).
    #+end_quote
 
 8. In a sentinel-input pattern with =count= tracking elements, why do we
-   loop on ~while (num != -1 && count < SIZE)~ ?
+   loop on ~while ((num != -1) && (count < SIZE))~ ?
    #+begin_quote
    To stop on sentinel (-1) or when the array is full.
    #+end_quote
@@ -1037,4 +1037,123 @@ or sometimes cppreference’s summaries).
     Range-based loop needs a known range; size isn’t available.
     #+end_quote
 
-    
+11. What does this code do?
+    #+begin_src C++ :main yes :includes <iostream> :results output :exports both :comments both :tangle yes :noweb yes
+      bool value = true;
+      ( value == false ) ? (std::cout << "True") : (std::cout << "False");
+    #+end_src
+
+    #+RESULTS:
+    : False
+
+* Week 5: Vectors II & Time complexity (Sep 23, 25)
+
+** Review (Thursday)
+
+1. Which header must you include to use vectors? Do you need =std=?
+   #+begin_quote 
+   - You need to =#include <vector>= for the functions
+   - You need =std::vector= for the ~namespace~ names
+   #+end_quote
+   
+2. What does a vector store? Can you show that?
+   #+begin_src C++ :main yes :includes <iostream> :results output :exports both :comments both :tangle yes :noweb yes
+     // A vector stores a sequence of values of one type
+     vector<int> numbers;   // an empty vector of integers
+   #+end_src
+
+3. How are vector elements stored in memory? Can you show that?
+   #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both 
+     // Vectors are stored contigously in memory
+     std::vector<int> num {1,2,3};
+     for (int &val : num) std::cout << &val << "\n";
+   #+end_src
+
+4. How do you initialize a vector with 10 ints, each set to 2?
+   #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
+     // A vector stores a sequence of values of one type
+     std::vector<int> nums(10,2);   // an empty vector of integers
+     for (int num : nums) std::cout << num << " ";
+   #+end_src
+
+5. How do you access an existing element of a vector? Can you show it?
+   #+begin_src C++ :main yes :includes <iostream> <vector> <iomanip> :results output :exports both :comments both :tangle yes :noweb yes
+     // Existing vector elements are accessed with the [] operator
+     std::vector<bool> logic {true,false};
+     std::cout << std::boolalpha
+               << logic[0] << " " << logic[1] << std::endl;
+   #+end_src
+
+6. Do you have to declare vector size at compile time?
+   #+begin_quote
+   You do not have to declare the size of a ~vector~ at compile
+   time. Instead, vectors grow and shrink dynamically at run time.
+   #+end_quote
+
+7. What happens if you add a value to a full vector? Can you show
+   that?
+   #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
+     // When adding a value to a "full" vector, it expands by itself
+     std::vector<double> math {3.14}; // empty vector with one element
+     std::cout << "size = " << math.size() << std::endl;
+     math.push_back(2.71);            // add an element at the end
+     for (double val : math) std::cout << "values = " << val << " ";
+     std::cout << "\nsize = " << math.size() << std::endl;
+   #+end_src
+
+8. What happens when you define a vector of only 2 elements and add a
+   third element with =[]=?
+   #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
+     // The subscript operator [] only works on existing vector elements
+     std::vector<double> math(2); // empty vector with one element
+     math[0] = 3.14;
+     math[1] = 2.71;
+     math[2] = 1.41; // vector element does not exist
+     for (double val : math) std::cout << val << " ";
+     std::cout << math.size();
+   #+end_src
+
+9. Is =using namespace std;= required for vectors?
+   #+begin_quote
+   No, you can write =std::vector=.
+   #+end_quote
+
+10. Will this code work? Will it compile? Will it run?
+    #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
+      std::vector<int> vec {1,2,3};
+      std::vec.push_back(4);
+      for (double val : vec) std::cout << val << " ";
+      std::cout << "\nsize = " << std::vec.size() << std::endl;
+    #+end_src
+
+11. How do you copy one vector into another at construction?
+    #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
+      std::vector<int> vec1 {1,2,3};  // initialize 3-element vector
+      std::vector<int> vec2(vec1);    // copy vec1 to vec2
+      for (double val : vec2) std::cout << val << " ";
+      std::cout << "\nsize = " << vec2.size() << std::endl;
+    #+end_src
+
+12. Why can’t you write =cout << v.push_back(3);=?
+    #+begin_quote
+    You cannot send the expanded vector straight to stdout, because
+    ~push_back~ returns ~void~ (and ~cout~ cannot stream nothing).
+    #+end_quote
+
+13. What does the dot operator do in =v.push_back(10)= ?
+    #+begin_quote
+    The dot operator calls the ~push_back~ member function of the ~vector~
+    object =v=.
+    #+end_quote
+
+14. What is a =vector<int> numbers= object in C++?
+    #+begin_quote
+    An object (instance) of the ~vector~ class template specialized for
+    ~int~ data members.
+    #+end_quote
+
+15. What is the *Standard Template Library* (STL) in C++?
+    #+begin_quote
+    The STL is a collection of template classes and functions for
+    common data structures and algorithms, like ~vector~.
+    #+end_quote
