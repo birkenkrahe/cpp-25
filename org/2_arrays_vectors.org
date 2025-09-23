@@ -1271,13 +1271,15 @@ one decimal precision.
 
 * NEXT Determining the ~size~ of a ~vector~
 
-- Code along with me. Open a new C++ file to do it.
+- Code along with me. Starter code: [[https://tinyurl.com/vector-size][tinyurl.com/vector-size]]
 
 - Example: Demonstrates the ~vector~ method ~size~. Notice that the
   function arguments does not need to include the size since ~vector~ is
   dynamically allocated. Expected output: 0 2 4 6 8 10 12
  
   #+begin_src C++ :main no :includes :results output :exports both
+    // Demonstrate the size() method of the vector class.
+    // Author: Marcus Birkenkrahe (pledged) [modified from Gaddis, 2024]
     #include <iostream>
     #include <vector>
     using namespace std;
@@ -1304,12 +1306,14 @@ one decimal precision.
 
 * Removing elements from a ~vector~ with ~pop.back~
 
-- Code along with me. Open a new C++ file to do it.
+- Code along with me. Starter code: [[https://tinyurl.com/vector-pop-back][tinyurl.com/vector-pop-back]]
 
 - ~.pop_back()~ removes the last element from the ~vector~.
 
 - Example:
   #+begin_src C++ :main no :includes :results output :exports both
+    // Demonstrate the popback method of the vector class.
+    // Author: Marcus Birkenkrahe (pledged) [modified from Gaddis, 2024]
     #include <iostream>
     #include <vector>
     using namespace std;
@@ -1338,12 +1342,14 @@ one decimal precision.
 
 * Clearing a ~vector~
 
-- Code along with me. Open a new C++ file to do it.
+- Code along with me. Starter code: [[https://tinyurl.com/vector-clear][tinyurl.com/vector-clear]]
 
 - To clear the contents of a ~vector~, use the ~.clear()~ member function.
 
 - Example:
   #+begin_src C++ :main no :includes :results output :exports both
+    // Demonstrate the clear() method of the vector class.
+    // Author: Marcus Birkenkrahe (pledged) [modified from Gaddis, 2024]
     #include <iostream>
     #include <vector>
     using namespace std;
@@ -1364,7 +1370,7 @@ one decimal precision.
 
 * Detecting an empty ~vector~
 
-- Code along with me. Open a new C++ file to do it.
+- Code along with me. Starter code: [[https://tinyurl.com/vector-empty][tinyurl.com/vector-empty]]
 
 - To determine if a ~vector~ has no content (that is no memory reserved
   for it), use the ~.empty~ member function.
@@ -1376,6 +1382,8 @@ one decimal precision.
 
   #+name: Program 7-31 Gaddis page 453
   #+begin_src C++ :cmdline < ../data/inputFile :main no :includes :results output :exports both
+    // Demonstrate the empty() method of the vector class.
+    // Author: Marcus Birkenkrahe (pledged) [modified from Gaddis, 2024]
     #include <iostream>
     #include <vector>
     #include <iomanip>
