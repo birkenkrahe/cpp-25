@@ -7,7 +7,7 @@
 #+property: header-args:python :session *Python* :python python3 :results output :exports both
 #+property: header-args:R      :session *R* :results graphics output file :exports both
 #+property: header-args:C++    :main yes :includes <iostream> :results output :exports both
-* DONE New attendance taking (DIY with Canvas app)
+* New attendance taking (DIY with Canvas app)
 #+attr_html: :width 400px :float nil:
 
 - Open your Canvas mobile app
@@ -17,20 +17,20 @@
 - You are now marked present
 - Do this from now on at the beginning of class
 
-* DONE Entry test - 30 light questions
+* Entry test - 30 light questions
 #+attr_html: :width 400px :float nil:
 [[../img/entryTest.png]]
 
 How did you do?
 
-* DONE Week 0: Overview
+* Week 0: Overview
 #+attr_html: :width 400px :float nil:
 [[../img/The_Reckoning2.png]]
 
 CSC 240 is a complete redevelopment of a course that I first taught in
 Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
-* DONE Week 1: C++ Review / Introduction to data structures
+* Week 1: C++ Review / Introduction to data structures
 
 - [X] Review: Last week (overview session)
 - [X] Review: C++ Entry Quiz
@@ -437,7 +437,7 @@ functions, and simple structs. No advanced features.
     Pages: 1300
     #+end_example
 
-* DONE Week 2: Pepquiz / Data structures introduction (Sep 2, 4)
+* Week 2: Pepquiz / Data structures introduction (Sep 2, 4)
 #+attr_html: :width 300px :float nil:
 [[../img/pepquiz2.png]]
 
@@ -561,7 +561,7 @@ functions, and simple structs. No advanced features.
      division by zero, invalid memory access, file not found.
    #+end_quote
 
-* DONE Week 3: C-style arrays
+* Week 3: C-style arrays
 #+attr_html: :width 400px :float nil:
 [[../img/starship-launch.jpg]]
 
@@ -773,7 +773,7 @@ example:
 : 11 21 31 
 : 10 20 30 
 
-* DONE Week 4: Vectors (Sep 16, 18)
+* Week 4: Vectors (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
 
@@ -1048,8 +1048,16 @@ or sometimes cppreference’s summaries).
 
 * Week 5: Vectors II & Time complexity (Sep 23, 25)
 
+- [X] Test 4 is live (deadline Sep 28)
+- [X] Lecture with code along: Vectors II
+- [X] Time and space complexity for arrays and vectors.
+- [X] Programming assignment: Inventory management program (Sep 30)
 
-** Review (Thursday)
+  Don't wait to the last minute to write this program. It'll take you
+  1-2 hours to get it right. I plan to post a video solution over the
+  weekend.
+  
+** DONE Review (Thursday)
 
 1. Which header must you include to use vectors? Do you need =std=?
    #+begin_quote 
@@ -1070,12 +1078,20 @@ or sometimes cppreference’s summaries).
      for (int &val : num) std::cout << &val << "\n";
    #+end_src
 
+   #+RESULTS:
+   : 0x5558dc9b2eb0
+   : 0x5558dc9b2eb4
+   : 0x5558dc9b2eb8
+
 4. How do you initialize a vector with 10 ints, each set to 2?
    #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
      // A vector stores a sequence of values of one type
      std::vector<int> nums(10,2);   // an empty vector of integers
      for (int num : nums) std::cout << num << " ";
    #+end_src
+
+   #+RESULTS:
+   : 2 2 2 2 2 2 2 2 2 2 
 
 5. How do you access an existing element of a vector? Can you show it?
    #+begin_src C++ :main yes :includes <iostream> <vector> <iomanip> :results output :exports both :comments both :tangle yes :noweb yes
@@ -1084,6 +1100,9 @@ or sometimes cppreference’s summaries).
      std::cout << std::boolalpha
                << logic[0] << " " << logic[1] << std::endl;
    #+end_src
+
+   #+RESULTS:
+   : true false
 
 6. Do you have to declare vector size at compile time?
    #+begin_quote
@@ -1102,11 +1121,16 @@ or sometimes cppreference’s summaries).
      std::cout << "\nsize = " << math.size() << std::endl;
    #+end_src
 
+   #+RESULTS:
+   : size = 1
+   : values = 3.14 values = 2.71 
+   : size = 2
+
 8. What happens when you define a vector of only 2 elements and add a
    third element with =[]=?
    #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
      // The subscript operator [] only works on existing vector elements
-     std::vector<double> math(2); // empty vector with one element
+     std::vector<double> math(2); // empty vector with two elements
      math[0] = 3.14;
      math[1] = 2.71;
      math[2] = 1.41; // vector element does not exist
@@ -1114,18 +1138,25 @@ or sometimes cppreference’s summaries).
      std::cout << math.size();
    #+end_src
 
+   #+RESULTS:
+   : 3.14 2.71 2
+
 9. Is =using namespace std;= required for vectors?
    #+begin_quote
-   No, you can write =std::vector=.
+   No, you can write =std::vector= every time you use it.
    #+end_quote
 
 10. Will this code work? Will it compile? Will it run?
     #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
-      std::vector<int> vec {1,2,3};
-      std::vec.push_back(4);
+      std::vector<int> vec {1,2,3}; // vector is declared here
+      std::vec.push_back(4);  // vec is a vector object
       for (double val : vec) std::cout << val << " ";
       std::cout << "\nsize = " << std::vec.size() << std::endl;
     #+end_src
+
+    #+RESULTS:
+    : 1 2 3 4 
+    : size = 4
 
 11. How do you copy one vector into another at construction?
     #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both :comments both :tangle yes :noweb yes
@@ -1135,7 +1166,11 @@ or sometimes cppreference’s summaries).
       std::cout << "\nsize = " << vec2.size() << std::endl;
     #+end_src
 
-12. Why can’t you write =cout << v.push_back(3);=?
+    #+RESULTS:
+    : 1 2 3 
+    : size = 3
+
+12. Why can’t you write =cout << v.push_back(3);= for a vector =v=?
     #+begin_quote
     You cannot send the expanded vector straight to stdout, because
     ~push_back~ returns ~void~ (and ~cout~ cannot stream nothing).
@@ -1158,3 +1193,5 @@ or sometimes cppreference’s summaries).
     The STL is a collection of template classes and functions for
     common data structures and algorithms, like ~vector~.
     #+end_quote
+
+
