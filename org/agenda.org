@@ -45,7 +45,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
    - *Life*: Calling Jim, Joe, John and Jane "students" is an abstraction in
      real life. It suppresses the details of their persons in order to
      be to address them with one term.
-    
+
    - *Math*: An integer is a mathematical abstraction. It captures the idea of
      whole numbers ignoring their individual differences.
 
@@ -95,7 +95,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
    8. Drill yourself using the weekly quizzes, make small examples.
    9. Seek help when needed, on the chat or during office hours.
    10. Build a code & notebook repository at GitHub for your resume.
-  #+end_quote
+   #+end_quote
 
 6) What does every C++ program have?
    #+begin_src C++ :results none
@@ -105,13 +105,13 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
        return 0;
      }
    #+end_src
-   
+
 7) What's the meaning of ~{ }~?
    #+begin_quote
    The curly braces group a *block* of statements together. The compiler
    treats these as one unit. They also define a *scope*, a region where
    a variable exists and can be used.
-   
+
    - After a function declaration, ={}= mark the block of code belonging
      to that function: =main() {}= or =void hello(string & name) {};=
    - After ~if~, or ~else if~, the statements in ={}= form the block of code
@@ -131,9 +131,9 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
      ~<cstdlib>~ (which you must ~#include~.
 
    Post-mortem:
-   
+
    - There are many more ~return~ codes on Unix/POSIX-compliant systems that
-     the system can use. 
+     the system can use.
      |  Code | Meaning                                   |
      |-------+-------------------------------------------|
      |     0 | Success                                   |
@@ -197,7 +197,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
     #+RESULTS:
     : Marcus Birkenkrahe
-    : 100 3.14 
+    : 100 3.14
 
 ** Review: C++ Entry Quiz
 
@@ -230,13 +230,13 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
    - Input data types and sample output
    - [Copyrights, author name and date]
    #+end_quote
-   
+
 3. What does =using namespace std;= do?
    #+begin_quote
    This statement tells the compiler that when you write a name like
    ~cout~, ~cin~, ~string~ etc. it should look in the ~std~ name space first.
    #+end_quote
-   
+
 4. What's the main difference between printing with ~cout~ vs. ~printf~?
    #+begin_quote
    The main difference between printing with ~cout~ vs. ~printf~ is that
@@ -252,7 +252,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
    #+RESULTS:
    : 10
-   
+
 6. What is =*&*p= if =p= is a pointer to =int i=10=?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
      int i = 10;   // i has the value 10
@@ -262,7 +262,7 @@ Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
    #+RESULTS:
    : 10
-   
+
 ** 10 Super-Simple Sample Programs
 
 - [[file:~/GitHub/cpp-25/org/0_overview.org::* C++ review - 10 super simple sample programs][Overview - links to OneCompiler.com starter code.]]
@@ -340,7 +340,7 @@ functions, and simple structs. No advanced features.
 *** Problems
 
 1. *Basic arithmetic on doubles*
-   
+
    Declare two ~double~ vars, assign values, print *Sum*, *Difference*,
    *Product*, *Quotient* on separate labeled lines.
 
@@ -363,7 +363,7 @@ functions, and simple structs. No advanced features.
    #+end_example
 
 3. *Days to weeks+days*
-   
+
    Use =const int DAYS_IN_WEEK = 7;=. Read days, print full weeks and
    remaining days.
 
@@ -383,7 +383,7 @@ functions, and simple structs. No advanced features.
    consonant or symbol."
 
 6. *Reverse print a small fixed array*
-   
+
    Declare =int a[5]={100,200,300,400,500};= and print in *reverse*
    order, space-separated, one line.
 
@@ -422,11 +422,11 @@ functions, and simple structs. No advanced features.
 
     Define:
     #+begin_src C++
-    struct Book {
-      string title;
-      string author;
-      int pages;
-    };
+      struct Book {
+        string title;
+        string author;
+        int pages;
+      };
     #+end_src
 
     In =main=, declare one =Book=, assign values, and print:
@@ -479,18 +479,18 @@ functions, and simple structs. No advanced features.
 
 1. What does the keyword ~auto~ do?
    #+begin_quote
-  The keyword ~auto~ tells the compiler to deduce the type of a declared
-  variable from its initializer (the value initially stored in it).
+   The keyword ~auto~ tells the compiler to deduce the type of a declared
+   variable from its initializer (the value initially stored in it).
 
-  Not recommended at the start - highly recommended for production
-  code: because it is safer and shorter.
+   Not recommended at the start - highly recommended for production
+   code: because it is safer and shorter.
    #+end_quote
    #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
      auto foo = 42;       // deduced as int
      auto bar = 3.14;     // deduced as double
      auto baz = "Bob"; // deduced as const char*
 
-     printf("foo = %d\nbar = %g\nbaz = %s\n", 
+     printf("foo = %d\nbar = %g\nbaz = %s\n",
             foo, bar, baz);
    #+end_src
 
@@ -510,7 +510,7 @@ functions, and simple structs. No advanced features.
 
      int main()
      {
-       try { 
+       try {
          int x = 0;
          if (x == 0) // throw an exception for div by zero
            throw "Division by zero not allowed!";
@@ -538,9 +538,9 @@ functions, and simple structs. No advanced features.
 
 4. What are ~stdin~, ~stdout~ and ~stderr~?
    #+begin_quote
-    ~stdin~, ~stdout~ and ~stderr~ are data streams for input, output and
-    error data. They are connected to devices like keyboard, screen
-    file, network socket, etc. They can be redirected anywhere.
+   ~stdin~, ~stdout~ and ~stderr~ are data streams for input, output and
+   error data. They are connected to devices like keyboard, screen
+   file, network socket, etc. They can be redirected anywhere.
    #+end_quote
 
 5. What does it mean that C-style arrays are "static"?
@@ -573,7 +573,7 @@ functions, and simple structs. No advanced features.
   + You can see me at other times, too - just make a suggestion when -
     email me! (If I come out just to see you: Better be there!)
 - [ ] This week: C-style arrays and C++ ~vector~ data structures
-  
+
 ** Guest speaker: Brandon Smith (Wednesday 1 pm in Derby 239)
 #+attr_html: :width 600px :float nil:
 [[../img/first_light.png]]
@@ -601,7 +601,7 @@ functions, and simple structs. No advanced features.
   4. How do you access it? -> With the index operator `[]`
   5. How do you copy it? -> Element-wise
   6. How do you extend it? -> Cannot be extended at run-timeg
-  7. How do you delete it? -> Automatically  
+  7. How do you delete it? -> Automatically
   8. What else is worth knowing about it?  -> Out-of-bounds errors,
      different initializations, string specialties, functions
   #+end_quote
@@ -636,9 +636,9 @@ functions, and simple structs. No advanced features.
      // (elements sit next to one another)
      int a[3] {10,20,30};
      cout << &a[0] << endl
-          << &a[1] << endl
-          << &a[2] << "\n"
-          << "sizeof(int)=" << sizeof(int) << endl;
+     << &a[1] << endl
+     << &a[2] << "\n"
+     << "sizeof(int)=" << sizeof(int) << endl;
      // Or you can force the compiler to print address values
      // in base 10
      printf("%d\n%d\n%d\n",&a[0],&a[1],&a[2]);
@@ -655,7 +655,7 @@ functions, and simple structs. No advanced features.
 
    Hexnote
    #+begin_example
-   [0xAC] 10 * 16^1 + 12 = 172 
+   [0xAC] 10 * 16^1 + 12 = 172
                            172 + 4 = 176
    [0xB0] 11 * 16^1      = 176
    #+end_example
@@ -672,7 +672,7 @@ functions, and simple structs. No advanced features.
    #+end_src
 
    #+RESULTS:
-   : 1 2 3 4 
+   : 1 2 3 4
 
 5. How should you initialize arrays? Why?
    #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output :exports both
@@ -682,12 +682,12 @@ functions, and simple structs. No advanced features.
      int zeros[5] {}; // value-initialized to all zeros
      int first3[5] {1,2,3}; // remaining elements become 0
      for (int x : zeros) cout << x << " "; cout << "\n";
-     for (int x : first3) cout << x << " "; cout << endl;     
+     for (int x : first3) cout << x << " "; cout << endl;
    #+end_src
 
    #+RESULTS:
-   : 0 0 0 0 0 
-   : 1 2 3 0 0 
+   : 0 0 0 0 0
+   : 1 2 3 0 0
 
 ** More about C-style arrays
 
@@ -702,11 +702,11 @@ functions, and simple structs. No advanced features.
 
 ** Post-mortem: Generative AI is not a search engine
 
- [[https://www.matthewedgar.net/generative-ai-vs-traditional-search-technical-differences/][This article (Edgar, 2025)]] goes through how search engines (like
- Google) work versus generative AI tools. It clearly lays out that a
- Google query retrieves and ranks existing documents, whereas a
- generative AI prompt composes a response based on what it's been
- trained on, often without live references.
+[[https://www.matthewedgar.net/generative-ai-vs-traditional-search-technical-differences/][This article (Edgar, 2025)]] goes through how search engines (like
+Google) work versus generative AI tools. It clearly lays out that a
+Google query retrieves and ranks existing documents, whereas a
+generative AI prompt composes a response based on what it's been
+trained on, often without live references.
 
 ** Post-mortem: Reverse range-base ~for~ loops
 
@@ -726,7 +726,7 @@ to compile with =g++ -std=c++20=:
 
     for (char c : str | std::views::reverse)
       std::cout << c;
-      
+
     return 0;
   }
 #+end_src
@@ -752,8 +752,8 @@ example:
   int a=10,b=20,c=30;
   int arr[] {a,b,c};
   // loop variable is an integer
-    for (int x : arr) 
-      cout << x << " ";
+  for (int x : arr)
+    cout << x << " ";
   // loop variable is a reference
   cout << endl;
   for (int &x : arr)
@@ -761,17 +761,17 @@ example:
       x++; // modifies array elements
       cout << x << " ";
     }
-  cout << endl;  
+  cout << endl;
   // loop variable is a pointer only works for pointer arrays
   int * arr2[] {&a,&b,&c}; // array of addresses
   for (int *p : arr2) // arr decays to int*
-     cout << *p << " ";
+    cout << *p << " ";
 #+end_src
 
 #+RESULTS:
-: 10 20 30 
-: 11 21 31 
-: 10 20 30 
+: 10 20 30
+: 11 21 31
+: 10 20 30
 
 * Week 4: Vectors (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
@@ -793,7 +793,7 @@ example:
 - Build connections with local employers.
 - Show initiative. Dress the part. Bring your resume.
 - See our new career center director, Cassidy Mitchell
-  
+
 ** Review (Thursday)
 
 1. What's a hexadecimal number? What is =0x10= in decimals (=0x= indicates
@@ -818,8 +818,8 @@ example:
    #+end_src
 
    #+RESULTS:
-   : 3.14 2.71 0 0 0 
-   
+   : 3.14 2.71 0 0 0
+
 3. Does partial initialization also work for ~string~ arrays?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
      std::string name[3] {"John","Williams"}; // array of 3 strings
@@ -828,7 +828,7 @@ example:
    #+end_src
 
    #+RESULTS:
-   : John Williams  
+   : John Williams
 
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
      #include <typeinfo>
@@ -856,7 +856,7 @@ example:
 
    #+RESULTS:
    : Birkenkrahe
-   
+
    #+begin_src C++ :cmdline < num.txt :main no :includes <iostream> :namespaces std :results output :exports both
      #include <fstream> // include file stream header file
 
@@ -868,16 +868,16 @@ example:
        iFile >> name; // stream input data from the file
        iFile.close(); // close the data stream
        cout << name; // display the input data on stdout
-       
+
        return 0;
      }
    #+end_src
-   
+
 6. Can you loop over =bool arr[5]= using a range-based ~for~ loop?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
      bool arr[] {true, true, false}; // list-base initializer
      for (bool val : arr)
-       cout << boolalpha << val << endl; 
+       cout << boolalpha << val << endl;
    #+end_src
 
    #+RESULTS:
@@ -891,14 +891,14 @@ example:
      int x[] {10, 20, 30};
      for (int i=0;i<sizeof(x)/sizeof(x[0]);++i)
        {
-         x[i] *= 20; 
+         x[i] *= 20;
          cout << x[i] << " ";
        }
    #+end_src
 
    #+RESULTS:
-   : 200 400 600 
-   
+   : 200 400 600
+
 8. If =pi= is a floating-point variable of value =3.14=, and =refPi= is its
    reference variable, what is =pi= after the statement =refPi = 0.;=
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
@@ -910,7 +910,7 @@ example:
 
    #+RESULTS:
    : 0.00000
-   
+
 9. What's the problem with the following program that tries to double
    the elements of an array?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
@@ -926,11 +926,11 @@ example:
    #+end_src
 
    #+RESULTS:
-   : 20 40 60 
-   
+   : 20 40 60
+
 10. How can you display =3.14592= to only two decimal places?
     #+begin_src C++ :main yes :includes <iostream> <iomanip> :namespaces std :results output :exports both :noweb yes
-     #include <iomanip> // formatting manipulation header file
+      #include <iomanip> // formatting manipulation header file
       // Use printf with the %.2f format specificer
       printf("%.2f\n", 3.14592);
       // Use std::setprecision(3) from <iomanip>
@@ -940,7 +940,7 @@ example:
     #+RESULTS:
     : 3.15
     : 3.15
-    
+
 ** Bonus: Where do C++ rules come from?
 
 For example: "When passing a C-style array to a C++ function, the
@@ -1050,21 +1050,23 @@ or sometimes cppreference’s summaries).
 
 - [X] Test 4 is live (deadline Sep 28)
 - [X] Lecture with code along: Vectors II
-- [X] Time and space complexity for arrays and vectors.
 - [X] Programming assignment: Inventory management program (Sep 30)
-
-  Don't wait to the last minute to write this program. It'll take you
-  1-2 hours to get it right. I plan to post a video solution over the
-  weekend.
+      #+begin_quote
+      Don't wait to the last minute to write this program. It'll take
+      you 1-2 hours to get it right. I plan to post a video solution
+      over the weekend.
+      #+end_quote
+- [ ] Time and space complexity for arrays and vectors.
+- [ ] Bonus assignment: Time your code.
   
 ** DONE Review (Thursday)
 
 1. Which header must you include to use vectors? Do you need =std=?
-   #+begin_quote 
+   #+begin_quote
    - You need to =#include <vector>= for the functions
    - You need =std::vector= for the ~namespace~ names
    #+end_quote
-   
+
 2. What does a vector store? Can you show that?
    #+begin_src C++ :main yes :includes <iostream> :results output :exports both :comments both :tangle yes :noweb yes
      // A vector stores a sequence of values of one type
@@ -1072,7 +1074,7 @@ or sometimes cppreference’s summaries).
    #+end_src
 
 3. How are vector elements stored in memory? Can you show that?
-   #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both 
+   #+begin_src C++ :main yes :includes <iostream> <vector> :results output :exports both
      // Vectors are stored contigously in memory
      std::vector<int> num {1,2,3};
      for (int &val : num) std::cout << &val << "\n";
@@ -1091,14 +1093,14 @@ or sometimes cppreference’s summaries).
    #+end_src
 
    #+RESULTS:
-   : 2 2 2 2 2 2 2 2 2 2 
+   : 2 2 2 2 2 2 2 2 2 2
 
 5. How do you access an existing element of a vector? Can you show it?
    #+begin_src C++ :main yes :includes <iostream> <vector> <iomanip> :results output :exports both :comments both :tangle yes :noweb yes
      // Existing vector elements are accessed with the [] operator
      std::vector<bool> logic {true,false};
      std::cout << std::boolalpha
-               << logic[0] << " " << logic[1] << std::endl;
+     << logic[0] << " " << logic[1] << std::endl;
    #+end_src
 
    #+RESULTS:
@@ -1123,7 +1125,7 @@ or sometimes cppreference’s summaries).
 
    #+RESULTS:
    : size = 1
-   : values = 3.14 values = 2.71 
+   : values = 3.14 values = 2.71
    : size = 2
 
 8. What happens when you define a vector of only 2 elements and add a
@@ -1155,7 +1157,7 @@ or sometimes cppreference’s summaries).
     #+end_src
 
     #+RESULTS:
-    : 1 2 3 4 
+    : 1 2 3 4
     : size = 4
 
 11. How do you copy one vector into another at construction?
@@ -1167,7 +1169,7 @@ or sometimes cppreference’s summaries).
     #+end_src
 
     #+RESULTS:
-    : 1 2 3 
+    : 1 2 3
     : size = 3
 
 12. Why can’t you write =cout << v.push_back(3);= for a vector =v=?
@@ -1193,5 +1195,3 @@ or sometimes cppreference’s summaries).
     The STL is a collection of template classes and functions for
     common data structures and algorithms, like ~vector~.
     #+end_quote
-
-
