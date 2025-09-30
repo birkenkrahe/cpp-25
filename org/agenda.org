@@ -1051,15 +1051,15 @@ or sometimes cppreference’s summaries).
 - [X] Test 4 is live (deadline Sep 28)
 - [X] Lecture with code along: Vectors II
 - [X] Programming assignment: Inventory management program (Sep 30)
-      #+begin_quote
-      Don't wait to the last minute to write this program. It'll take
-      you 1-2 hours to get it right. I plan to post a video solution
-      over the weekend.
-      #+end_quote
+  #+begin_quote
+  Don't wait to the last minute to write this program. It'll take
+  you 1-2 hours to get it right. I plan to post a video solution
+  over the weekend.
+  #+end_quote
 - [ ] Time and space complexity for arrays and vectors.
 - [ ] Bonus assignment: Time your code.
-  
-** DONE Review (Thursday)
+
+** Review (Thursday)
 
 1. Which header must you include to use vectors? Do you need =std=?
    #+begin_quote
@@ -1195,3 +1195,218 @@ or sometimes cppreference’s summaries).
     The STL is a collection of template classes and functions for
     common data structures and algorithms, like ~vector~.
     #+end_quote
+
+** Post-mortem: How does ~vector::begin()~ achieve O(1) time complexity?
+
+In ~std::vector~, the guarantee that ~begin()~ is O(1) comes from how
+vectors store their elements. Using my example from the lecture:
+#+begin_example C++
+std::vector<int> v{11, 3, 23, 7}; // declare integer pointer
+
+// v.begin() is:
+std::vector<int>::iterator it = &v[0]; // pointer to first element
+#+end_example
+
+Under the hood:
+- A vector keeps a raw pointer to a contiguous block of memory.
+- ~begin()~ just returns an iterator that wraps that pointer.
+
+No traversal, no computation — just returning an address.
+
+That’s why:
+- ~begin()~ → constant time, O(1).
+- ~end()~ → also O(1), pointer to one-past-the-last element.
+
+Here’s an ASCII sketch of a ~std::vector<int>~ in memory and what
+~.begin()~ does:
+
+#+begin_example
+std::vector<int> v {11, 3, 23, 7};
+
+Memory (contiguous block):
++-----+-----+-----+-----+
+| 11 | 3 | 23 | 7 |
++-----+-----+-----+-----+
+^
+|
+v.begin() --> iterator (pointer to &v[0])
+
+v.end() --> pointer to one-past-last:
+^
+|
++-- &v[0] + v.size()
+#+end_example
+
+So calling ~v.begin()~ is just: “return stored pointer to the first
+slot” → O(1).
+
+Sources:
+- [[https://en.cppreference.com/w/cpp/container/vector/begin][cppreference.com]] (great for complexity guarantees):
+- C++ standard (drafts): [[https://eel.is/c++draft/vector][§23.3.6.5 [vector.iterators]​]] specifies
+  ~begin()~ and ~end()~ must be constant time.  here.
+
+** Post-mortem: Complexity of Random Search Algorithms
+
+*The short answer:* Random search algorithms don’t have a single fixed
+complexity — it depends on the search space. "Quicksort" can be
+implemented as a randomized algorithm (if the pivot is chosen
+randomly).
+
+- For an array of size n (discrete space):
+  - Random picks until target is found → expected O(n).
+  - Worst case O(n) (may need to try all).
+  - With replacement: still O(n) expected, but higher variance.
+
+More complicated for a continuous search space (often exponential in
+the number of dimensions).
+
+- *Comparison with systematic (linear) search*:
+  #+begin_example
+Search space (size 10):
+Index:   0 1 2 3 4 5 6 7 8 9
+Array:   - - - X - - - - - -
+
+Systematic (linear) search (as in lecture):
+   check -> 0 -> 1 -> 2 -> 3 (found X)
+   Pattern: sequential
+   Time: O(n) worst-case
+
+Random search:
+   picks indices in random order:
+   try -> 7 -> 2 -> 9 -> 3 (found X)
+   Pattern: scattered
+   Time: O(n) worst-case
+#+end_example
+
+*Source*: cppreference.com: [[https://en.cppreference.com/w/cpp/algorithm][Complexity of algorithms]].
+
+** Post-mortem: What about games?
+
+In computer games, pathfinding/graph algorithms are common, and for
+procedural generation (placing trees, loot, NPCs) random processes
+like Monte Carlo simulation are more common. For pathfinding graph
+algorithms, the complexity is O(number of edges) or O(n log n) where n
+is the number of nodes to traverse (e.g. for a grid).  Monte Carlo
+search or sampling is O(n) where n is the number of samples you choose
+to take. Monte Carlo is very common in physics also, and I cover it in
+my data science courses.  We can extend the [[https://www.bigocheatsheet.com/][BigOCheatSheet]] table:
+
+| Algorithm          | Best Case       | Worst Case | Notes                        |
+|--------------------+-----------------+------------+------------------------------|
+| A*                 | O(V log V)      | O(E)       | E = edges, V = nodes         |
+| Dijkstra           | O((V+E) log V)  | O(V^2)     | Depends on data structure    |
+| Random wandering   | O(1) per step   | Unbounded  | Time ∝ search space size     |
+| Monte Carlo search | O(1) per sample | O(k)       | Quality ∝ number of samples  |
+
+
+* Week 6: Pointers and memory allocation (Sep 30, Oct 2)
+#+attr_html: :width 400px :float nil:
+[[../img/pointersCartoon.png]]
+
+- [ ] Test 5 is due on October 5 (next Sunday)
+- [ ] Assignment 4 is due tonight
+- [ ] Pointers: Basics
+
+** TODO Popquiz - Review: Complexity estimates
+
+You'll do this review in class and you get solutions afterwards & can
+grade yourself. If you do well, you can turn your result in.
+
+1. What does *time complexity* measure?
+   #+begin_quote
+   The number of operations as input size grows.
+   #+end_quote
+
+2. What does *space complexity* measure?
+   #+begin_quote
+   The amount of memory used as input size grows.
+   #+end_quote
+
+3. What does Big-O provide?
+   #+begin_quote
+   An asymptotic *upper bound* on growth rate.
+   #+end_quote
+
+4. In linear search over an array of size *n*, what is the *best-case* complexity?
+   #+begin_quote
+   Ω(1) - when we're finding what we're looking for in the first element.
+   #+end_quote
+
+5. In linear search over an array of size *n*, what is the *worst-case* complexity?
+   #+begin_quote
+   O(n) - when we're finding what we're looking for in the last element.
+   #+end_quote
+
+6. Printing numbers from 1 to n once (one loop) has what complexity?
+   #+begin_quote
+   O(n) - n operations, one for each array element.
+   #+end_quote
+
+7. Two consecutive loops each running n times has what complexity?
+   #+begin_quote
+   O(n) - drop constant factor: O(2n) → O(n)
+   #+end_quote
+
+8. A nested loop where both loops run n times has what complexity?
+   #+begin_quote
+   O(n^2) - the inner loop runs n times for each of the n outer loops.
+   #+end_quote
+
+9. For O(n^2 + n), what is the simplified (dominant-term) complexity?
+   #+begin_quote
+   O(n^2) because for  n → ∞, n^2 dominates.
+   #+end_quote
+
+10. On a sorted array, binary search has what time complexity?
+    #+begin_quote
+    O(log n) 
+    #+end_quote
+
+11. What is the best possible time complexity for any comparison-based
+    sorting algorithm?
+    #+begin_quote
+    O(n log n): O(log_{2}(n!)) \approx O(n log_{2} n - n) = O(n log n).
+    #+end_quote
+
+12. What is the time complexity of accessing an element by index in a
+    vector of n elements?
+    #+begin_quote
+    O(1) - it's constant (the same) for all i in v[i].
+    #+end_quote
+
+13. What is the time complexity of inserting an element at the start
+    of a vector?
+    #+begin_quote
+    O(n) – O(1) to get the iterator at .begin(), but O(n) to shift all
+    existing elements one index forward.
+    #+end_quote
+
+14. What is the time complexity of removing an element from the middle of a vector?
+    #+begin_quote
+    O(n) – O(1) to identify the position, but O(n) to shift all
+    subsequent elements one index backward.
+    #+end_quote
+
+15. What is the space complexity of an array storing n integers?
+    #+begin_quote
+    O(n) - usually, an int is stored in 4 bytes, so that's O(4n) = O(n).
+    #+end_quote
+    
+** TODO Session 1: Pointer Basics
+
+- Concept: address, pointer variable, dereference (~&~, ~*~)
+- Difference pointers vs references, why pointers matter
+- Practice: print variable address, indirect assignment with pointer
+
+** Session 2: Pointers and Arrays
+
+- Arrays as pointers, subscripts vs pointer notation
+- Pointer arithmetic: stepping through arrays
+- Practice: countdown/loop with pointers, compare array vs pointer
+  access
+
+** Session 3: Pointers in Use
+- Pointers as function parameters (pass-by-address)
+- Dynamic memory allocation (new, delete)
+- Practice: increment function with pointer; dynamic array of
+  strings/numbers
