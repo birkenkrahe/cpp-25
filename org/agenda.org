@@ -1298,16 +1298,15 @@ my data science courses.  We can extend the [[https://www.bigocheatsheet.com/][B
 | Random wandering   | O(1) per step   | Unbounded  | Time ∝ search space size     |
 | Monte Carlo search | O(1) per sample | O(k)       | Quality ∝ number of samples  |
 
-
 * Week 6: Pointers and memory allocation (Sep 30, Oct 2)
 #+attr_html: :width 400px :float nil:
 [[../img/pointersCartoon.png]]
 
-- [ ] Test 5 is due on October 5 (next Sunday)
-- [ ] Assignment 4 is due tonight
-- [ ] Pointers: Basics
+- [X] Test 5 is due on October 5 (next Sunday)
+- [X] Assignment 4 is due tonight
+- [X] This week: Pointers
 
-** TODO Popquiz - Review: Complexity estimates
+** DONE Popquiz - Review: Complexity estimates
 
 You'll do this review in class and you get solutions afterwards & can
 grade yourself. If you do well, you can turn your result in.
@@ -1392,13 +1391,49 @@ grade yourself. If you do well, you can turn your result in.
     O(n) - usually, an int is stored in 4 bytes, so that's O(4n) = O(n).
     #+end_quote
     
-** TODO Session 1: Pointer Basics
+
+** TODO Review: Pointer basics
+
+1. What does ~&x~ yield, and where does that address live at *runtime*?
+   #+begin_quote
+   The memory address of ~x~ in RAM—typically in the stack (locals) or
+   the heap (dynamically allocated).
+   #+end_quote
+
+2. Why do printed addresses *change* across runs of the same program?
+   #+begin_quote
+   ASLR (Address Space Layout Randomization) randomizes layout each
+   run to improve security, so addresses differ.
+   #+end_quote
+
+3. On a 64-bit system, how many distinct addresses exist?
+   #+begin_quote
+   ~2^64~, or 18 quintillion possible addresses (in principle). Think:
+   number of potential planets in the popular video game No Man's Sky.
+   #+end_quote
+
+4. When an array is passed to a function (e.g., ~showValues(numbers,
+   SIZE)~), what does the parameter receive?
+   #+begin_quote
+   A pointer to the first element (~&numbers[0]~); modifying via the
+   parameter affects the original array.
+   #+end_quote
+
+5. What’s the key difference between a pointer and a reference in
+   parameters. Do they have to be initialized?
+   #+begin_quote
+   A reference is an alias bound at initialization; a pointer stores
+   an address and can be reseated. Pointers are initialized to ~nullptr~
+   to avoid undefined access.
+   #+end_quote
+
+** IN-PROGRESS Session 1: Pointer Basics
 
 - Concept: address, pointer variable, dereference (~&~, ~*~)
 - Difference pointers vs references, why pointers matter
 - Practice: print variable address, indirect assignment with pointer
 
-** Session 2: Pointers and Arrays
+** NEXT Session 2: Pointers and Arrays
 
 - Arrays as pointers, subscripts vs pointer notation
 - Pointer arithmetic: stepping through arrays
