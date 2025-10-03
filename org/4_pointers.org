@@ -384,8 +384,7 @@ All topics:
   : The value in x is 25
   : The address of x is 0x7ffd6387c2dc
 
-
-* NEXT C++urious George
+* C++urious George
 #+attr_html: :width 350px :float nil:
 [[../img/curious5.png]]
 
@@ -434,24 +433,31 @@ All topics:
 
     int main()
     {
-      // Integer variable
-      // Pointer variable that can point to an int
-      // Store the address of x in the pointer
+      int x = 42; // Integer variable
+      int *ptr = nullptr; // Pointer variable that can point to an int
+      ptr = &x; // Store the address of x in the pointer
 
       // Use x and ptr to display the VALUE in x
-      cout << "Value of x (direct):               " <<     << endl
-           << "Value of x (indirect via pointer): " <<     << endl;
+      cout << "Value of x (direct):               " <<  x    << endl
+           << "Value of x (indirect via pointer): " <<  *ptr << endl;
 
       // Assign 99 to the location pointed to by ptr.
       // This will assign 99 to x.
-
+      (*ptr) = 99;
+    								       								   
       // Use x and ptr to display the VALUE in x
-      cout << "Value of x (direct):               " <<      << endl
-           << "Value of x (indirect via pointer): " <<     << endl;
+      cout << "Value of x (direct):               " << x    << endl
+           << "Value of x (indirect via pointer): " << *ptr << endl;
 
       return 0;
     }
   #+end_src
+
+  #+RESULTS: indirection operator
+  : Value of x (direct):               42
+  : Value of x (indirect via pointer): 42
+  : Value of x (direct):               99
+  : Value of x (indirect via pointer): 99
 
 - Explanation:
   #+begin_example
@@ -476,23 +482,28 @@ All topics:
   #+name: Repointing pointers
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both
     // Define two integer variables and one integer pointer.
+    int x = 25, y = 50;
+    int *ptr = nullptr;
 
     // Display the contents of the integer variables.
-    cout << "x = "   <<   << ", y = " <<   << endl;
+    cout << "x = "   << x << ", y = " << y << endl;
 
     // Use the pointer to manipulate the variables.
+    ptr = &x; // Store address of x in pointer
 
-    // Store address of x in pointer
-    
-    // Add 100 to the value in x
+    (*ptr) += 100; // Add 100 to the value in x
 
-    // Store address of y in pointer
-    
-    // Add 100 to the value in y
+    ptr = &y; // Store address of y in pointer
+
+    (*ptr) += 100; // Add 100 to the value in y
 
     // Display the contents of the integer variables.
-    cout << "x = " <<   << ", y = " <<   << endl;
+    cout << "x = " << x << ", y = " << y << endl;
   #+end_src
+
+  #+RESULTS: Repointing pointers
+  : x = 25, y = 50
+  : x = 125, y = 150
 
 * PRACTICE Working with pointers
 
@@ -561,36 +572,55 @@ All topics:
 - What happens if you assign the address of a non-existing variable to
   a pointer?
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
-
+    int *ptr = num;
   #+end_src
 
 - A pointer stores the value of an address to a variable. When it is
   re-pointed so that it stores the value of another variable, what
   happens to the address of the first variable?
   #+begin_quote
-
+  Nothing happens to it - it still exists in memory, only the pointer
+  points elsewhere now. This is different when you use the heap with
+  dynamically allocated (at runtime) data structures: their memory
+  has to be created and deleted.
   #+end_quote
 
 - Where exactly is the ~nullptr~ pointing at?
   #+begin_quote
-
+  ~nullptr~ is a special constant - internally it is represented as
+  the address 0x0 (=NULL=). 
   #+end_quote
 
 - What happens if you try to access or dereference a ~nullptr~?
   #+begin_quote
-
+  Accessing the value that the Null pointer (doesn't) point at,
+  results in undefined behavior -> segmentation fault. 
   #+end_quote
 
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    int *ptr = nullptr;
 
+    // forgot to assign a value 
+    cout << *ptr;
   #+end_src
+
+  #+RESULTS:
 
 - If =ptr= is a pointer variable that holds the value of an address, and
   =*ptr= is the value of that variable, what is =**ptr= and what is =&*ptr=
   and are these allowed? Test your assumptions.
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-
+    int foo = 42;      // integer variable
+    int *ptr = &foo;   // pointer to integer (stores address)
+    int **ptr2 = &ptr; // pointer to pointer to intger
+                       // stores address of the pointer-to-int
+    cout << ptr << " " << *ptr << " " << &*ptr << endl;
+    cout << *ptr2 << " " << **ptr2 << endl;
   #+end_src
+
+  #+RESULTS:
+  : 0x7ffe8ef93004 42 0x7ffe8ef93004
+  : 0x7ffe8ef93004 42
 
 * PRACTICE Pointer challenge
 
@@ -636,20 +666,25 @@ All topics:
 
 - What is the relationship between arrays and pointers?
   #+begin_quote
-
+  Array names can be used as a constant pointer (that means
+  that you cannot change it to point elsehwere), and pointer
+  can be used as array names.
   #+end_quote
 
 - Example: What will this program print?
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-    short numbers[] = {10, 20, 30, 40, 50};
+    short numbers[] {10, 20, 30, 40, 50};
     cout << *numbers << endl;
   #+end_src
+
+  #+RESULTS:
+  : 10
 
 - How can one retrieve the entire array =numbers= using a pointer?
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
     short numbers[] = {10, 20, 30, 40, 50};
-    cout << *numbers  << " "
-    << *(numbers + 1) << " "
+    cout << *numbers  << " "    // retrieving numbers[0]
+    << *(numbers + 1) << " "    // retrieving numbers[1]...
     << *(numbers + 2) << " "
     << *(numbers + 3) << " "
     << *(numbers + 4) << endl;
@@ -659,14 +694,14 @@ All topics:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
     short numbers[] = {10, 20, 30, 40, 50};
     for (int i=0; i<5; i++)
-      cout << *(numbers + i) << " ";
+      cout << *(numbers + i) << " ";   // same as num[i]
   #+end_src
 
 - Would it work as a range-based loop, too?
   #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output 
     short numbers[] = {10, 20, 30, 40, 50};
-    for (int num : numbers)
-      cout << *(numbers + i) << " ";
+    for (int num : numbers)  // does not know of an i
+      cout << *(numbers + i) << " ";  // here i is not declared
   #+end_src
 
 - There's an even more pointer-ly way to loop since the array name is
@@ -682,13 +717,21 @@ All topics:
 
 - Can you understand how this ~for~ loop works?
   #+begin_quote
-  
+  1. The *start* point(er) is =number[0]= same as =number= and accessed
+     as a dereferenced pointer =*p=.
+  2. The *stop* pointer(er) checks if the address of =p= is smaller than
+     the address of =number= (=number[0]= offset by five ~short~ numbers).
+  3. The *incrementor* moves the pointer by one address of 2 bytes each.
   #+end_quote
 
 - How can you be sure that ~short~ is 2 bytes long?
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-
+    short x;
+    cout << sizeof(x);
   #+end_src
+
+  #+RESULTS:
+  : 2
   
 * Why you can step through arrays using pointers
 #+attr_html: :width 600px :float nil:
@@ -717,7 +760,7 @@ Length of ~short~ vs. length of ~int~:
 But the whole operation works because moving like that through
 memory makes the pointer point at the next array element.
 
-- *Remember the rule:* =array[index]= is equivalent to =(array + index)=.
+- *Remember the rule:* =array[index]= is equivalent to =*(array + index)=.
 
 * PRACTICE Using subscripts with pointers
 
@@ -756,18 +799,41 @@ memory makes the pointer point at the next array element.
     int main()
     {
       // Declare array size, array, and pointer
-
+      const int NUM_COINS = 5;
+      double coins[NUM_COINS] {0.05, 0.1, 0.25, 0.5, 1.0};
+      double *doublePtr = nullptr;
+        
       // Point the pointer at the array.
-
+      doublePtr = coins;
+      
       // Display array using a pointer subscription.
+      for (int count=0; count < NUM_COINS; count++)
+        cout << doublePtr[count] << " ";
 
+      cout << endl;     
       // Display array using pointer notation.
-      
-      // Display array using pointer arithmetic.
+      for (int count=0; count < NUM_COINS; count++)
+        cout << *(coins + count) << " ";
 
+      cout << endl;
+      // Display array using pointer arithmetic (using addresses)
+      for (double *p=coins; p < coins + NUM_COINS; p++)
+        cout << *p << " ";
+
+      cout << endl;
       // Display array with referenced array and dereferenced pointers
-      
+      for (int count=0; count < NUM_COINS; count++)
+        {
+          doublePtr = &coins[count]; // store address of element in pointer
+          cout << *doublePtr << " "; // dereference the pointer
+        }
       return 0;
     }
   #+end_src
+
+  #+RESULTS:
+  : 0.05 0.1 0.25 0.5 1 
+  : 0.05 0.1 0.25 0.5 1 
+  : 0.05 0.1 0.25 0.5 1 
+  : 0.05 0.1 0.25 0.5 1 
 
