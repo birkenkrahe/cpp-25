@@ -1391,19 +1391,18 @@ grade yourself. If you do well, you can turn your result in.
     O(n) - usually, an int is stored in 4 bytes, so that's O(4n) = O(n).
     #+end_quote
     
-
-** TODO Review: Pointer basics
+** DONE Review: Pointer basics
 
 1. What does ~&x~ yield, and where does that address live at *runtime*?
    #+begin_quote
-   The memory address of ~x~ in RAM—typically in the stack (locals) or
-   the heap (dynamically allocated).
+   The memory address of ~x~ in RAM—typically in the stack (locals, regular
+   variables) or the heap (dynamically allocated, e.g. ~vector~).
    #+end_quote
 
 2. Why do printed addresses *change* across runs of the same program?
    #+begin_quote
    ASLR (Address Space Layout Randomization) randomizes layout each
-   run to improve security, so addresses differ.
+   run to improve security, so addresses on the stack differ.
    #+end_quote
 
 3. On a 64-bit system, how many distinct addresses exist?
@@ -1427,21 +1426,254 @@ grade yourself. If you do well, you can turn your result in.
    to avoid undefined access.
    #+end_quote
 
-** IN-PROGRESS Session 1: Pointer Basics
+6. Can you assign an address directly to a pointer?
+   #+begin_quote
+   Yes you can, but you should not (because there is no way to know
+   if this address is not already used - e.g. by the system).
+   #+end_quote
+
+** DONE Session 1: Pointer Basics
 
 - Concept: address, pointer variable, dereference (~&~, ~*~)
 - Difference pointers vs references, why pointers matter
 - Practice: print variable address, indirect assignment with pointer
 
-** NEXT Session 2: Pointers and Arrays
+** DONE Session 2: Pointers and Arrays
 
 - Arrays as pointers, subscripts vs pointer notation
 - Pointer arithmetic: stepping through arrays
 - Practice: countdown/loop with pointers, compare array vs pointer
   access
 
-** Session 3: Pointers in Use
-- Pointers as function parameters (pass-by-address)
-- Dynamic memory allocation (new, delete)
-- Practice: increment function with pointer; dynamic array of
-  strings/numbers
+
+* Week 7: Pointers in use (Oct 7, Oct 9)
+
+- [ ] New test and new home assignment available
+- [ ] New bonus assignment will be online
+- [ ] Solution video for the vector assignment available
+- [ ] Pointer arithmetic and initialization 
+- [ ] Pointers as function parameters (pass-by-address)
+- [ ] Dynamic memory allocation (new, delete)
+
+** NEXT Review: Pointers and arrays
+
+1. So what if you step through an array with a pointer and give the
+   pointer an address outside of the array?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     int num[3] = {1,2,3};
+     int *ptr;
+     for (ptr = num; ptr < num + 4; ptr++)
+       cout << *ptr << " "; // last element out-of-bounds
+   #+end_src
+   #+begin_quote
+   C++ performs no out-of-bounds checking with arrays. So there will be
+   no complaint but it's a disaster.
+   #+end_quote
+
+2. Why does this work: setting a pointer-to-double to the array name,
+   and then printing the array using the pointer?
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     double foo[4] {10,20,30,40};
+     double *fooPtr = foo;
+     for (int i=0;i<4;i++) cout << fooPtr[i] << " ";
+   #+end_src
+
+   #+RESULTS:
+   : 10 20 30 40 
+
+   #+begin_quote
+   This works because the array name can be used as a constant pointer,
+   and the pointer can be used as an array name.
+   #+end_quote
+
+3. Here's a cheat sheet for arrays & pointers: Can you set it to prose?
+   #+begin_example C++
+   1. ptr[i] \equiv *(ptr + i)
+   2. array[i] \equiv *(array + i)
+   3. for (p = array; p < array + N; p++)
+   4. ptr = &array[i]; *ptr = array[i]
+   #+end_example
+
+   In Prose:
+   #+begin_quote
+   1. Pointer subscription equals dereferenced pointer arithmetic.
+   2. Array subscription equals dereferenced array arithmetic.
+   3. You can use a pointer as a loop counter.
+   4. You can store array element addresses in pointers, and get their
+      value from the dereferenced pointer.
+   #+end_quote
+
+4. What is the difference between array names and pointer variables?
+   #+begin_quote
+   The only difference between an array name and a pointer variable is
+   that you cannot change the address an array name points to. Try it!
+   #+end_quote
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none :exports both :noweb yes
+     int foo[20], bar[20];
+     int *ptr = nullptr;
+
+     ptr = foo; // legal
+     ptr = bar; // legal
+
+     foo = bar; // illegal - incompatible types
+     bar = ptr; // illegal - incompatible types
+   #+end_src
+
+5. Is this true? Array names are pointer constants. You cannot make
+   them point to anything but the array they represent.
+   #+begin_quote
+   Yes, it's true! Array names decay to pointers to their first
+   element but they are not true pointers: =int foo[10]; int *p = =a;= is
+   valid - but =a = p= is illegal (arrays address and size are fixed).
+   #+end_quote
+
+6. Rewrite this loop so that it uses pointer notation instead of
+   subscript notation:
+   #+begin_example C++
+   for (int x=0; x < 10; x++)
+     cout << arr[x];
+   #+end_example
+   Solution:
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     int arr[5] {10,20,30,40,50};
+     for (int x=0; x < 5; x++)
+       cout << arr[x] << " ";
+     cout << endl;
+     for (int x=0; x < 5; x++)
+       cout << *(arr + x) << " ";
+   #+end_src
+
+   #+RESULTS:
+   : 10 20 30 40 50 
+   : 10 20 30 40 50 
+
+
+** TODO Pointer arithmetic: Review questions
+
+1. What will the output of this code be?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     const int SIZE = 4;
+     int results[SIZE] = { 54, 44, 34, 22 };
+     int *resultsPtr = nullptr;
+     resultsPtr = results + 2;
+     cout << *resultsPtr << endl;
+   #+end_src
+
+   #+RESULTS:
+   : 34
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     const int SIZE = 4;
+     int results[SIZE] = { 54, 44, 34, 22 };
+     int *resultsPtr = nullptr;
+     resultsPtr = results + 2; // move to results[0+2] = results[2]
+     cout << *resultsPtr << endl;  // 34
+   #+end_src
+
+   #+RESULTS:
+   : 34
+
+2. Can you multiply or divide a pointer?
+   #+begin_quote
+   You cannot multiply or divide a pointer.
+   #+end_quote
+
+3. Assume =ptr= is a pointer to an ~int~ and holds the address 12000. On a
+   system with 4-byte integers, what address will be in =ptr= after the
+   following statement?
+   #+begin_example C++
+     ptr += 10;
+   #+end_example
+
+   #+begin_quote
+   After the statement, the pointer will point to a place 10 * 4 bytes
+   = 40 bytes forward in contiguous memory, and the new address will
+   be 12000 + 40 = 12040.
+   #+end_quote
+
+4. Assume =pint= is a pointer variable. Is each of the following
+   statements valid or invalid? If any is invalid, why?
+   #+begin_example C++
+   A) pint++;
+   B) --pint;
+   C) pint /= 2;
+   D) pint *= 4;
+   E) pint += x; // x is an int
+   #+end_example
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+     int x;
+     int *pint;
+     pint++;
+     pint += x;
+     // pint /= 2;  // not valid
+     // pint *= 4;  // not valid
+   #+end_src
+
+** TODO Initializing pointers: Review questions
+
+1. In the following code, is the pointer variable definition legal or
+   illegal?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+     int seats[5] = {2,4,5,7,6};
+     int *seats = seats;
+   #+end_src
+
+   #+begin_quote
+   It's illegal since an array name (=seats=) stands for a constant
+   pointer by the same name so this counts as a double declaration,
+   and if you took the =int= away, =*seats = seats= is a conflict
+   because the compiler cannot convert ~int*~ into ~int~. The way to fix
+   it is to give the pointer variable a different name: =seatsPtr=.
+   #+end_quote
+
+2. In the following code, is the assignment statement in the 2nd line
+   legal or illegal?
+   #+begin_src C++ :main yes :includes :results none
+     double dollars;
+     int dollarsPtr = &dollars;
+   #+end_src
+
+   #+begin_quote
+   It's illegal since the right hand value is an address (of the
+   ~double~ variable =dollars=), which expects to be stored in a
+   pointer-to-double of the data type ~double*~.
+   #+end_quote
+
+3. Is each of the following definitions valid or invalid? If any is
+   invalid, why?
+   #+begin_example C++
+   A)  int ivar;
+       int *iptr = &ivar;
+
+   B)  int ivar, *iptr = &ivar;
+
+   C)  float fvar;
+       int *iptr = &fvar;
+
+   D)  int nums[50], *iptr = nums;
+
+   E)  int *iptr = &ivar;
+       int ivar;
+   #+end_example
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+     int ivar;            // integer variable
+     int *iptr = &ivar;   // address stored in pointer-to-int
+
+     int ivar2, *iptr2 = &ivar; // integer variable, pointer-to-int stores
+     // address
+
+     float fvar;          // floating-point variable
+     //int *iptr3 = &fvar;  // ILLEGAL: pointer-to-int cannot store
+     // floating-point variable address
+
+     int nums[50], *iptr4 = nums; // pointer-to-int stores address of
+     // nums[0], nums is constant pointer
+
+     int *iptr5 = &ivar;  // ILLEGAL - ivar5 not defined yet - will
+     // compile!
+     int ivar5;
+   #+end_src
+

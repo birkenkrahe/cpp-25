@@ -36,10 +36,10 @@ All topics:
 - When the variable is undefined, you get any old value:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
     double amount; // double precision floating-point variable
-    
+
     cout << "Address: " <<  &amount // address-of variable
-         << ", value = " << amount  // value of variable
-         << ", Size = " <<  sizeof(amount) << " bytes." << endl; // size of variable
+    << ", value = " << amount  // value of variable
+    << ", Size = " <<  sizeof(amount) << " bytes." << endl; // size of variable
   #+end_src
 
   #+RESULTS:
@@ -70,7 +70,7 @@ All topics:
 
 - How many addresses can be represented on a 64-bit computer system?
   #+begin_quote
-  2^64 with 0 or 1 on 64 positions (ca. 18 quintillion) - 
+  2^64 with 0 or 1 on 64 positions (ca. 18 quintillion) -
   #+end_quote
 
 - Is each byte in the computer's memory assigned to a unique address?
@@ -83,7 +83,7 @@ All topics:
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
     char a='A', b='B';
     printf("%p\n", (void*) &a); // print address of a using a generic pointer
-    printf("%p\n", (void*) &b); // print address of a using a generic pointer    
+    printf("%p\n", (void*) &b); // print address of a using a generic pointer
   #+end_src
 
   #+RESULTS:
@@ -164,7 +164,7 @@ All topics:
   #+end_src
 
   #+RESULTS: pointer values
-  : 1 2 3 4 5 
+  : 1 2 3 4 5
 
 - Explanatinaon:
   #+begin_quote
@@ -225,16 +225,16 @@ All topics:
   #+end_src
 
   #+RESULTS:
-  : How many donuts do you want? 
+  : How many donuts do you want?
   : Okay, 4 it is.
-  : 
+  :
 
- - Create input file =../data/donuts.txt=
-  #+begin_src bash :results output :exports both
-    cd ../data
-    echo "4" > donuts.txt
-    cat donuts.txt
-  #+end_src
+  - Create input file =../data/donuts.txt=
+    #+begin_src bash :results output :exports both
+      cd ../data
+      echo "4" > donuts.txt
+      cat donuts.txt
+    #+end_src
 
 * Pointers vs. references and reason for pointers
 
@@ -282,7 +282,7 @@ All topics:
           std::cout << *p;
           ++p;  // move pointer to next memory cell (byte)
         }
-      
+
       return 0;
     }
   #+end_src
@@ -304,7 +304,7 @@ All topics:
 
 - What's the difference between =int* ptr= and =int *ptr= ?
   #+begin_quote
-  There is none. 
+  There is none.
   #+end_quote
 
 - *Rule:* Always initialize a pointer variable with the ~nullptr~ -
@@ -390,12 +390,12 @@ All topics:
 
 - Can one assign a specific address directly to a pointer?
   #+begin_quote
-  Yes you can but its dangerous. 
+  Yes you can but its dangerous.
   #+end_quote
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
     int* p = (int*)0x7ffee4a2b4fc;
     cout << p; // *p will give segmentation fault
-    *p = 2;
+    ,*p = 2;
   #+end_src
 
 - What does the address =0x7e00= tell us about the memory layout of the
@@ -444,7 +444,7 @@ All topics:
       // Assign 99 to the location pointed to by ptr.
       // This will assign 99 to x.
       (*ptr) = 99;
-    								       								   
+
       // Use x and ptr to display the VALUE in x
       cout << "Value of x (direct):               " << x    << endl
            << "Value of x (indirect via pointer): " << *ptr << endl;
@@ -588,19 +588,19 @@ All topics:
 - Where exactly is the ~nullptr~ pointing at?
   #+begin_quote
   ~nullptr~ is a special constant - internally it is represented as
-  the address 0x0 (=NULL=). 
+  the address 0x0 (=NULL=).
   #+end_quote
 
 - What happens if you try to access or dereference a ~nullptr~?
   #+begin_quote
   Accessing the value that the Null pointer (doesn't) point at,
-  results in undefined behavior -> segmentation fault. 
+  results in undefined behavior -> segmentation fault.
   #+end_quote
 
   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
     int *ptr = nullptr;
 
-    // forgot to assign a value 
+    // forgot to assign a value
     cout << *ptr;
   #+end_src
 
@@ -624,10 +624,10 @@ All topics:
 
 * PRACTICE Pointer challenge
 
-  To do this practice, open [[https://tinyurl.com/pointer-challenge][tinyurl.com/pointer-challenge]]
+To do this practice, open [[https://tinyurl.com/pointer-challenge][tinyurl.com/pointer-challenge]]
 
-  Write each of the code fragments. Answer questions in comments in
-  the code. At the end, upload the URL of your file to Canvas.
+Write each of the code fragments. Answer questions in comments in
+the code. At the end, upload the URL of your file to Canvas.
 
 1. Write a statement that defines a pointer variable named =fltPtr=. The
    variable should be a pointer to a ~float~. Be sure to properly
@@ -638,7 +638,7 @@ All topics:
 
 2. Define an integer variable =foo= and a pointer-to-int variable
    =ptr=. Write a statement that assigns the address of the =foo= variable
-   to the =ptr= variable. 
+   to the =ptr= variable.
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :efooports both :noweb yes
 
    #+end_src
@@ -653,7 +653,7 @@ All topics:
    =foo=. Write a ~cout~ statement that displays the value that =ptr= points
    to.
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-     
+
    #+end_src
 
 5. List three uses of the ~*~ (asterisk) symbol in C++. Write the answer
@@ -698,7 +698,7 @@ All topics:
   #+end_src
 
 - Would it work as a range-based loop, too?
-  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output 
+  #+begin_src C++ :main yes :includes <iostream> :namespaces std :results output
     short numbers[] = {10, 20, 30, 40, 50};
     for (int num : numbers)  // does not know of an i
       cout << *(numbers + i) << " ";  // here i is not declared
@@ -732,7 +732,7 @@ All topics:
 
   #+RESULTS:
   : 2
-  
+
 * Why you can step through arrays using pointers
 #+attr_html: :width 600px :float nil:
 #+caption: Array elements are stored in contiguous memory locations (Gaddis Fig. 9-5)
@@ -786,9 +786,9 @@ memory makes the pointer point at the next array element.
    0.05 0.1 0.25 0.5 1
   #+end_example
 
-- Starter code: 
-         
-  #+begin_src C++ :main no :includes :results output :exports both 
+- Starter code:
+
+  #+begin_src C++ :main no :includes :results output :exports both
     // Demonstrate connection between arrays and pointers
     // Create an array of double variables, and a pointer-to-double
     // Display the array elements using pointers in four ways.
@@ -802,15 +802,15 @@ memory makes the pointer point at the next array element.
       const int NUM_COINS = 5;
       double coins[NUM_COINS] {0.05, 0.1, 0.25, 0.5, 1.0};
       double *doublePtr = nullptr;
-        
+
       // Point the pointer at the array.
       doublePtr = coins;
-      
+
       // Display array using a pointer subscription.
       for (int count=0; count < NUM_COINS; count++)
         cout << doublePtr[count] << " ";
 
-      cout << endl;     
+      cout << endl;
       // Display array using pointer notation.
       for (int count=0; count < NUM_COINS; count++)
         cout << *(coins + count) << " ";
@@ -832,8 +832,408 @@ memory makes the pointer point at the next array element.
   #+end_src
 
   #+RESULTS:
-  : 0.05 0.1 0.25 0.5 1 
-  : 0.05 0.1 0.25 0.5 1 
-  : 0.05 0.1 0.25 0.5 1 
-  : 0.05 0.1 0.25 0.5 1 
+  : 0.05 0.1 0.25 0.5 1
+  : 0.05 0.1 0.25 0.5 1
+  : 0.05 0.1 0.25 0.5 1
+  : 0.05 0.1 0.25 0.5 1
 
+
+-----
+
+
+-----
+
+* NEXT Pointer arithmetic
+
+- You can change pointer content with addition or subtraction.
+  
+- Code along: [[https://tinyurl.com/pointer-arithmetic][tinyurl.com/pointer-arithmetic]]
+
+  #+name: onecompiler.com/cpp/43yvupgzd
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    using namespace std;
+
+    int main()
+    {
+      // set array SIZE
+      // create array
+      // initialize pointer
+
+      // Make numPtr point to the array.
+
+      // Use the pointer to display the array contents.
+      cout << "The numbers in set are:\n:";
+      for (int count = 0; count < SIZE; count++)
+        {
+          cout << ____   << " "; // print array value pointed at
+          // move pointer to next array element
+        }
+
+      // Display array contents in reverse order.
+      cout << "\nThe numbers in set backwards are:\n:";
+      for (int count = 0; count < SIZE; count++)
+        {
+          // move pointer to previous array element
+          cout << ____   << " "; // print array value pointed at
+        }
+      return 0;
+    }
+  #+end_src
+
+- Not all operations are allowed on pointers: ~++~ and ~--~, ~+=~, ~-=~, are
+  OK, and a pointer may be subtracted from another pointer.
+  #+attr_html: :width 600px :float nil:
+  [[../img/pointer_arithmetic.png]]
+
+* Initializing pointers
+
+- You can initialize pointers at definition time:
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+
+  #+end_src
+
+- When initializing pointers, you cannot mix data types:
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+
+  #+end_src
+
+- You can test if a pointer is properly initialized or not.
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+* Pointers as function parameters
+
+- Pointers can be used as function parameters:
+  #+begin_src C++ :main no :includes :results output
+    #include <iostream>
+    using namespace std;
+
+    int main() {
+
+      
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+
+- This is also what using a reference parameter does. What's the
+  difference?
+  #+begin_quote
+
+  #+end_quote
+
+- *Example:* This program uses two ~void~ functions that accept addresses
+  of variables as arguments. =getNumber= asks the user for a number as
+  input, and =doubleValue= doubles the input value. Neither function
+  needs a ~return~ value because of the pass-by-reference.
+
+  Code along: tinyurl.com/pointer-parameter
+
+  #+name: onecompiler.com/cpp/43yvv5mfq
+  #+begin_src C++ :tangle ../src/ptrpar.cpp :main no :includes :results output :exports both
+    // Ask user for number as input, double the value and print it.
+    // Uses two void functions that take pointer parameters
+    // Author: Marcus Birkenkrahe (modified from Gaddis, 9-11, 531)
+    #include <iostream>
+    using namespace std;
+
+    // Function prototypes
+
+    int main()
+    {
+      int number;
+
+      // Call `getNumber` and pass the address of `number`.
+
+      // Call `doubleValue` and pass the address of `number`.
+
+      // Display the value in `number`.
+
+      return 0;
+    }
+
+    // Definition of getNumber. The parameter `input` is a pointer. The
+    // function asks the user for a number. The value entered is stored in
+    // the variable pointe to by `input`. The calling function's argument
+    // must be an address.
+
+    // Definition of doubleValue. The paramter `value` is a pointer. The
+    // function multiplies the variable pointed to by `value` by two. The
+    // calling function's argument must be an address.
+  #+end_src
+
+- What would happen if we would not use =*input= in the ~cin~ statement
+  but instead =input=?
+  #+begin_quote
+
+  #+end_quote
+
+* Using pointer parameters to accept array addresses
+
+- The following two (call-by-value) function prototypes are identical:
+  #+begin_example C++
+    void function(int arr[], int size);
+    void function(int  *arr, int size);
+  #+end_example
+
+- Example: Two functions to get sales data and add them up to total
+  sales.
+
+- Code along: [[https://tinyurl.com/pointer-array-parameter][tinyurl.com/pointer-array-parameter]]
+
+  #+name: onecompiler.com/cpp/43yvvkznc
+  #+begin_src  C++ :cmdline < ../data/sales.txt :main no :includes :results output :exports both
+    // Get sales data for four quarters, and add up all the sales
+    // Use pointers as function parameters for getSales and totalSales
+    // Sample input: 10263.98 12369.69 11542.13 14792.06
+    // Sample output: The total sales for the year are $48967.86
+    // Author: Marcus Birkenkrahe (modified from Gaddis 9-12, 529)
+    #include <iostream>
+    #include <iomanip>
+    using namespace std;
+
+    // Function prototypes
+
+    int main()
+    {
+      // Declare the sales data array.
+
+      // Set the numeric output formatting.
+
+      // Get the sales data for all quarters.
+
+      // Display the totals sales for the year.
+
+      return 0;
+    }
+
+    // Definition of getSales. This function uses a pointer to accept the
+    // address of an array of doubles. The function asks the user to enter
+    // sales figures and stores them in the array.
+
+    // Definition of totalSales. This function uses a pointer to accept
+    // the address of an array. The function returns the total of the
+    // elements in the array.
+  #+end_src
+
+  #+RESULTS: Program 9-12 Gaddis 529
+  :
+  : Enter the sales figure for quarter 1: 10263.98
+  : Enter the sales figure for quarter 2: 12369.69
+  : Enter the sales figure for quarter 3: 11542.13
+  : Enter the sales figure for quarter 4: 14792.06
+  : The total sales for the year are $48967.86
+
+- Input data:
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "10263.98 12369.69 11542.13 14792.06" > sales.txt
+    cat sales.txt
+  #+end_src
+
+  #+RESULTS:
+  : 10263.98 12369.69 11542.13 14792.06
+
+* PRACTICE Pointers as function parameters
+
+- Write a C++ program with a function =increment= that has a
+  pointer-to-integer parameter =ptr=:
+  1. Define an integer =value= with the value =9=.
+  2. Display =value=.
+  3. Increment =value= using the function =increment=.
+  4. Display the value.
+
+- Sample output:
+  #+begin_example
+  9
+  10
+  #+end_example
+
+- Starter code:
+  #+name: onecompiler.com/cpp/43ruq2shg
+  #+begin_src C++ :main no :includes :results output :exports both
+    // This program increments a set integer value using a function with
+    // a pointer-to-integer parameter.
+    #include <iostream>
+    using namespace std;
+
+    // Function prototype
+
+    int main()
+    {
+      // Define an integer `value` with the value 9.
+
+      // Display `value`.
+
+      // Increment `value` using the function `increment`.
+
+      // Display the value.
+
+      return 0;
+    }
+
+    // Function definition
+  #+end_src
+
+* Dynamic memory allocation
+
+- Variables may be created and destroyed while a program is running.
+
+- If you know how many variables you need during execution, you can
+  define them up front.
+  1) To calculate the area of a rectangle: =length=, =width=, =area=.
+  2) To compute payroll for 30 employees: an array =payRoll[30]=.
+
+- When you don't know that, you need to allocate memory on the fly,
+  during program execution:
+  1) To store a list of names from a file if you don't know the number
+     of names in the list.
+  2) To run an image processing application where you need to store
+     pixel data based on the resolution of images loaded at runtime.
+
+- Most realtime data problems are of the second sort. They require
+  *dynamic memory allocation*, and you need pointers for that.
+
+- How is this done?
+  #+begin_quote
+
+  #+end_quote
+
+- In C++, heap memory is requested with the ~new~ operator:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none :exports both :noweb yes
+
+  #+end_src
+
+  #+attr_html: :width 600px :float nil:
+  #+caption: iptr points to a chunk of dynamically allocated memory (Fig 9-11).
+  [[../img/dynamic_memory.png]]
+
+- To operate on the ~new~ variable, the dereferenced pointer =*iptr= is
+  used, for example:
+  #+begin_src C++ :cmdline < ../data/dynamic.txt :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+
+  #+end_src
+
+- Input
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "1000" > dynamic.txt
+    cat dynamic.txt
+  #+end_src
+
+- This mechanism is not typically used for single variables.
+
+* Dynamically allocating an array
+
+- Reserving memory at compile time with a ~const~ =SIZE= variable works
+  great as long as you know the length of an array:
+  #+begin_example C++
+    const int SIZE = 4;
+    int testScores[SIZE] = {0};
+  #+end_example
+
+- What if we want to ask a user for the number of test scores and we
+  want to store them in an array (without knowing the user's answer)?
+
+- Using the test scores example:
+  #+begin_src C++ :cmdline < ../data/testScores.txt :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    // Create a pointer to hold the starter address
+
+    // Create a variable that will hold the size when it is known
+
+    // Get the number of test scores during execution
+
+    // Create the pointer to the array of `size` elements
+
+    // Use testScores to store test scores
+
+    // Delete the array (using the pointer)
+
+  #+end_src
+
+- Failure to deallocate dynamic memory can cause a program to have a
+  *memory leak*. If memory is dynamically allocated in a function
+  without being deleted, the access pointer is lost and the memory can
+  no longer be accessed and just sits there while the program is live.
+
+- Input
+  #+begin_src bash :results output :exports both
+    cd ../data
+    echo "3" > testScores.txt # size
+    echo "95 78 88" >> testScores.txt
+    cat testScores.txt
+  #+end_src
+
+  #+RESULTS:
+  : 3
+  : 95 78 88
+
+* PRACTICE Dynamically Allocated String Array in C++
+
+- Using the starter code below, write a program that asks for the
+  number of participants of an event and reads in their names.
+  1. Define a pointer-to-string =names=.
+  2. Define an integer variable =count= for the number of participants.
+  3. Ask for the number of participants and input =count=.
+  4. Output number to check.
+  5. Dynamically allocate ~new~ =string[count]= memory for =names= (this
+     reserves a ~string~ array of =count= names.
+  6. Loop over =names= and ask for one name after the next (totalling
+     =count=)
+  7. Output each name to check.
+  8. ~delete~ the ~string~ array.
+  9. Assign the ~nullptr~ to the =names= pointer.
+  10. Run the program with the names "Alice", "Bob", and "Carol".
+
+- Sample output:
+  #+begin_example
+  Enter the number of participants: 3
+  Enter name of participant: Alice
+  Enter name of participant: Bob
+  Enter name of participant: Carol
+  #+end_example
+
+- Always free memory with ~delete[]~ to avoid memory leaks.
+
+- Starter code: https://tinyurl.com/dynamically-allocated
+  #+name: onecompiler.com/cpp/43rvf2sez
+  #+begin_src C++ :cmdline < ../data/dynString.txt :main no :includes :results output :exports both
+    // This program asks the user for the number and the names of
+    // participants, stores the names in an array, and outputs them.
+    // header files
+
+    // namespace directive
+
+    // main program
+    int main()
+    {
+      // Define a pointer-to-string `names`.
+
+      // Define an integer variable `count` for the number of participants.
+
+      // Ask for the number of participants and input `count`.
+
+      // Output count to check
+
+      // Dynamically allocate `new` `string[count]` memory for `names`.
+
+      // Loop over `names` and ask for one name after the next.
+
+      // Output the name after each input to check.
+
+      // delete the string array.
+
+      // Assign the nullptr to the `names` pointer.
+
+      return 0;
+    }
+  #+end_src
+
+
+  
