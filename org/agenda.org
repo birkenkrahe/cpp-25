@@ -1555,7 +1555,10 @@ grade yourself. If you do well, you can turn your result in.
    : 10 20 30 40 50
 
 <<<<<<< HEAD
-** TODO Popquiz 3: pointers
+** DONE Popquiz 3: pointers
+
+You will grade this yourself based on the solutions given in class
+after the quiz. You can hand in your results as a bonus if you like.
 
 Solution (PDF): [[https://tinyurl.com/popquiz-3-solutions][tinyurl.com/popquiz-3-solutions]]
 
