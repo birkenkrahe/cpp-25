@@ -1358,7 +1358,7 @@ grade yourself. If you do well, you can turn your result in.
 
 10. On a sorted array, binary search has what time complexity?
     #+begin_quote
-    O(log n) 
+    O(log n)
     #+end_quote
 
 11. What is the best possible time complexity for any comparison-based
@@ -1390,7 +1390,7 @@ grade yourself. If you do well, you can turn your result in.
     #+begin_quote
     O(n) - usually, an int is stored in 4 bytes, so that's O(4n) = O(n).
     #+end_quote
-    
+
 ** DONE Review: Pointer basics
 
 1. What does ~&x~ yield, and where does that address live at *runtime*?
@@ -1445,17 +1445,17 @@ grade yourself. If you do well, you can turn your result in.
 - Practice: countdown/loop with pointers, compare array vs pointer
   access
 
-
 * Week 7: Pointers in use (Oct 7, Oct 9)
 
-- [ ] New test and new home assignment available
-- [ ] New bonus assignment will be online
-- [ ] Solution video for the vector assignment available
-- [ ] Pointer arithmetic and initialization 
-- [ ] Pointers as function parameters (pass-by-address)
+- [X] New test and new home assignment available
+- [X] New bonus assignment will be online
+- [X] Solution video for the vector assignment available
+- [X] Pointer arithmetic and initialization 
+- [X] Pointers as function parameters (pass-by-address)
 - [ ] Dynamic memory allocation (new, delete)
+- [ ] New bonus assignment will be online
 
-** NEXT Review: Pointers and arrays
+** DONE Review: Pointers and arrays
 
 1. So what if you step through an array with a pointer and give the
    pointer an address outside of the array?
@@ -1465,6 +1465,10 @@ grade yourself. If you do well, you can turn your result in.
      for (ptr = num; ptr < num + 4; ptr++)
        cout << *ptr << " "; // last element out-of-bounds
    #+end_src
+
+   #+RESULTS:
+   : 1 2 3 1636683520 
+
    #+begin_quote
    C++ performs no out-of-bounds checking with arrays. So there will be
    no complaint but it's a disaster.
@@ -1480,7 +1484,7 @@ grade yourself. If you do well, you can turn your result in.
    #+end_src
 
    #+RESULTS:
-   : 10 20 30 40 
+   : 10 20 30 40
 
    #+begin_quote
    This works because the array name can be used as a constant pointer,
@@ -1531,25 +1535,29 @@ grade yourself. If you do well, you can turn your result in.
 6. Rewrite this loop so that it uses pointer notation instead of
    subscript notation:
    #+begin_example C++
-   for (int x=0; x < 10; x++)
-     cout << arr[x];
+   for (int x=0; x < 10; x++) // start/stop/increment using subscript
+     cout << arr[x];  // printing using subscript
    #+end_example
    Solution:
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
      int arr[5] {10,20,30,40,50};
+
      for (int x=0; x < 5; x++)
-       cout << arr[x] << " ";
+       cout << arr[x] << " ";    // subscripts    
      cout << endl;
+
      for (int x=0; x < 5; x++)
-       cout << *(arr + x) << " ";
+       cout << *(arr + x) << " ";  // pointer notation
    #+end_src
 
    #+RESULTS:
-   : 10 20 30 40 50 
-   : 10 20 30 40 50 
+   : 10 20 30 40 50
+   : 10 20 30 40 50
 
+<<<<<<< HEAD
+** TODO Popquiz 3: pointers
 
-** TODO Pointer arithmetic: Review questions
+Solution (PDF): [[https://tinyurl.com/popquiz-3-solutions][tinyurl.com/popquiz-3-solutions]]
 
 1. What will the output of this code be?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
@@ -1560,39 +1568,33 @@ grade yourself. If you do well, you can turn your result in.
      cout << *resultsPtr << endl;
    #+end_src
 
-   #+RESULTS:
-   : 34
-
-   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-     const int SIZE = 4;
-     int results[SIZE] = { 54, 44, 34, 22 };
-     int *resultsPtr = nullptr;
-     resultsPtr = results + 2; // move to results[0+2] = results[2]
-     cout << *resultsPtr << endl;  // 34
-   #+end_src
-
-   #+RESULTS:
-   : 34
-
-2. Can you multiply or divide a pointer?
-   #+begin_quote
-   You cannot multiply or divide a pointer.
-   #+end_quote
-
-3. Assume =ptr= is a pointer to an ~int~ and holds the address 12000. On a
+2. Assume =ptr= is a pointer to an ~int~ and holds the address 12000. On a
    system with 4-byte integers, what address will be in =ptr= after the
    following statement?
    #+begin_example C++
      ptr += 10;
    #+end_example
-
+   Answer:
    #+begin_quote
    After the statement, the pointer will point to a place 10 * 4 bytes
    = 40 bytes forward in contiguous memory, and the new address will
    be 12000 + 40 = 12040.
    #+end_quote
 
-4. Assume =pint= is a pointer variable. Is each of the following
+3. Could you show this with code?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     int x;
+     int *ptr = &x;
+     printf("Old address: %d\n", ptr); // this will generate a warning
+     ptr += 10;
+     printf("New address: %d\n", ptr);  // this will generate a warning
+   #+end_src
+
+   #+RESULTS:
+   : Old address: 674958380
+   : New address: 674958420
+
+4. Assume =pint= is a pointer-to-int variable. Is each of the following
    statements valid or invalid? If any is invalid, why?
    #+begin_example C++
    A) pint++;
@@ -1602,24 +1604,25 @@ grade yourself. If you do well, you can turn your result in.
    E) pint += x; // x is an int
    #+end_example
 
+   Solution:
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
      int x;
      int *pint;
      pint++;
+     --pint;
      pint += x;
      // pint /= 2;  // not valid
-     // pint *= 4;  // not valid
+     // pint *= x;  // not valid
    #+end_src
 
-** TODO Initializing pointers: Review questions
-
-1. In the following code, is the pointer variable definition legal or
+5. In the following code, is the pointer variable definition legal or
    illegal?
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
      int seats[5] = {2,4,5,7,6};
      int *seats = seats;
    #+end_src
 
+   Answer:
    #+begin_quote
    It's illegal since an array name (=seats=) stands for a constant
    pointer by the same name so this counts as a double declaration,
@@ -1628,21 +1631,28 @@ grade yourself. If you do well, you can turn your result in.
    it is to give the pointer variable a different name: =seatsPtr=.
    #+end_quote
 
-2. In the following code, is the assignment statement in the 2nd line
+6. In the following code, is the assignment statement in the 2nd line
    legal or illegal?
    #+begin_src C++ :main yes :includes :results none
      double dollars;
      int dollarsPtr = &dollars;
    #+end_src
 
+   Answer:
    #+begin_quote
    It's illegal since the right hand value is an address (of the
    ~double~ variable =dollars=), which expects to be stored in a
    pointer-to-double of the data type ~double*~.
    #+end_quote
 
-3. Is each of the following definitions valid or invalid? If any is
-   invalid, why?
+   Solution:
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none :exports both :noweb yes
+     double dollars;
+     double *dollarsPtr = &dollars;
+   #+end_src
+
+7. Is each of the following pointer definitions and initializations
+   valid or invalid? If any is invalid, why?
    #+begin_example C++
    A)  int ivar;
        int *iptr = &ivar;
@@ -1658,22 +1668,150 @@ grade yourself. If you do well, you can turn your result in.
        int ivar;
    #+end_example
 
+   Solution:
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+     // A)
      int ivar;            // integer variable
      int *iptr = &ivar;   // address stored in pointer-to-int
-
-     int ivar2, *iptr2 = &ivar; // integer variable, pointer-to-int stores
-     // address
-
+     // B)
+     int ivar2, *iptr2 = &ivar; // OK - pointer-to-int stores address
+     // C)
      float fvar;          // floating-point variable
      //int *iptr3 = &fvar;  // ILLEGAL: pointer-to-int cannot store
      // floating-point variable address
-
+     // D)
      int nums[50], *iptr4 = nums; // pointer-to-int stores address of
-     // nums[0], nums is constant pointer
-
+                                  // nums[0], nums is constant pointer
+     // E)
      int *iptr5 = &ivar;  // ILLEGAL - ivar5 not defined yet - will
      // compile!
      int ivar5;
    #+end_src
 
+8. Will this function compile?
+   #+begin_src C++ :main no :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     void getNumber(int *input) {
+       cout << "Enter an integer number: ";
+       cin >> input;
+     }
+     int main(){int num; getNumber(num);}
+   #+end_src
+
+   #+RESULTS:
+
+   Solution:
+   #+begin_src C++ :main no :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     void getNumber(int *input) {
+       cout << "Enter an integer number: ";
+       cin >> *input; // `input` is a pointer that holds an address
+     }
+     int main(){int num; getNumber(&num);} // address-of num needs to be passed
+   #+end_src
+
+   #+RESULTS:
+   : Enter an integer number:
+
+9. Rewrite this pointer-based function to use a reference parameter
+   instead. Output is 10.
+   #+begin_src C++ :namespaces std; :includes <iostream>
+     void increment(int *ptr) { (*ptr)++; }
+
+     int main() {
+       int x = 9;
+       increment(&x);
+       cout << x;
+     }
+   #+end_src
+
+   Solution:
+   #+begin_src C++ :namespaces std; :includes <iostream>
+     void increment(int &x) { x++; }
+
+     int main() {
+       int x = 9;
+       increment(x);
+       cout << x;
+     }
+   #+end_src
+
+10. The function =copyInts= copies an array =src= into an array
+    =dst=. Replace the array parameters by pointers, and replace all
+    indexing with pointer arithmetic.
+    #+begin_example C++
+      // Copy n ints from src to dst using pointer parameters.
+      void copyInts(int dst[], const int src[] int n) {
+        for (int i=0; i<n; i++)
+        {
+          // assign from current src element to current dst element
+          dst[i] = src[i];
+          }
+      }
+    #+end_example
+
+    Solution: index version
+    #+begin_src C++ :main no :includes :results output :exports both
+      #include <iostream>
+      using namespace std;
+
+      // Copy n ints from src to dst using pointer parameters.
+      void copyInts(int dst[], const int src[], int n) {
+        for (int i=0; i<n; i++)
+          {
+            // assign from current src element to current dst element
+            dst[i] = src[i];
+          }
+      }
+
+      int main()
+      {
+        const int SIZE=3;
+        int src[SIZE]={10,20,30};
+        int dst[SIZE];
+        copyInts(dst,src,SIZE);
+        for(int i=0;i<SIZE;i++)
+          {
+            cout << src[i] << " = "<<  dst[i] << "\n";            
+          }
+        return 0;
+      }
+    #+end_src
+
+    #+RESULTS:
+    : 10 = 10
+    : 20 = 20
+    : 30 = 30
+
+    Pointer version:
+    #+begin_src C++ :main no :includes :results output :exports both
+      #include <iostream>
+      using namespace std;
+
+      // Copy n ints from src to dst using pointer parameters.
+      void copyInts(int *dst, const int *src, int n) {
+        for (int i=0; i<n; i++)
+          {
+            // assign from current src element to current dst element
+            (*(dst + i)) = *(src + i);
+          }
+      }
+
+      int main()
+      {
+        const int SIZE=3;
+        int src[SIZE]={10,20,30};
+        int dst[SIZE];
+        copyInts(dst,src,SIZE);
+        for(int i=0;i<SIZE;i++)
+          {
+            cout << src[i] << " = "<<  dst[i] << "\n";            
+          }
+        return 0;
+      }
+    #+end_src
+
+    #+RESULTS:
+    : 10 = 10
+    : 20 = 20
+    : 30 = 30
+
+** Dynamic memory allocation with pointers
