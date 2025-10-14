@@ -1,0 +1,466 @@
+#+TITLE: Classes
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 240 Data Structures Fall 2025
+#+OPTIONS: toc:1 num:1 ^:nil:
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+Covered:
+1. [X] Procedural vs. Object-Oriented Programming
+2. [X] Defining classes and objects
+3. [X] Private and public access control
+4. [X] Member functions
+5. [X] Constructors and destructors
+6. [X] Constructor and operator overloading
+7. [X] Separation of interface and implementation
+8. [ ] Aggregation
+
+Other topics:
+1. [ ] Arrays of Objects
+2. [ ] Simulating dice (case study)
+3. [ ] Unified Modeling Language (UML)
+4. [ ] Instance and static members
+5. [ ] Friends of Classes
+6. [ ] Protected data members
+7. [ ] Memberwise Assignment
+8. [X] Copy Constructors
+9. [ ] Object Conversion
+10. [ ] Aggregation
+11. [ ] Class collaborations (case study)
+12. [ ] Game simulation (case study)
+13. [ ] Rvalue References and Move Semantics
+14. [ ] Inheritance (derivative classes)
+15. [ ] Polymorphism (share user interface at runtime)
+16. [ ] Virtual Functions (overriding member functions at runtime)
+
+* Procedural vs. object-oriented programming (OOP) paradigms
+
+- Most disciplines that grow over time are not just cobbled together:
+  People identify patterns that are successful, explore and pursue
+  them, and finally turn them into standards (until they fail).
+
+- These patterns are also called "paradigms" (παραδείγματα). Two
+  important programming paradigms are procedural and object-oriented
+  programming.
+
+- What does *procedural* mean? What does it achieve?
+  #+begin_quote
+
+  #+end_quote
+
+- What is *object orientation*? What does it achieve?
+  #+begin_quote
+
+  #+end_quote
+
+* Example: A light switch as message exchange between objects
+
+- Example 1: A light switch.
+  #+begin_src C++ :results output :main no :includes
+    #include <iostream>
+    using namespace std;
+
+    // Let there be light!
+
+    // Provide a switch!
+
+    // Test it by switching light on and off!
+
+  #+end_src
+
+- Explanation:
+  #+begin_quote
+
+  #+end_quote
+
+- *Challenge (bonus assignment):*
+  #+begin_quote
+  What would the procedural version of this program look like? 
+  #+end_quote
+
+* Example: Procedural vs. object-oriented adding of objects
+
+- What is *object-oriented* programming?
+  #+begin_quote
+
+  #+end_quote
+
+- Example using an =add= function in procedural style:
+  1) You may want to add integers.
+  2) You may want to add floating-point numbers.
+  3) You may want to "add" (concatenate) strings.
+     
+- These are three different procedures. In C/C++, they can be *overloaded*
+  so that each function is called =add= but which one is used depends on
+  its arguments.
+
+- Implementation:    
+  #+begin_src C++ :main no :includes :results output
+    #include <iostream>
+    using namespace std;
+
+    // Integer addition
+    int add(int a, int b)
+    {
+      return (a+b);
+    }
+
+    // Floating-point addition
+    double add(double a, double b)
+    {
+      return (a+b); 
+    }
+
+    // String concatenation
+    string add(std::string a, std::string b)
+    {
+      return (a+b);
+    }
+    // The main program calls each function
+    int main()
+    {
+      cout << add(5,7) << endl;
+      cout << add(5.5,6.5) << endl;
+      cout << add("five","seven") << endl;
+      return 0;
+    }
+  #+end_src
+
+- In the OOP style, a ~class~ named =Adder= has member functions that take
+  care of both argument types:
+  #+name: OOP
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    using namespace std;
+
+    // The Adder class has 'public' methods (no data)
+    class Adder {
+    public:
+      int add(int a, int b) // integer addition
+      {
+        return (a+b);
+      }
+      double add(double a, double b) // double addition
+      {
+        return (a+b);
+      }
+      string add(std::string a, std::string b) // string 'addition'
+      {
+        return (a+b);
+      }
+    };
+    // The functions are called on the Adder object A
+    int main()
+    {
+      Adder A;
+      cout << A.add(5,7) << endl;
+      cout << A.add(5.5,6.5) << endl;
+      cout << A.add("five","seven") << endl;
+      return 0;
+    }
+  #+end_src
+
+- Problems with Procedural Style
+  #+begin_quote
+ 
+  #+end_quote
+
+- Advantage of OOP
+  #+begin_quote
+ 
+  #+end_quote
+
+- Criticisms of OOP
+  #+begin_quote
+ 
+  #+end_quote
+
+- Why do "objects" and their "state" matter?
+  #+begin_quote
+ 
+  #+end_quote
+
+* An everyday "data encapsulation" example: The car
+
+- What's part of the car's "user interface"? (What can you see/use?)
+  #+begin_quote
+
+  #+end_quote
+
+- What's part of the car's "internal implementation"? (What's hidden?)
+  #+begin_quote
+
+  #+end_quote
+
+* Classes and objects
+
+- What is a ~class~? A ~class~ is three things: *keyword*, *code*, and *concept*.
+
+- As a *keyword*:
+  #+begin_quote
+
+  #+end_quote
+
+- As *code*:
+  #+begin_quote
+
+  #+end_quote
+    
+  #+begin_src C++ :main yes :includes :results none
+    // The Rectangle class objects have width and length
+    // You can set and get these properties for any Rectangle
+    
+  #+end_src
+
+- As a *concept:*
+  #+begin_quote
+
+  #+end_quote
+  #+attr_html: :width 400px :float nil:
+  #+caption: Blueprint of a house.
+  [[../img/blueprint.png]]
+
+- The blueprint can be used to build any number of objects, or
+  *instances*.
+  #+attr_html: :width 600px :float nil:
+  #+caption: House objects build with a house blueprint.
+  [[../img/houses.png]]
+
+- Example: What could you say about the =Insect= class and the two
+  objects shown in the figure?
+  #+attr_html: :width 300px :float nil:
+  #+caption: An Insect class and two of its instances.
+  [[../img/Insect.png]]
+
+  Answer:
+  #+begin_quote
+
+  #+end_quote
+
+* Glossary - check your understanding of basic terminology and examples!
+
+| Term               | Definition                                      |
+|--------------------+-------------------------------------------------|
+| Procedural Prog.   | Programming with procedures and global data     |
+| OOP                | Objects encapsulate data & logic                |
+| Encapsulation      | Hide internal data; access via member functions |
+| State/attribute    | Data stored in an object                        |
+| Behavior           | Actions defined by an object's methods          |
+| Car UI             | Controls used (wheel, pedals, dashboard)        |
+| Car Implementation | Internal mechanisms (steering, fuel, brakes)    |
+| class (keyword)    | Declares a user-defined type                    |
+| class (code)       | Contains attributes and member functions        |
+| class (concept)    | Blueprint to create instances of an object      |
+| Object/Instance    | Realized form of a class in memory              |
+| Insect (class)     | Class describing common insect features         |
+| housefly/mosquito  | Instances of Insect class                       |
+
+* Using the ~string~ class
+
+- You've already used C++ classes like ~vector~ and ~string~.
+
+- To use the ~string~ class you need to ~#include <string>~. Now you can
+  define ~string~ objects, and use string member functions.
+
+- Example: Setting a city name, a State, and getting its length.
+  #+name: string
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <string>
+    using namespace std;
+
+    int main()
+    {
+
+      return 0;
+    }
+  #+end_src
+
+- What about the time complexity of the ~length~ and ~append~ functions?
+  #+begin_quote
+  | Operation           | Time | Notes                                    |
+  |---------------------+------+------------------------------------------|
+
+  #+end_quote
+
+* Introduction to classes
+
+Let's use a *bank account* as an example (since everyone has got one).
+
+- What are the computing *procedures* to run a *bank account*?
+  #+begin_quote
+
+  #+end_quote
+
+- What are the *data* of a bank account?
+  #+begin_quote
+
+  #+end_quote
+
+- What does designing a =BankAccount= ~class~ mean?
+  #+begin_quote
+
+  #+end_quote
+
+- What's an *object*?
+  #+begin_quote
+
+  #+end_quote
+
+- Example of an object: A savings account.
+  #+begin_quote
+
+  #+end_quote
+
+* OOP workflow and class template
+
+- How to do it in practice:
+  #+begin_quote
+
+  #+end_quote
+
+- General template:
+  #+begin_example C++
+  class ClassName {
+
+    private:
+       // data members (attributes)
+
+    public:
+       // member functions (methods)
+  };
+  #+end_example
+
+- Member functions can be defined *inline* (inside the ~class~ template),
+  or externally. Then they have to be brought into *scope* with the
+  scope operator ~::~
+
+- Example: Code along using OneCompiler.Com. Insert this code beetween
+  the ~namespace~ statement and the ~main~ program, like a function. Note:
+  All of the member functions are defined *inline*.
+  
+  #+name: BankAccount
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+
+  #+end_src
+
+* Member functions and member data encapsulation
+
+- There are some similarities between defining/using functions
+  (procedures) and classes.
+
+- What if we do not define a member function inside the ~class~
+  definition?
+  #+begin_example C++
+
+  #+end_example
+
+- The compiler has to be told that it is part of the ~class~:
+  #+begin_example C++
+
+  #+end_example
+
+- The main differences to the *inline* definition:
+  #+begin_quote
+
+  #+end_quote
+
+- What's going on conceptually here?
+  #+begin_quote
+
+  #+end_quote
+
+* Using a class in a ~main~ function
+
+- We must manage the data flow between the ~class~ definition and the
+  ~main~ program, where ~class~ objects are created and used.
+
+- Example with =BankAccount=:
+  1. Create a =BankAccount= named =acct= with 100 starting balance.
+  2. Show the current balance.
+  3. Deposit 10 and show balance.
+  4. Withdraw 50 and show balance.
+
+- Code: Use your previous definition of ~BankAccount~ and change ~main~.
+  #+name: Using BankAccount
+  #+begin_src C++ :main no :includes :results output :exports both :noweb yes
+    #include <iostream>
+    using namespace std;
+
+    class BankAccount
+    {
+    private:
+      double balance;
+
+    public:
+      BankAccount(double startingBal)
+      { balance = startingBal; }
+
+      void deposit(double amount)
+      { balance += amount; }
+
+      void withdraw(double amount)
+      { balance -= amount; }
+
+      double getBalance() const
+      { return balance; }
+
+    };
+
+    int main()
+    {
+ 
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS: Using BankAccount
+
+* PRACTICE Separate interface and implementation
+
+- Using the =BankAccount= class provided in the starter code, separate
+  the class interface and the implementation by splitting the code
+  into:
+  1) ~class~ declaration with member data and member function prototypes,
+  2) definitions of the member function prototypes.
+  3) When you're done, create a =BankAccount= named =account= with a
+     starting balance of 200, deposit 300, withdraw 100, and print the
+     balance each time.
+
+- Sample output:
+  #+begin_example
+  Account starting balance: $200.
+  Deposited $300. New balance: $500.
+  Withdrew $100. New balance: $400.
+  #+end_example
+
+- Starter code: [[https://tinyurl.com/bank-account-test][tinyurl.com/bank-account-test]]
+  #+name: https://onecompiler.com/cpp/43sbgtdpj
+  #+begin_src C++ :main no :include
+    // The BankAccount class has a balance.  It is created with a starting
+    // balance. You can deposit or withdraw funds. You can get a balance
+    // printout.
+    class BankAccount
+    {
+    private:
+      double balance;
+
+    public:
+      BankAccount(double startingBal)
+      { balance = startingBal; }
+
+      void deposit(double amount)
+      { balance += amount; }
+
+      void withdraw(double amount)
+      { balance -= amount; }
+
+      double getBalance() const
+      { return balance; }
+
+    };
+  #+end_src
+
+- Solution: (video https://youtu.be/CyJvZ7nB_IU)
+
+
