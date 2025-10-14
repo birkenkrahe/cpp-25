@@ -1817,4 +1817,15 @@ Solution (PDF): [[https://tinyurl.com/popquiz-3-solutions][tinyurl.com/popquiz-3
     : 20 = 20
     : 30 = 30
 
-** Dynamic memory allocation with pointers
+** DONE Dynamic memory allocation with pointers
+
+* Week 8: Introduction to classes (Oct 14, 16)
+
+- [ ] Procedural vs. Object-Oriented Programming
+- [ ] Defining classes and objects
+- [ ] Private and public access control
+- [ ] Member functions
+- [ ] Constructors and destructors
+- [ ] Constructor and operator overloading
+- [ ] Separation of interface and implementation
+
