@@ -7,7 +7,7 @@
 #+property: header-args:python :session *Python* :python python3 :results output :exports both
 #+property: header-args:R      :session *R* :results graphics output file :exports both
 #+property: header-args:C++    :main yes :includes <iostream> :results output :exports both
-* New attendance taking (DIY with Canvas app)
+* DONE New attendance taking (DIY with Canvas app)
 #+attr_html: :width 400px :float nil:
 
 - Open your Canvas mobile app
@@ -17,20 +17,20 @@
 - You are now marked present
 - Do this from now on at the beginning of class
 
-* Entry test - 30 light questions
+* DONE Entry test - 30 light questions
 #+attr_html: :width 400px :float nil:
 [[../img/entryTest.png]]
 
 How did you do?
 
-* Week 0: Overview
+* DONE Week 0: Overview
 #+attr_html: :width 400px :float nil:
 [[../img/The_Reckoning2.png]]
 
 CSC 240 is a complete redevelopment of a course that I first taught in
 Fall 2024. This is extremely ineffective, but also somewhat heroic.
 
-* Week 1: C++ Review / Introduction to data structures
+* DONE Week 1: C++ Review / Introduction to data structures
 
 - [X] Review: Last week (overview session)
 - [X] Review: C++ Entry Quiz
@@ -437,7 +437,7 @@ functions, and simple structs. No advanced features.
     Pages: 1300
     #+end_example
 
-* Week 2: Pepquiz / Data structures introduction (Sep 2, 4)
+* DONE Week 2: Pepquiz / Data structures introduction (Sep 2, 4)
 #+attr_html: :width 300px :float nil:
 [[../img/pepquiz2.png]]
 
@@ -561,7 +561,7 @@ functions, and simple structs. No advanced features.
      division by zero, invalid memory access, file not found.
    #+end_quote
 
-* Week 3: C-style arrays
+* DONE Week 3: C-style arrays
 #+attr_html: :width 400px :float nil:
 [[../img/starship-launch.jpg]]
 
@@ -773,7 +773,7 @@ example:
 : 11 21 31
 : 10 20 30
 
-* Week 4: Vectors (Sep 16, 18)
+* DONE Week 4: Vectors (Sep 16, 18)
 #+attr_html: :width 200px :float nil:
 [[../img/expo.png]]
 
@@ -1046,7 +1046,7 @@ or sometimes cppreference’s summaries).
     #+RESULTS:
     : False
 
-* Week 5: Vectors II & Time complexity (Sep 23, 25)
+* DONE Week 5: Vectors II & Time complexity (Sep 23, 25)
 
 - [X] Test 4 is live (deadline Sep 28)
 - [X] Lecture with code along: Vectors II
@@ -1298,7 +1298,7 @@ my data science courses.  We can extend the [[https://www.bigocheatsheet.com/][B
 | Random wandering   | O(1) per step   | Unbounded  | Time ∝ search space size     |
 | Monte Carlo search | O(1) per sample | O(k)       | Quality ∝ number of samples  |
 
-* Week 6: Pointers and memory allocation (Sep 30, Oct 2)
+* DONE Week 6: Pointers and memory allocation (Sep 30, Oct 2)
 #+attr_html: :width 400px :float nil:
 [[../img/pointersCartoon.png]]
 
@@ -1445,12 +1445,12 @@ grade yourself. If you do well, you can turn your result in.
 - Practice: countdown/loop with pointers, compare array vs pointer
   access
 
-* Week 7: Pointers in use (Oct 7, Oct 9)
+* DONE Week 7: Pointers in use (Oct 7, Oct 9)
 
 - [X] New test and new home assignment available
 - [X] New bonus assignment will be online
 - [X] Solution video for the vector assignment available
-- [X] Pointer arithmetic and initialization 
+- [X] Pointer arithmetic and initialization
 - [X] Pointers as function parameters (pass-by-address)
 - [ ] Dynamic memory allocation (new, delete)
 - [ ] New bonus assignment will be online
@@ -1467,7 +1467,7 @@ grade yourself. If you do well, you can turn your result in.
    #+end_src
 
    #+RESULTS:
-   : 1 2 3 1636683520 
+   : 1 2 3 1636683520
 
    #+begin_quote
    C++ performs no out-of-bounds checking with arrays. So there will be
@@ -1543,7 +1543,7 @@ grade yourself. If you do well, you can turn your result in.
      int arr[5] {10,20,30,40,50};
 
      for (int x=0; x < 5; x++)
-       cout << arr[x] << " ";    // subscripts    
+       cout << arr[x] << " ";    // subscripts
      cout << endl;
 
      for (int x=0; x < 5; x++)
@@ -1773,7 +1773,7 @@ Solution (PDF): [[https://tinyurl.com/popquiz-3-solutions][tinyurl.com/popquiz-3
         copyInts(dst,src,SIZE);
         for(int i=0;i<SIZE;i++)
           {
-            cout << src[i] << " = "<<  dst[i] << "\n";            
+            cout << src[i] << " = "<<  dst[i] << "\n";
           }
         return 0;
       }
@@ -1806,7 +1806,7 @@ Solution (PDF): [[https://tinyurl.com/popquiz-3-solutions][tinyurl.com/popquiz-3
         copyInts(dst,src,SIZE);
         for(int i=0;i<SIZE;i++)
           {
-            cout << src[i] << " = "<<  dst[i] << "\n";            
+            cout << src[i] << " = "<<  dst[i] << "\n";
           }
         return 0;
       }
@@ -1819,13 +1819,251 @@ Solution (PDF): [[https://tinyurl.com/popquiz-3-solutions][tinyurl.com/popquiz-3
 
 ** DONE Dynamic memory allocation with pointers
 
-* Week 8: Introduction to classes (Oct 14, 16)
+* DONE Week 8: Introduction to classes (Oct 14, 16)
 
-- [ ] Procedural vs. Object-Oriented Programming
-- [ ] Defining classes and objects
-- [ ] Private and public access control
-- [ ] Member functions
+- [X] Procedural vs. Object-Oriented Programming
+- [X] Defining classes and objects
+- [X] Private and public access control
+- [X] Member functions
 - [ ] Constructors and destructors
 - [ ] Constructor and operator overloading
 - [ ] Separation of interface and implementation
 
+** Review: Basic OOP (Popquiz)
+
+You get the quiz and the results in class - the solutions are also
+available on GitHub in the course's PDF repository.
+
+1. What is the main focus of procedural programming?
+   #+begin_quote
+   Creating reusable functions or procedures to structure programs.
+   #+end_quote
+
+2. What is the main focus of object-oriented programming (OOP)?
+   #+begin_quote
+   Modeling systems as interacting objects with their own state and
+   behavior.
+   #+end_quote
+
+3. What are three key principles of OOP? Can you think of an example?
+   #+begin_quote
+   1) Encapsulation (e.g. ~private~ data members)
+   2) Inheritance (e.g. =housefly= / =mosquito= classes as =Insects=)
+   3) Polymorphism (e.g. overloading an operator like =+=)
+   #+end_quote
+
+4. In the light-switch example, how does the =Switch= communicate with
+   the =Light=?
+   #+begin_quote
+   By sending messages (calling member functions) such as
+   =Light::turnOn()= and =Light::turnOff()= to a =Light= object like =lamp=.
+   #+end_quote
+
+5. What is *encapsulation* in OOP?
+   #+begin_quote
+   Hiding internal data and implementation details from users of a class.
+   #+end_quote
+
+6. What is a *class* in C++?
+   #+begin_quote
+   A user-defined *type* that serves as a *blueprint* for creating
+   objects.
+   #+end_quote
+
+7. What is an *object* in C++?
+   #+begin_quote
+   An *instance* of a class containing data (state) and methods
+   (behavior).
+   #+end_quote
+
+8. How does the car example illustrate interface vs. implementation?
+   #+begin_quote
+   The driver interacts with the *interface* (wheel, pedals) only,
+   without accessing internal mechanisms (*implementation*).
+   #+end_quote
+
+9. Why might OOP be unnecessary for simple programs?
+   #+begin_quote
+   Because the added structure and class hierarchy can create overhead
+   and complexity. For example in the =add= -> ~class~ =Adder= example.
+   #+end_quote
+
+10. Is this definition allowed? Will it compile?
+    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+      class foo {
+        // nothing to see here
+      };
+    #+end_src
+
+11. What does the ~const~ keywoard after the function name mean?
+    #+begin_example C++
+    double getBalance() const // stops the function from changing member data
+    { return balance; }
+    #+end_example
+
+12. If =Car= is a ~class~ with a member function =Car(int cylinders)=, how
+    could you construct a =Car= object =chevy= with 4 cylinders in ~main~?
+    Write the statement.
+    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results none
+      class Car{
+      private:
+        int cylinders;
+      public:
+        Car(int cyl) : cylinders(cyl) {}
+      };
+
+      int main()
+      {
+        Car chevy(4); // <-- creates a 4-cylinder Car called 'chevy'.
+        return 0;
+      }
+    #+end_src
+
+13. You cannot get the =Car= object data given the following definition
+    #+begin_example C++
+    class Car {
+    private:
+      int cylinders;
+    public:
+    };
+    #+end_example
+
+    Write a new member function =getCylinders= for the class that allows
+    you to retrieve the number of cylinders.
+
+    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+      class Car{
+      private:
+        int cylinders;
+      public:
+        Car(int cyl) : cylinders(cyl) {} // constructor
+        int getCylinders() const { return cylinders; } // <-- get cylinder data
+      };
+
+      int main()
+      {
+        Car chevy(4); // creates a 4-cylinder Car called 'chevy'.
+        return 0;
+      }
+    #+end_src
+
+14. Write a statement to print the number of cylinders of a =Car= object
+    named =chevy= with 4 cylinders.
+
+    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+      class Car{
+      private:
+        int cylinders;
+      public:
+        Car(int cyl) : cylinders(cyl) {} // constructor
+        int getCylinders() const { return cylinders; } // get cylinder data
+      };
+
+      int main()
+      {
+        Car chevy(4); // creates a 4-cylinder Car called 'chevy'.
+        cout << "Car has" << chevy.getCylinders() << " cylinders\n"; // <-- print
+        return 0;
+      }
+    #+end_src
+
+15. How many =Car= objects can you create in the same ~main~ program?
+    #+begin_quote
+    As many as you like (as long as there's memory available):
+    #+end_quote
+    #+begin_src C++ :main no :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+      class Car{
+      private:
+        int cylinders;
+      public:
+        Car(int cyl) : cylinders(cyl) {} // constructor
+        int getCylinders() const { return cylinders; } // get cylinder data
+      };
+
+      int main()
+      {
+        Car chevy(4); // <-- creates a 4-cylinder Car called 'chevy'.
+        cout << "This car has " << chevy.getCylinders() << " cylinders\n";
+        Car ford(8); // <-- creates an 8-cylinder Car called 'ford'.
+        cout << "This car has " << ford.getCylinders() << " cylinders\n";
+
+        return 0;
+      }
+    #+end_src
+
+    #+RESULTS:
+    : This car has 4 cylinders
+    : This car has 8 cylinders
+
+* Week 9: More about classes (Oct 21, 23)
+
+- [ ] Constructors and destructors
+- [ ] Constructor and operator overloading
+- [ ] Separation of interface and implementation
+
+** TODO Review: OOP Workflow and Class Template
+
+1. What are the three main steps in the OOP workflow?
+   #+begin_quote
+   1) Write a class
+   2) Create objects (instances)
+   3) Use class methods on class data
+   #+end_quote
+
+2. What is the purpose of the scope resolution operator (~::~) in C++
+   classes?
+   #+begin_quote
+   It connects an external member function definition to its class.
+   #+end_quote
+
+3. Why define member functions outside the class instead of inline?
+   #+begin_quote
+   To separate the interface from the implementation for better
+   organization.
+   #+end_quote
+
+4. How can a member function =double getBalance() const= of the
+   =BankAccount= ~class~ be defined outside of the ~class~ declaration?
+   #+begin_example C++
+   // external member function must be brought into the class scope
+   void BankAccount::getBalance() const {}
+   #+end_example
+
+5. What is the role of a constructor? Example?
+   #+begin_quote
+   It initializes the object’s data members when the object is
+   created.
+   #+end_quote
+
+   Let's play around with constructors to jog your memory:
+   #+begin_src C++ :main no :includes <iostream> :results output
+     // leave out `public` -> function cannot be accessed
+     // add Test(int) -> default constructor changes
+     // forget to change `num` -> `num` stays 5
+     // use `init++` instead of `++init`: old `num` printed
+
+     class Test {
+     private:
+       int num;
+     public:
+       Test(int init) { num=++init; }
+       int getNum() const { return num; }
+     };
+     int main() {
+
+       Test number(5);
+       std::cout << number.getNum();
+       
+       return 0;}
+   #+end_src
+
+   #+RESULTS:
+   : 6
+
+
+** NEXT Coding review! Code a =Rectangle= class!
+
+- [ ] What does such a ~class~ need?
+- [ ] Practice: Splitting up a ~class~ across files
+- [ ] Practice: Building a house
+- [ ] Home assignment: Complete the =Rectangle= class
