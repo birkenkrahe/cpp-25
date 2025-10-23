@@ -8,7 +8,7 @@ using namespace std;
 class Rectangle {
   // private member data
 private:
-  double width; // rectangle width
+  double width; // rectangle widtho
   double length;  // rectangle length
   // public member functions
 public:
