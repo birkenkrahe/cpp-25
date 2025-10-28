@@ -1995,13 +1995,25 @@ available on GitHub in the course's PDF repository.
     : This car has 4 cylinders
     : This car has 8 cylinders
 
-* Week 9: More about classes (Oct 21, 23)
+* DONE Week 9: More about classes (Oct 21, 23)
+#+attr_html: :width 300px :float nil:
+[[../img/separation.png]]
 
+- [X] Separation of interface and implementation
 - [ ] Constructors and destructors
 - [ ] Constructor and operator overloading
-- [ ] Separation of interface and implementation
 
-** TODO Review: OOP Workflow and Class Template
+** Review (heuristic): Say one ~TRUE~ thing about ~class~!
+
+#+begin_quote
+"Everybody! To the tanks! Don't let the Americans steal our fuel!"
+--CoD WWII (2017; which I'm still playing at night)
+#+end_quote
+
+#+attr_html: :width 400px :float nil:
+[[../img/review_oop.png]]
+
+** Review (systematic): OOP Workflow and Class Template
 
 1. What are the three main steps in the OOP workflow?
    #+begin_quote
@@ -2053,17 +2065,214 @@ available on GitHub in the course's PDF repository.
 
        Test number(5);
        std::cout << number.getNum();
-       
+
        return 0;}
    #+end_src
 
    #+RESULTS:
    : 6
 
+** Extended review
 
-** NEXT Coding review! Code a =Rectangle= class!
+1. The =Rectangle= class has data =width= and =length= but not =area=. Why?
+   #+begin_quote
+   Since =area= is a function of =width= and =length=, any changes in these
+   variables would also affect =area=, and the =area= of the object would
+   quickly be wrong whenever a dimension changes.
+   #+end_quote
 
-- [ ] What does such a ~class~ need?
-- [ ] Practice: Splitting up a ~class~ across files
-- [ ] Practice: Building a house
-- [ ] Home assignment: Complete the =Rectangle= class
+2. How can you get the =area= if you don't store it as member data?
+   #+begin_quote
+   You compute =area= dynamically in a member function =getArea()=, which
+   could look like this:
+   #+end_quote
+   #+begin_example C++
+   // compute rectangle area from length and width
+   double getArea() const {width * length;}
+   #+end_example
+
+3. Is a default constructor always provided without declaration?
+   #+begin_quote
+   Yes.
+   #+end_quote
+
+4. What are the data member values if no constructor is provided?
+   #+begin_quote
+   The data member values are not defined until they are initialized
+   either with a setter function, or with a constructor.
+   #+end_quote
+
+5. Could you show this?
+   #+begin_src C++ :includes :main no :results output
+     #include <iostream>
+
+     class Number {
+     private:
+       int num;
+     public:
+       int getNum() const { return num; }
+       void setNum(int n) { num = n; }
+     };
+
+     int main() {
+       Number n; // create a Number
+       std::cout << n.getNum() << std::endl; // get Number value
+       n.setNum(100); // set Number value
+       std::cout << n.getNum(); // get Number value
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS:
+   : 30425
+   : 100
+
+6. Why do we need one setter/accessor function per data member? Why
+   not just define a member function =getData= and ~return~ all member
+   data with one function?
+   #+begin_quote
+   You can only ~return~ a *single value* (or object) at a time. To ~return~
+   multiple member values you need to define a composite type.
+   #+end_quote
+
+   #+begin_src C++ :main no :includes <iostream> :results output :noweb yes :namespaces std
+     struct RectangleData {
+       double width;
+       double length;
+     };
+
+     class Rectangle {
+     private:
+       double width;
+       double length;
+     public:
+       // constructor
+       Rectangle(double w, double l)
+         : width(w), length(l) {}
+
+       // getter function for all data
+       RectangleData getData() const {
+         RectangleData data; // data are encapsulated in struct
+         data.width = width;
+         data.length = length;
+         return data;
+       }
+     };
+
+     int main()
+     {
+       Rectangle ra(4.0, 5.0);
+       RectangleData d=ra.getData(); // Rectangle data are still private
+       cout << "Width: " << d.width << "\nLength: " << d.length << endl;
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS:
+   : Width: 4
+   : Length: 5
+
+7. Can you explain this code fragment? Could you rewrite it without
+   using ~&~ and ~*~?
+   #+begin_example C++
+   Player& fire(int rounds) {
+     ammo -= rounds;            // ammo is private Player data
+     if (ammo < 0) ammo = 0;
+     return *this;
+   }
+   #+end_example
+
+   #+begin_quote
+   1) It looks like a member function for a =Player= class
+   2) =Player&= returns a reference to the same =Player= object
+   3) =rounds= are subtracted from =ammo=
+   4) If =ammo= goes below zero, it is reset to zero
+   5) ~return *this~ returns the current object (by reference) allowing
+      chained calls like: =p.fire(10).reload(5).move(1,0)= where each
+      method works on "this" same object =p= without creating a copy.
+   #+end_quote
+
+8. What does this image show?
+   #+attr_html: :width 400px :float nil:
+   [[../img/multiple_files2.png]]
+
+   #+begin_quote
+   1. Source code for a ~class~
+   2. Source code files
+   3. Compiler chain
+   4. Building the executable with ~make~
+   #+end_quote
+
+9. Can you explain what the picture shows?
+   #+begin_quote
+   The program shows a design phase (1) where code is split into a
+   class declaration (interface), member function definitions
+   (implementation), and main test program. The compiler chain means
+   that each file is preprocessed (headers, macros), compiled (turned
+   into object code) and linked into an executable. The make tool uses
+   a Makefile (a configuration file) to manage this process, producing
+   the final executable automatically.
+   #+end_quote
+
+10. The compiler will not ~#include~ duplicate definitions in .h header
+    files. How can you stop it from doing that?
+    #+begin_quote
+    With ~#ifndef~ guardrails that test if a ~#define~ flag is set or
+    not - if it is ~TRUE~ then the header file was already included.
+    #+end_quote
+
+** Coding review! Code a =Rectangle= class!
+
+- [X] What does such a ~class~ need?
+- [X] Practice: Splitting up a ~class~ across files
+- [X] Practice: Building a house
+
+
+* Week 10: Constructors/Destructors/Overloading (Oct 26, 28)
+#+attr_html: :width 300px :float nil:
+[[../img/overloading.png]]
+
+- [ ] Review: Pointers to objects
+- [ ] Constructors and destructors
+- [ ] Constructor and operator overloading
+
+** Review: Interface vs. Implementation & Pointers to objects
+
+1. Could you explain what each of these lines does?
+   #+begin_example sh
+    cd ../src                                    #1
+    g++ -c Rectangle.cpp -o Rectangle.o          #2
+    g++ RectangleTest.cpp Rectangle.o -o rect    #3
+    ./rect                                       #4
+   #+end_example
+   #+begin_quote
+
+   #+end_quote
+
+2. Why must you call ~delete~ after using ~new~ on a class object?
+   #+begin_quote
+   To free the dynamically allocated memory and avoid memory leaks.
+   #+end_quote
+
+3. What does =Rectangle *rectPtr = nullptr;= do?
+   #+begin_quote
+   Declares a pointer to a Rectangle object and initializes it safely.
+   #+end_quote
+
+4. What operator is used to access =Rectangle= class members objects?
+   #+begin_quote
+   The dot operator (~.~), e.g. =rect.getWidth();= to get the =width=.
+   #+end_quote
+
+5. How do you call a member function =setWidth(5)= using a pointer
+   instead of the object?
+   #+begin_quote
+   Replace the dot (~.~) with the arrow (~->~), e.g. =rectPtr->getWidth();=
+   to get the =width=, if =Rectangle *rectPtr; =rectPtr = new Rectangle;=
+   #+end_quote
+
+6. What is the main advantage of dynamically allocating class objects?
+   #+begin_quote
+   Objects can be created and sized at *run time* instead of *compile
+   time*.
+   #+end_quote
