@@ -2228,17 +2228,18 @@ available on GitHub in the course's PDF repository.
 - [X] Practice: Building a house
 
 
-* Week 10: Constructors/Destructors/Overloading (Oct 26, 28)
+* Week 10: Constructors, Destructors, STL (Oct 26, 28)
 #+attr_html: :width 300px :float nil:
-[[../img/overloading.png]]
+[[../img/stl.png]]
 
-- [ ] Review: Pointers to objects
-- [ ] Constructors and destructors
-- [ ] Constructor and operator overloading
+- [X] Review: Pointers to objects
+- [X] Constructors and destructors
+- [X] Overview of the Standard Template Library (STL)
+- [ ] Vectors in the STL (digging deeper than before)
 
-** Review: Interface vs. Implementation & Pointers to objects
+** DONE Review: Interface vs. Implementation & Pointers to objects
 
-1. Could you explain what each of these lines does?
+1. Could you explain what each of these lines do? And where is this?
    #+begin_example sh
     cd ../src                                    #1
     g++ -c Rectangle.cpp -o Rectangle.o          #2
@@ -2246,12 +2247,38 @@ available on GitHub in the course's PDF repository.
     ./rect                                       #4
    #+end_example
    #+begin_quote
+   On the command-line (aka 'shell', 'terminal'):
+   1) change directory to =../src= (one up, one down)
+   2) compiles =Rectangle.cpp= and generates an object file for linking.
+   3) compile =RectangleTest.cpp= (with ~main~), link it to the ~class~
+      definitions in ~Rectangle.o~, and create an executable ~rect~
+   4) Run the executable in the current directory (~.~)
 
+   ~g++~ is an alternative name for GCC (~gcc~)
    #+end_quote
+
+   #+begin_src bash :results output
+     g++ --version
+     gcc --version
+   #+end_src
+
+   #+RESULTS:
+   #+begin_example
+   g++ (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0
+   Copyright (C) 2021 Free Software Foundation, Inc.
+   This is free software; see the source for copying conditions.  There is NO
+   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+   gcc (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0
+   Copyright (C) 2021 Free Software Foundation, Inc.
+   This is free software; see the source for copying conditions.  There is NO
+   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+   #+end_example
 
 2. Why must you call ~delete~ after using ~new~ on a class object?
    #+begin_quote
-   To free the dynamically allocated memory and avoid memory leaks.
+n   To free the dynamically allocated memory and avoid memory leaks.
    #+end_quote
 
 3. What does =Rectangle *rectPtr = nullptr;= do?
@@ -2261,7 +2288,8 @@ available on GitHub in the course's PDF repository.
 
 4. What operator is used to access =Rectangle= class members objects?
    #+begin_quote
-   The dot operator (~.~), e.g. =rect.getWidth();= to get the =width=.
+   The dot operator (~.~), e.g. =rect.getWidth();= to get the =width= if
+   the object is =Rectangle rect;=
    #+end_quote
 
 5. How do you call a member function =setWidth(5)= using a pointer
@@ -2276,3 +2304,189 @@ available on GitHub in the course's PDF repository.
    Objects can be created and sized at *run time* instead of *compile
    time*.
    #+end_quote
+
+** TODO Review: C++ STL
+
+1. What is the Standard Template Library (STL)?
+   #+begin_quote
+   A collection of templates for data structures and algorithms in
+   C++.
+   #+end_quote
+
+2. What are the three main components of the STL?
+   #+begin_quote
+   Containers, Iterators, and Algorithms.
+   #+end_quote
+
+3. What are *containers* in the STL?
+   #+begin_quote
+   Template classes that store and organize data objects.
+   #+end_quote
+
+   Example: STL's vector class
+   #+begin_src C++ :main no :includes :results none
+     #include <vector>
+     int main() {
+       std::vector<int> v {1,2,3}; // use STL's vector class
+       return 0;
+     }
+   #+end_src
+
+4. What is the main difference between *sequence* and *associative* containers?
+   #+begin_quote
+   Sequence containers store data sequentially; associative containers
+   store data by key for faster lookup.
+   #+end_quote
+
+   Example: a vector vs. a map
+   #+begin_src C++ :main no :includes :results none
+     #include <map>
+     #include <string>
+     int main() {
+       std::map<std::string,int> m {{"A",1}}; // use STL's map class
+       return 0;
+     }
+   #+end_src
+
+5. Why is *string* not listed as a sequence container?
+   #+begin_quote
+   It’s a specialized sequence class for characters with its own
+   header ~<string>~.
+   #+end_quote
+
+   #+begin_src C++ :main no :includes <iostream> :results output
+     #include <string>
+     int main() {
+       std::string name = "Jim Jones";
+       std::cout << name;
+       return 0;
+     }
+   #+end_src
+
+6. What is a *container adapter*?
+   #+begin_quote
+   A class that adapts another container for a specific purpose (e.g.,
+   ~stack~, ~queue~).
+   #+end_quote
+
+   #+begin_src C++ :main no :includes <iostream> :results output
+     #include <queue>
+     #include <string>
+
+     int main() {
+       std::priority_queue<int> pq; // uses vector<int> underneath
+       pq.push(30);
+       pq.push(10);
+       pq.push(50);
+       std::cout << pq.top(); // prints last element pushed (LIFO)
+       return 0;
+     }
+   #+end_src
+
+7. What do *iterators* do in STL?
+   #+begin_quote
+   They act like pointers to access elements in a container (they are
+   not necessarily raw memory pointers but objects defined by STL
+   classes that abstract access to container elements).
+   #+end_quote
+
+   #+begin_src C++ :main no :includes <iostream> :results output
+     #include <vector>
+
+     int main() {
+       std::vector<int> v {10,20};
+       for (auto it=v.begin(); it!=v.end();it++)
+         std::cout << *it << " ";
+       return 0;
+     }
+   #+end_src
+
+   #+begin_src C++ :main no :includes <iostream> :results output
+     #include <vector>
+
+     int main() {
+       std::vector<int> v {10,20};
+       std::vector<int>::iterator it;
+       for (it=v.begin(); it!=v.end();it++)
+         std::cout << *it << " ";
+       return 0;
+     }
+   #+end_src
+
+8. Why are iterators important?
+   #+begin_quote
+   They allow uniform traversal of any container without using
+   indices.
+   #+end_quote
+
+   #+begin_src C++ :main no :includes <iostream> :results output
+     #include <list>
+
+     int main() {
+       std::list<int> lst {1,2,3};
+       std::list<int>::iterator it = lst.begin();
+       std::cout << *lst.begin();
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS:
+   : 1
+
+9. What determines the type of iterator a container provides?
+   #+begin_quote
+   The type of iterator a container provides depends on how the
+   container stores its elements in memory:
+   - Containers with *contiguous* storage like ~vector~ provide
+     random-access iterators (forward, backward, jump).
+   - Containers with *linked* storage like ~list~ provide bidirectional
+     iterators - you can move forward or backward, but not jump.
+   #+end_quote
+
+   #+begin_src C++ :main no :includes <iostream> :results output
+     #include <vector>
+     #include <list>
+
+     int main() {
+
+       std::vector<int> v {10,20,30}; // integer vector
+       std::list<int> l {40,50,60}; // integer list
+
+       auto it_v = v.begin(); // point at first vector element
+       auto it_l = l.begin(); // point at first list element
+
+       std::cout << *(it_v + 2) << std::endl; // jump to element 3
+
+       it_l++; // move forward in list
+       std::cout << *it_l; // print list element pointed at
+       //std::cout << *(it_l + 2); // illegal for lists
+       return 0;
+     }
+   #+end_src
+
+   #+RESULTS:
+
+10. What is the role of *algorithms* in STL?
+    #+begin_quote
+    They are function templates that operate on container elements via
+    iterators (e.g., ~std::sort~). You must include ~<algorithm>~.
+    #+end_quote
+
+    #+begin_src C++ :main no :includes <iostream> :results output
+      #include <vector>
+      #include <algorithm>
+
+      int main() {
+
+        std::vector<int> v {3, 1, 4, 2}; // integer vector
+        sort(v.begin(), v.end()); // sort vector in place
+        
+        for (auto it=v.begin(); it!=v.end();it++) // iterate
+          std::cout << *it; // print vector elements
+        
+        return 0;
+      }
+    #+end_src
+
+    #+RESULTS:
+    : 1234
