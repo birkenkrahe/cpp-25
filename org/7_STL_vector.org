@@ -1,0 +1,1269 @@
+#+TITLE: The STL Vector Class
+#+AUTHOR: Marcus Birkenkrahe
+#+SUBTITLE: CSC 240 Data Structures Fall 2025
+#+OPTIONS: toc:1 num:1 ^:nil:
+#+STARTUP: overview hideblocks indent entitiespretty:
+* Objectives
+
+The ~vector~ is an example of a *linked list* data structure.
+
+- [ ] Overview of ~vector~
+- [ ] ~vector~ constructors
+- [ ] ~vector~ member functions
+- [ ] Minimal ~vector~ API for Data Structures
+- [ ] Review of basic ~vector~ operations
+- [ ] Using an iterator with ~vector~
+- [ ] Inserting new elements into a ~vector~
+- [ ] Storing ~class~ objects in a ~vector~
+- [ ] Storage allocation functions
+
+* Overview
+
+- What is a ~vector~?
+  #+begin_quote
+  A ~vector~ is a sequential container of elements of the same data
+  type: Integers, doubles, characters, strings, classes, etc.
+  #+end_quote
+
+- Why use ~vector~ instead of arrays?
+  #+begin_quote
+  1. You don't have to declare the size of a ~vector~ when you define
+     it.
+  2. You can add elements to, or delete from it at runtime, and the
+     ~vector~ automatically adjusts its size.
+  3. A ~vector~ can report the number of elements it contains.
+  #+end_quote
+
+- What do you have to do to use ~vector~?
+  #+begin_quote
+  To use ~vector~ you have to ~#include <vector>~ and if you want to avoid
+  having to write ~std::vector~, you need to add: ~using namespace std;~
+  #+end_quote
+
+* Vector constructors
+
+- *Tip:* Check ~std::vector~ [[https://en.cppreference.com/w/cpp/container/vector.html][at cppreference.com]] before and after this
+  section to see if your understanding changed!
+
+- ~vector~ has five constructors, that is five different ways of
+  creating containers. We illustrate these with working code.
+
+  1. *Default constructor:* creates an empty ~vector~
+     #+begin_src C++ :main yes :includes <iostream> <vector> :namespaces std :results output :exports both :noweb yes
+       vector<string> names; // an empty vector of string objects
+       names.push_back("Jim");
+       names.push_back("Jane");
+       names.push_back("Joe");
+       for (auto name : names)
+         cout << name;   // name is NOT an iterator - it is a copy of each vector element
+       // behind the loop an iterator std::vector<std::string>::iterator is used!
+       // names.begin() to names.end()
+     #+end_src
+
+     #+RESULTS:
+     : JimJaneJoe
+
+  2. *Fill constructor:* creates a ~vector~ of length ~size~
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+       vector<bool> values (3, 0); // a vector of three booleans (false)
+       for (auto elem : values) cout << boolalpha << elem << " ";
+     #+end_src
+
+     #+RESULTS:
+     : 1 100 200 300 2 3
+
+  3. *Range constructor:* creates a ~vector~ of a range of values
+     specified by two iterators.
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+       vector<int> vec {1,2,3,4,5,6,7,8};
+       auto it1 = vec.begin() + 2; // 3
+       auto it2 = vec.end() - 2;   // 7
+       cout << *it1 << " " << *it2 << endl;
+
+       vector<int> vec2(it1,it2);  // sub-range from it1 (3) to it2 (7)
+       for (auto elem : vec2) cout << elem << " ";
+     #+end_src
+
+     #+RESULTS:
+     : 3 7
+     : 3 4 5 6
+
+  4. *Copy constructor*: creates a ~vector~ by copying another ~vector~
+     #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+       vector<string> names = {"Jimmy", "Johnny", "Jenny"};
+       vector<string> names2(names);  // copy of names vector
+       for (auto elem : names2) cout << elem << " ";
+     #+end_src
+
+     #+RESULTS:
+     : Jimmy Johnny Jenny
+
+* List of ~vector~ member functions
+
+There are 40 (!) member functions in C++20 (including the constructors
+and overloaded operators). We order member functions by category:
+
+1. Construction and assignment
+2. Element access
+3. Iterator support
+4. Capacity operations
+5. Modifiers
+6. Allocator
+7. Comparisons
+
+This *function overload* is intential: STL containers are designed for
+performance, generality, and type safety, favoring completeness over
+simplicity. C takes the opposite view: Simple over safe and complete.
+
+1. *Construction & Assignment*
+
+   | Function                    | Description                                 |
+   |-----------------------------+---------------------------------------------|
+   | constructor                 | Creates vector                              |
+   |                             | (default, copy, move, range, init)          |
+   | operator=                   | Assigns contents                            |
+   | assign(size, value)         | Replaces contents from range or count+value |
+   | assign(iterator1, iterator2 |                                             |
+
+2. *Element Access*
+
+   | Function   | Description                                          |
+   |------------+------------------------------------------------------|
+   | at(index)  | Returns reference to element with bounds checking    |
+   | operator[] | Returns reference to element without bounds checking |
+   | front()    | Returns reference to first element                   |
+   | back()     | Returns reference to last element                    |
+   | data()     | Returns pointer to first element in container        |
+
+3. *Iterators*[fn:1]
+
+   | Function  | Description                         |
+   |-----------+-------------------------------------|
+   | begin()   | Iterator to first element           |
+   | end()     | Iterator past last element          |
+   | cbegin()  | Const iterator to first element     |
+   | cend()    | Const iterator past last element    |
+   | rbegin()  | Reverse iterator to last element    |
+   | rend()    | Reverse iterator before first       |
+   | crbegin() | Const reverse iterator to last      |
+   | crend()   | Const reverse iterator before first |
+
+4. *Capacity*
+
+   | Function         | Description                                      |
+   |------------------+--------------------------------------------------|
+   | empty()          | Returns true if container is empty               |
+   | size()           | Returns number of elements                       |
+   | max_size()       | Max number of elements (theoretically) possible  |
+   | capacity()       | Returns number of elements that underlying array |
+   |                  | can hold, without reallocating the array[fn:2]   |
+   | resize(n)        | Changes number of elements to n                  |
+   | resize(n, value) | Changes number of elements to n - if size() < n  |
+   |                  | then the new elements are initialized with value |
+   | reserve(n)       | Increases capacity to n (preallocation)          |
+   | shrink_to_fit()  | Requests to reduce capacity() to be equal size() |
+
+5. *Modifiers*
+
+   | Function             | Description                                |
+   |----------------------+--------------------------------------------|
+   | clear()              | Erases all elements                        |
+   | insert(it, n, value) | Inserts n new elements at position it      |
+   |                      | with that (single) value                   |
+   | emplace(it, value)   | Constructs element in-place at position it |
+   |                      | (new element inserted before position it)  |
+   | erase(it)            | Removes element at position it and returns |
+   |                      | iterator pointing to the next element      |
+   | push_back(value)     | Adds element to end                        |
+   | emplace_back(value)  | Constructs element at end                  |
+   | pop_back()           | Removes last element                       |
+   | swap(second)         | Swaps content of calling vector and of the |
+   |                      | second object (same data type)             |
+
+6. *Allocator*
+
+   | Function        | Description                                  |
+   |-----------------+----------------------------------------------|
+   | get_allocator() | Returns allocator (custom memory management) |
+
+7. *Comparisons* (C++20)
+
+   | Function    | Description                                     |
+   |-------------+-------------------------------------------------|
+   | operator==  | Equality comparison                             |
+   | operator<=> | Three-way comparison (spaceship operator)[fn:3] |
+
+* Minimal ~vector~ API for Data Structures
+
+Fortunately, you don't need to memorize 40 functions - only these 10
+are really critical for competently using ~vector~ containers:
+
+|    | Category     | Function       | Purpose              |
+|----+--------------+----------------+----------------------|
+|  1 | Access       | operator[]     | Random access        |
+|  2 | Capacity     | size()         | Track current size   |
+|  3 | Capacity     | reserve()      | Preallocate storage  |
+|  4 | Capacity     | capacity()     | Know current storage |
+|  5 | Modification | push_back()    | Add element to end   |
+|  6 | Modification | pop_back()     | Remove last element  |
+|  7 | Modification | insert()       | Insert at position   |
+|  8 | Modification | erase()        | Remove at position   |
+|  9 | Modification | clear()        | Remove all elements  |
+| 10 | Iteration    | begin(), end() | Traverse elements    |
+
+* PRACTICE Review of basic ~vector~ operations
+
+- Read and understand the following program, run it, and then comment
+  each section.
+  #+NAME: onecompiler.com/cpp/43rapc2rb
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>    // ...
+    using namespace std; // ...
+
+    int main()
+    {
+      // ...
+      const int SIZE = 10;
+
+      // ...
+      vector<int> numbers(SIZE);
+
+      // ...
+      for (int index = 0; index < numbers.size(); index++)
+        numbers[index] = index;
+
+      // ...
+      for (auto element : numbers)
+        cout << element << " ";
+      cout << endl;
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 0 1 2 3 4 5 6 7 8 9
+
+- Solution:
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>    // Include vector class header file
+    using namespace std; // Use runtime STL std::
+
+    int main()
+    {
+      // Define an integer constant.
+      const int SIZE = 10;
+
+      // Define a vector to hold 10 integer values.
+      vector<int> numbers(SIZE);
+
+      // Store the values 0 through 9 in the vector.
+      for (int index = 0; index < numbers.size(); index++)
+        numbers[index] = index;
+
+      // Display the vector elements using a range-based loop.
+      for (auto element : numbers)
+        cout << element << " ";
+      cout << endl;
+
+      return 0;
+    }
+  #+end_src
+
+* PRACTICE Find the error and correct the code
+
+1) What's the error? Can you fix it?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<int> numbers;
+     numbers[0]=99;
+   #+end_src
+
+   #+RESULTS:
+   : 1
+
+   Solution:
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<int> numbers = {0};
+     numbers[0]=99;  // vector must be non-empty
+   #+end_src
+
+2) What's the error? Can you fix it?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<int> numbers;
+     push_back(10);
+   #+end_src
+
+   #+RESULTS:
+
+   Solution:
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<int> numbers;
+     numbers.push_back(10); // push_back declared in numbers scope
+   #+end_src
+
+3) What's the error? Can you fix it?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<bool> numbers;
+     numbers.push_back(true);
+     numbers.pop_back(false);
+   #+end_src
+
+   #+RESULTS:
+
+   Solution:
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<bool> truth;
+     truth.push_back(true); // add `true` at end of truth (truth[0])
+     truth.pop_back();      // pop_back() has no arguments
+   #+end_src
+
+   #+RESULTS:
+
+4) What's the error? Can you fix it?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<string> names = {"Jimmy Dean", "Johnny Cash", "Jack Black"};
+     cout << names.at(3) << endl;
+   #+end_src
+
+   #+RESULTS:
+
+   Solution:
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<string> names = {"Jimmy Dean", "Johnny Cash", "Jack Black"};
+     cout << names.at(2) << endl; // at(3) throws an out_of_range exception
+   #+end_src
+
+   #+RESULTS:
+   : Jack Black
+
+5) What's the error? Can you fix it?
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<string> names = {"Jimmy Dean", "Johnny Cash", "Jack Black"};
+     vector<string> names2;
+     names2[0] = names[0];
+     names2[1] = names[1];
+     names2[2] = names[2];
+   #+end_src
+
+   #+RESULTS:
+
+   Solution:
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     vector<string> names = {"Jimmy Dean", "Johnny Cash", "Jack Black"};
+     vector<string> names2;
+     // names2[0] = names[0]; // cannot assign to names2 before it exists
+     names2 = names;  // overloaded assignment operator= for vector
+     for (auto element : names2)
+       cout << element << " ";
+   #+end_src
+
+   #+RESULTS:
+   : Jimmy Dean Johnny Cash Jack Black
+
+* Using an iterator with ~vector~
+
+- The ~vector~ class supports the use of these iterators:
+  1) ~iterator~ (forward iterator)
+  2) ~const_iterator~ (constant iterator)
+  3) ~reverse_iterator~ (backward iterator)
+  4) ~const_reverse_iterator~ (constant backward iterator)
+
+- Compare the member support functions for getting iterators: ~begin()~,
+  ~end()~, ~cbegin()~, ~cend()~, ~rbegin()~, ~rend()~, ~crbegin()~, ~crend()~.
+
+- You can simplify the definition of an iterator with ~auto~. In the
+  following code block loop 1 and loop 2 are equivalent:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<int> num {1,1,1,1,1};
+
+    // loop 1
+    vector<int>::iterator it;
+    for (it = num.begin(); it != num.end(); it++) {cout<<*it;}
+
+    cout << endl;
+    // loop 2
+    for (auto it = num.begin(); it != num.end(); it++) {cout<<*it;}
+  #+end_src
+
+  #+RESULTS:
+  : 11111
+  : 11111
+
+- Where does =it= point? How many times does the loop run?
+  #+begin_quote
+  Since =num= is empty, =num.begin()= equals =num.end()= and the loop never
+  runs. =it= does not point to any valid element. No memory is reserved
+  for =num= until elements are inserted or ~reserve(n)~ is called.
+  #+end_quote
+
+* PRACTICE Simplify an iterator
+
+- Create a ~vector~ that holds these =names=: Joe, Jim, Jack, Jane.
+
+- Define a forward iterator =it= using the ~iterator~ keyword.
+
+- Use =it= to display each element in the vector.
+
+- When the program works, use another iterator =it2= using the ~auto~
+  keyword to display the elements again without explicitly defining
+  the iterator, but in reverse order, using ~rbegin()~ and ~rend()~!
+
+- Hint: ~rbegin()~ begins at the reverse beginning (the end) of the
+  ~vector~, and ~rend()~ ends at its reverse end (the beginning). 
+
+- Sample output:
+  #+begin_example
+  #+RESULTS:
+  : Joe Jim Jack Jane
+  : Jane Jack Jim Joe
+  #+end_example
+
+- Solution:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<string> names = {"Joe", "Jim", "Jack", "Jane"};
+
+    vector<string>::iterator it;
+
+    for(it = names.begin(); it != names.end(); it++)
+      cout << *it << " ";
+
+    cout << endl;
+
+    for(auto it2 = names.rbegin(); it2 != names.rend(); it2++)
+      cout << *it2 << " ";
+  #+end_src
+
+  #+RESULTS:
+  : Joe Jim Jack Jane
+  : Jane Jack Jim Joe
+
+* Inserting new elements into a ~vector~
+
+- To insert one ore more new elements at a specified position in a
+  ~vector~, use ~insert~. The full definition is complicated (see
+  [[https://en.cppreference.com/w/cpp/container/vector/insert][cppreference.com]])!
+
+- There are multiple overloads (alternative uses) but these three are
+  most common:
+
+  1. Insert a single =value= of type =T= at the specified position:
+     #+begin_example C++
+     iterator insert(iterator pos, const T& value);
+     #+end_example
+
+  2. Insert =count= copies of a =value=:
+     #+begin_example C++
+     iterator insert(iterator pos, size_type count, const T& value);
+     #+end_example
+
+  3. Insert a range of values:
+     #+begin_example C++
+     iterator insert(iterator pos, iterator pos1, iterator pos2);
+     #+end_example
+
+- The ~iterator~ is like a bookmark inside the vector. Insertion happens
+  before the iterator position.
+
+- Example: Inserting a single value in a numeric ~vector~
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<int> v{1,2,3,4,5};
+    for (auto element : v) cout << element << " "; cout << endl; // print vector
+    auto it = v.begin() + 2; // points to element 4
+    v.insert(it, 3);         // insert 3 before 4
+    for (auto element : v) cout << element << " ";
+  #+end_src
+
+  #+RESULTS:
+  : 1 2 3 4 5
+  : 1 2 3 3 4 5
+
+- The function returns an iterator to the newly inserted element:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<int> v {1,2,3,4,5};
+    auto inserted = v.insert(v.begin(), 99);
+    cout << *inserted << endl;
+  #+end_src
+
+  #+RESULTS:
+  : 99
+
+- Example: Insert multiple copies
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<int> v {1,2,5};
+    v.insert(v.begin() + 2, 2, 3); // insert two 3s before 5
+    for (auto element : v) cout << element << " ";
+  #+end_src
+
+  #+RESULTS:
+  : 1 2 3 3 5
+
+- Example: Insert a range of values:
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<int> a{10,20};
+    vector<int> b{1,2,3};
+    a.insert(a.begin() + 1, b.begin(), b.end()); // insert b before 20
+    for (auto element : a) cout << element << " ";
+  #+end_src
+
+  #+RESULTS:
+  : 10 1 2 3 20
+
+- Does ~insert~ modify a vector in-place or does it create a copy?
+  #+begin_quote
+  - The vector is modified in-place (you're not getting a new copy)
+    but memory management does take place:
+  - If the vector does not have enough ~capacity~, a new, larger array
+    is allocated, all elements are moved to the new memory, the old
+    array is deleted, and all iterators, pointers, references become
+    invalid.
+  #+end_quote
+
+- *Challenge:* What's the final vector in the following example? Guess
+  the result before trying this yourself!
+
+  #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+    vector<char> letters {'A', 'C', 'D'};
+    letters.insert(letters.begin() + 1, 'B');
+    letters.insert(letters.end(), {'E','F','G'});
+
+    for (char letter : letters) cout << letter << " ";
+  #+end_src
+
+  #+RESULTS:
+  : A B C D E F G
+
+* PRACTICE Insert a single value in a ~vector~
+
+- Use the starter code below to
+  1. Define an integer vector =numbers= with the numbers 1, 2, 3, 4, 5.
+  2. Define an iterator =it= pointing to the second element of =numbers=.
+  3. Insert a new element with the value =99=.
+  4. Display the vector elements.
+
+- Sample output:
+  #+begin_example
+  1 99 2 3 4 5
+  #+end_example
+
+- Starter code: https://tinyurl.com/insert-value
+  #+name: onecompiler.com/cpp/43rasgwxh
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define a vector `numbers` with 5 integer values 1,2,3,4,5.
+
+      // Define an iterator `it` pointing to the second element.
+
+      // Insert a new element with the value 99
+
+      // Display the vector elements.
+
+      return 0;
+    }
+  #+end_src
+
+- Starter code: https://tinyurl.com/insert-range
+  #+name: onecompiler.com/cpp/43rasqwy9
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define a vector `numbers` with 5 integer values 1,2,3,4,5.
+      vector<int> numbers = {1,2,3,4,5};
+      // Define an iterator `it` pointing to the second element.
+      auto it = numbers.begin() + 1;
+      // Insert a new element with the value 99
+      numbers.insert(it,99);
+      // Display the vector elements.
+      for (int num : numbers) cout << num << " ";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS: onecompiler.com/cpp/43rasqwy9
+  : 1 99 2 3 4 5
+
+- Modify the program to insert =4= numbers =99= before the 3rd element of
+  the original vector. Sample output: =1 2 99 99 99 99 3 4 5=.
+
+- Solution:
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define a vector `numbers` with 5 integer values 1,2,3,4,5.
+      vector<int> numbers = {1,2,3,4,5};
+      // Define an iterator `it` pointing to the second element.
+      auto it = numbers.begin() + 2;
+      // Insert a new element with the value 99
+      numbers.insert(it,4,99);
+      // Display the vector elements.
+      for (int num : numbers) cout << num << " ";
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : 1 2 99 99 99 99 3 4 5
+
+* PRACTICE Insert a range of elements into a ~vector~
+
+- Use the starter code below to
+  1. Define *two* integer vectors =v1= and =v2= with the elements {1,2,3}
+     and the elements {100,200,300,400,500}, respectively.
+  2. Define *three* iterators =it1=, =it2=, and =it3=:
+     - =it1= points at 2 in =v1=
+     - =it2= points at 100 in =v2=
+     - =it3= points at 400 in =v2=.
+  3. Insert the range of elements between =it2= and =it3= into =v1=
+  4. Display the elements of =v1=
+
+- Sample output:
+  #+begin_example
+  1 100 200 300 2 3
+  #+end_example
+
+- Starter code: https://tinyurl.com/insert-range
+  #+name: onecompiler.com/cpp/43rc26q2r
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define two vectors v1, v2.
+
+      // Define three iterators it1, it2, it3.
+
+      // Insert a range of elements into v1.
+
+      // Display the elements of v1.
+
+      return 0;
+    }
+  #+end_src
+
+- Solution:
+  #+name: onecompiler.com/cpp/43rbytstm
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+
+    int main()
+    {
+      // Define two vectors v1, v2.
+      vector<int> v1{1,2,3};
+      vector<int> v2{100,200,300,400,500};
+
+      // Define three iterators it1, it2, it3.
+      auto it1 = v1.begin() + 1;
+      auto it2 = v2.begin();
+      auto it3 = v2.begin() + 3;
+
+      // Insert a range of elements into v1.
+      v1.insert(it1, it2, it3);
+
+      // Display the elements of v1.
+      for (auto num : v1) cout << num << " ";
+
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS: onecompiler.com/cpp/43rbytstm
+  : 1 100 200 300 2 3
+
+- Visualization:
+  #+attr_html: :width 400px :float nil:
+  [[../img/fig_17_3.png]]
+
+* Storing ~class~ objects in a ~vector~
+
+- Remember that a ~class~ is a user-defined data structure. It can be
+  used like a type when defining a ~vector~.
+
+- The file =Product.h= contains the definition of the =Product=
+  ~class~. Below, we will define and initialize a ~vector~ to hold =Product=
+  objects.
+
+- =Product.h=: Products have a ~private~ =name= and =units=. You can set both
+  of these with =setName= and =setUnits=, and you can get their values
+  with =getName= and =getUnits=.
+
+  #+name: PRODUCT_H
+  #+begin_src C++ :tangle ../src/Product.h :main no :includes :results output :exports both
+    #ifndef PRODUCT_H
+    #define PRODUCT_H
+    #include <string>
+    using namespace std;
+
+    class Product
+    {
+    private:
+      string name;
+      int units;
+    public:
+      Product(string n, int u) { name = n; units = u;}
+      void setName(string n) { name = n; }
+      void setUnits(int u) { units = u; }
+      string getName() const { return name; }
+      int getUnits() const { return units; }
+    };
+    #endif
+  #+end_src
+
+- Next, we ~#include~ the =Product.h= file in the ~main~ program, create a
+  few =Product= objects, store them in a ~vector~, and print their
+  data. The file is called =Products.cpp=.
+
+  #+name: PRODUCT_CPP
+  #+begin_src C++ :tangle Products.cpp :flags -I ../src :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    #include "Product.h"
+    using namespace std;
+
+    int main()
+    {
+      // Create a vector of Product objects.
+      vector<Product> products =
+        {
+          Product("T-Shirt", 20),
+          Product("Calendar", 25),
+          Product("Coffee Mug", 30)
+        };
+
+      // Display the vector elements.
+      for (auto product : products)
+        {
+          cout << "Product: " << product.getName()   << endl
+               << "Units:   " << product.getUnits() << endl;
+        }
+      return 0;
+    }
+  #+end_src
+
+#+RESULTS: PRODUCT_CPP
+: Product: T-Shirt
+: Units:   20
+: Product: Calendar
+: Units:   25
+: Product: Coffee Mug
+: Units:   30
+
+* Displaying vectors with ~class~ objects using an iterator
+
+- Let's create a simple ~Student~ class, create a couple of students
+  with a =name= and an =id=, add them to a ~vector~ of =Student= objects named
+  =roster= and display the contents of that vector using an iterator on
+  =getName()= and =getID()= functions.
+
+- The main thing to remember is that the iterator works like a pointer
+  to the container. So to use a member function like =getName()= on the
+  container, we would call =roster.getName()= but to call it on the
+  iterator =it= that points at =roster=, we would call: =it->getName()=.
+
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <string>
+    #include <vector>
+    using namespace std;
+
+    class Student {
+    private:
+      string name;
+      int id;
+    public:
+      Student(const string& n, const int i) : name(n), id(i) {}
+      string getName() { return name; }
+      int getID() { return id; }
+    };
+
+    int main()
+    {
+      // Create a vector of Student objects.
+      vector<Student> roster = {
+        Student("Alice", 1001),
+        Student("Bob",1002)
+      };
+
+      // Use an iterator to display the vector contents.
+      for (auto it  = roster.begin(); it != roster.end(); it++)
+        {
+          cout << "Student name = " << it->getName() << endl  // (*it).getName
+               << "Student ID =   " << it->getID()   << endl; // (*it).getID
+        }
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS:
+  : Student name = Alice
+  : Student ID =   1001
+  : Student name = Bob
+  : Student ID =   1002
+
+- Review: Why are we using =string& n= in the =Student= constructor
+  instead of =string n=?
+  #+begin_quote
+  Passing =const std::string& n= avoids copying the ~string~ argument.
+  #+end_quote
+
+- Review: Why do we call =it->getName()= instead of =it.getName()=?
+  #+begin_quote
+  The iterator =it = roster.begin();= has no member =getName()= - it's a
+  pointer that points at =roster= (which does have this member
+  function). So both =it->getName()= or =(*it).getName()= are OK.
+  #+end_quote
+* PRACTICE Adding ~class~ objects to an existing ~vector~
+
+- Modify the starter code below as follows:
+  1. Include the necessary header files
+  2. Create three =Product= objects =prod1= (20 T-Shirts), =prod2= (25
+     calendars), =prod3= (30 coffee mugs).
+  3. Create an empty vector =products= to hold the Products.
+  4. Add the products to the vector using ~push_back~.
+  5. Use an iterator to display the vector contents.
+
+- OneCompiler.com only allows single source files. Therefore, the
+  definition of the =Product= class is included in =Main.cpp=.
+
+- Sample output:
+  #+begin_example
+  Product: T-Shirt
+  Units:   20
+  Product: Calendar
+  Units:   25
+  Product: Coffee Mug
+  Units:   30
+  #+end_example
+
+- Starter code: https://tinyurl.com/vector-class-objects
+  #+name: onecompiler.com/cpp/43rcfr45b
+  #+begin_src C++ :main no :includes :results output :exports both
+    // Header files
+
+    using namespace std;
+
+    // Class definition
+    class Product
+    {
+    private:
+      string name;
+      int units;
+    public:
+      Product(const string n, const int u) { name = n; units = u;}
+      string getName() const { return name; }
+      int getUnits() const { return units; }
+    };
+
+    int main()
+    {
+      // Create Product objects.
+
+      // Create an empty vector `products` to hold the Products.
+
+      // Add the products to the vector using `push_back`
+
+      // Use an iterator to display the vector contents.
+
+      return 0;
+    }
+  #+end_src
+
+- Solution:
+
+  #+name: onecompiler.com/cpp/43rchkfts
+  #+begin_src C++ :main no :includes :results output :exports both
+    // Header files
+    #include <iostream>
+    #include <string>
+    #include <vector>
+    using namespace std;
+
+    // Class definition
+    class Product
+    {
+    private:
+      string name;
+      int units;
+    public:
+      Product(const string& n, const int u) { name = n; units = u;}
+      string getName() const { return name; }
+      int getUnits() const { return units; }
+    };
+
+    int main()
+    {
+      // Create Product objects.
+      Product prod1("T-Shirt",20);
+      Product prod2("Calendar",25);
+      Product prod3("Coffee Mug",30);
+
+      // Create an empty vector `products` to hold the Products.
+      vector<Product> products;
+
+      // Add the products to the vector.
+      products.push_back(prod1);
+      products.push_back(prod2);
+      products.push_back(prod3);
+
+      // Use an iterator to display the vector contents.
+      for (auto it=products.begin(); it != products.end(); it++)
+        {
+          cout << "Product: " << it->getName()  << endl
+               << "Units:   " << it->getUnits() << endl;
+        }
+      return 0;
+    }
+  #+end_src
+
+  #+RESULTS: onecompiler.com/cpp/43rchkfts
+  : Product: T-Shirt
+  : Units:   20
+  : Product: Calendar
+  : Units:   25
+  : Product: Coffee Mug
+  : Units:   30
+
+* Inserting elements without first creating objects
+
+- For programs that make a lot of insertions, ~insert~ and ~push_back~ can
+  be inefficient.
+  #+begin_quote
+  With C++, two new functions, ~emplace~ and ~emplace_back~, you do not
+  need to instantiate (create) the object that you're going to
+  insert. Instead, pass any arguments normally passed to the
+  constructor, and the functions handle the rest.
+  #+end_quote
+
+- Code example for ~emplace_back~ using the =Product= class defined earlier.
+  
+  #+begin_src C++ :flags -I ../src :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    #include "Product.h"
+    using namespace std;
+
+    int main()
+    {
+      // Create a vector to hold Products.
+      vector<Product> products;
+
+      // This is where with `push_back` you would have to create Products.
+      // The emplace_back function does that for you now.
+
+      // Add Products to the vector.
+      products.emplace_back("T-Shirts",20);
+      products.emplace_back("Calendar",25);
+      products.emplace_back("Coffee Mug",30);
+
+      // Display vector content.
+      for (const auto& product : products)
+        {
+          cout << "Product: " << product.getName()  << endl
+               << "Units: "   << product.getUnits() << endl;
+        }
+      return 0;
+    }
+  #+end_src
+
+- Is there any advantage from using the range-based ~for~ loop vs. the
+  iterator-controlled ~for~ loop?
+  #+begin_quote
+  - Use the simple range-based loop when you want to read or modify
+    each element directly and you don't need the index or change the
+    container structure (e.g. erase elements).
+  - Use the iterator-controlled loop when you need fine control over
+    iteration (by index) and when you want to change container
+    structure.
+  #+end_quote
+
+- Does it matter if you use ~auto~, ~auto&~ or ~const auto&~ in a container
+  loop?
+  #+begin_quote
+  | Syntax      | Meaning                       | When to Use          |
+  |-------------+-------------------------------+----------------------|
+  | ~auto~        | Copy each element             | Copying is cheap     |
+  | ~auto&~       | Non-const ref to each element | Need to modify       |
+  | ~const auto&~ | Const ref to each element     | Don't need to modify |
+  #+end_quote
+
+- The ~emplace~ member function constructs an object at a specified
+  location in the ~vector~. Its first argument is an iterator, and the
+  new element will be constructed at the position right before the
+  iterator. After the iterator, you pass the list of arguments to be
+  forwarded to the new object's constructor.
+
+- Program example:
+
+  #+begin_src C++ :flags -I ../src :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    #include "Product.h"
+    using namespace std;
+
+    int main()
+    {
+      // Create a vector to hold two Products.
+      vector<Product> products =
+        {
+          Product("T-Shirt",20),
+          Product("Coffee Mug",30)
+        };
+
+      // Get an iterator to the 2nd element
+      auto it = products.begin() + 1;
+
+      // This is where with `insert` you would have to create Products.
+      // The emplace_back function does that for you now.
+
+      // Insert another Product into the vector.
+      products.emplace(it, "Calendar", 25);
+
+      // Display vector content.
+      for (const auto& product : products)
+        {
+          cout << "Product: " << product.getName()  << endl
+               << "Units: "   << product.getUnits() << endl;
+        }
+      return 0;
+    }
+  #+end_src
+
+* Storage allocation functions for ~vector~
+
+- The ~vector~ is a wrapper for a C-style array. When its array is full,
+  and another element is added, the ~vector~ needs to
+  1) allocate a new array with more memory
+  2) copy all elements of the old array to the new array
+  3) deallocate the old array.
+
+- This wouldn't be very efficient if if had to be done every time a
+  new element is added. Therefore, the ~vector~ object has more memory
+  than it needs.
+
+- A ~vector~ object has five important functions related to size:
+  1. The number of elements that are stored in the ~vector~: ~size()~
+  2. The number of elements that can be stored in the ~vector~ without
+     having to reallocate the underlying array, ~capacity()~
+  3. The number of elements that the ~vector~ can ever store, ~max_size()~
+  4. The ~reserve~ member function to increase the vector's capacity
+  5. The ~shrink_to_fit()~ function to decrease the vector's capacity so
+     that it is the same as ~size()~.
+
+* PRACTICE Demonstrate ~vector~ storage allocation functions
+
+- Home assignment?
+
+- Write a C++ program that demonstrates the storage allocation
+  functions. Tip: Write a function to print vector size and capacity.
+
+  1. Create an empty integer vector.
+
+  2. Display the theoretical limit of the number of vector elements.
+
+  3. Display size and capacity of an empty vector.
+
+  4. Display size and capacity of a vector with 1,000 integers.
+
+  5. Add another 1,000 integers to the vector and display size and
+     capacity.
+
+  6. Reserve space for 1,000 integers over capacity, and display size
+     and capacity.
+
+  7. Shrink the vector so that capacity equals size, and display size
+     and capacity.
+
+  8. Add one more element to the vector, and display size and
+     capacity.
+
+  9. Empty the vector an display size and capacity.
+
+  10. What is the vector's capacity at the end?
+
+- Solution:
+  #+name: onecompiler.com/cpp/43rd4j4jk
+  #+begin_src C++ :main no :includes :results output :exports both
+    #include <iostream>
+    #include <vector>
+    #include <iomanip>
+    using namespace std;
+
+    void prt(vector<int>&);
+
+    int main()
+    {
+      // Create an empty integer vector nums.
+      vector<int> nums;
+
+      // Display the theoretical limit of the number of vector elements.
+      cout << "Theoretical max number of vector elements = "
+           << nums.max_size() << endl;
+
+      // Display size and capacity of an empty vector.
+      cout << "\nEmpty vector:\n";
+      prt(nums);
+
+      // Display size and capacity of a vector with 1,000 integers.
+      cout << "\nVector for 1,000 integers:\n";
+      for (int i=1;i<=1'000;i++)
+        nums.push_back(i);
+      prt(nums);
+
+      // Add another 1,000 integers.
+      cout << "\nVector for 2,000 integers:\n";
+      for (int i=1;i<=1'000;i++)
+        nums.push_back(i);
+      prt(nums);
+
+      // Reserve space for capacity() + 1,000 integers.
+      cout << "\nVector for 3,000 integers (reserve):\n";
+      nums.reserve(nums.capacity() + 1'000);
+      prt(nums);
+
+      // Shrink vector so that capacity equals size.
+      cout << "\nShrink vector to fit only current size:\n";
+      nums.shrink_to_fit();
+      prt(nums);
+
+      // Add one more element to the vector
+      cout << "\nAdd one more element to the vector:\n";
+      nums.push_back(1);
+      prt(nums);
+
+      // Empty the vector.
+      cout << "\nEmpty the vector:\n";
+      nums.clear();
+      prt(nums);
+
+      return 0;
+    }
+
+    void prt(vector<int>& v)
+    {
+      cout << "Size = "      << v.size()     << endl
+           << "Capacity = "  << v.capacity() << endl;
+    }
+  #+end_src
+
+  #+RESULTS: onecompiler.com/cpp/43rd4j4jk
+  #+begin_example
+  Theoretical max number of vector elements = 2305843009213693951
+
+  Empty vector:
+  Size = 0
+  Capacity = 0
+
+  Vector for 1,000 integers:
+  Size = 1000
+  Capacity = 1024
+
+  Vector for 2,000 integers:
+  Size = 2000
+  Capacity = 2048
+
+  Vector for 3,000 integers (reserve):
+  Size = 2000
+  Capacity = 3048
+
+  Shrink vector to fit only current size:
+  Size = 2000
+  Capacity = 2000
+
+  Add one more element to the vector:
+  Size = 2001
+  Capacity = 4000
+
+  Empty the vector:
+  Size = 0
+  Capacity = 4000
+  #+end_example
+
+  #+RESULTS:
+  #+begin_example
+  Theoretical max number of vector elements = 2305843009213693951
+
+  Empty vector:
+  Size = 0
+  Capacity = 0
+
+  Vector for 1,000 integers:
+  Size = 1000
+  Capacity = 1024
+
+  Vector for 2,000 integers:
+  Size = 2000
+  Capacity = 2048
+
+  Vector for 3,000 integers (reserve):
+  Size = 2000
+  Capacity = 3048
+
+  Shrink vector to fit only current size:
+  Size = 2000
+  Capacity = 2000
+
+  Add one more element to the vector:
+  Size = 2001
+  Capacity = 4000
+  Size = 0
+  Capacity = 4000
+  #+end_example
+
+- What if you always get the same values for ~capacity()~ and ~size()~?
+  #+begin_quote
+  In my first attempt used =void prt(vector<int>);= and ~capacity()~ was
+  always the same as ~size()~. Only when changing from pass-by-value to
+  pass-by-reference was the capacity preserved: =void prt(vector<int>&)=
+  #+end_quote
+
+- ~size~ vs. ~capacity~ in ~std::vector~:
+  1. *Size*: Number of elements currently stored (e.g., 2000).
+  2. *Capacity*: Total allocated memory for elements (e.g., 2048),
+     always >= size.
+  3. *Reason*: Vectors pre-allocate extra space to optimize performance,
+     avoiding frequent reallocations.
+  4. *Growth*: Capacity doubles (e.g., 1024 to 2048) when size exceeds
+     it, using a power-of-2 strategy.
+  5. *Control*: Use ~reserve()~ to pre-allocate space or ~shrink_to_fit()~
+     to match capacity to size.
+  
+* Glossary
+
+| TERM                 | EXPLANATION                                   |
+|----------------------+-----------------------------------------------|
+| Fill constructor     | ~vector<dataType> name(size, value);~           |
+| Range constructor    | ~vector<dataType> name(iterator1, iterator 2);~ |
+| Copy constructor     | ~vector<dataType> name(vector2);~               |
+| Element access       | Functions like ~at(index)~ or ~operator[]~        |
+| Iterator functions   | Support functions like ~begin()~ and ~end()~      |
+| Capacity functions   | Size management like ~size()~, ~empty()~          |
+| Modifiers            | Like ~push_back(val)~, ~pop_back()~, ~clear(~)      |
+| Comparison operators | Like ~operator=~ and ~operator<=>~                |
+
+* Footnotes
+
+[fn:1] ~const iterator~ allows read-only access to container
+elements. It cannot be used to modify elements it points to.
+
+[fn:2] For example, after ~vec.reserve(100)~, the ~vector~ will not
+reallocate until more than 100 elements are added.
+
+[fn:3] Instead of writing all six relational operators <, <=, >, >=,
+==, ~!=~, you write ~<=>~ and the compiler generates the rest.

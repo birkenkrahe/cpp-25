@@ -2227,8 +2227,7 @@ available on GitHub in the course's PDF repository.
 - [X] Practice: Splitting up a ~class~ across files
 - [X] Practice: Building a house
 
-
-* Week 10: Constructors, Destructors, STL (Oct 26, 28)
+* DONE Week 10: Constructors, Destructors, STL (Oct 26, 28)
 #+attr_html: :width 300px :float nil:
 [[../img/stl.png]]
 
@@ -2237,7 +2236,76 @@ available on GitHub in the course's PDF repository.
 - [X] Overview of the Standard Template Library (STL)
 - [ ] Vectors in the STL (digging deeper than before)
 
-** DONE Review: Interface vs. Implementation & Pointers to objects
+** Achievements record
+
+*So far, we've worked through 300 pages of my scripts for this class!*
+
+Barchart overview:
+#+attr_html: :width 400px:
+[[./csc240_pages_per_topic.png]]
+
+#+begin_src R :file plot.png :session *R* :results graphics output file :exports both
+  ## --- CSC 240 Course Materials: Pages per Topic ---
+  ## Data from table of contents (excluding popquizzes)
+
+  ## Create the data frame
+  topics <- data.frame(
+    Topic = c(
+      "Arrays",
+      "Classes",
+      "Pointers",
+      "Complexity",
+      "Introduction",
+      "Overview",
+      "STL Intro"
+    ),
+    Pages = c(96, 39, 36, 29, 21, 15, 12),
+    Filename = c(
+      "2_arrays_vectors_solutions.pdf",
+      "5_oop_class.pdf",
+      "4_pointers_class.pdf",
+      "3_complexity_class.pdf",
+      "1_introduction.pdf",
+      "0_overview.pdf",
+      "6_STL.pdf"
+    ),
+    stringsAsFactors = FALSE
+  )
+
+  ## Order by number of pages (descending)
+  topics <- topics[order(topics$Pages, decreasing = TRUE), ]
+
+  ## Horizontal bar chart
+  barplot(
+    height = topics$Pages,
+    names.arg = topics$Topic,
+    horiz = TRUE,
+    las = 1,                     ## horizontal labels
+    col = "steelblue",             ## nice blue
+    border = NA,
+    main = "CSC 240: Pages per Topic (Fall 2025)",
+    sub = "Excluding popquizzes | Total: 248 pages",
+    xlab = "Number of Pages",
+    xlim = c(0, 100),
+    cex.names = 0.9,
+    font.main = 2
+  )
+
+  ## Add value labels on bars
+  text(
+    x = topics$Pages + 3,
+    y = seq(1.2, by = 1.2, length.out = nrow(topics)),
+    labels = paste(topics$Pages, "pages"),
+    col = "black",
+    cex = 0.9,
+    adj = 0
+  )
+
+  ## Optional: Add a grid
+  abline(v = seq(0, 100, by = 20), col = "gray80", lty = 3)
+#+end_src
+
+** Review: Interface vs. Implementation & Pointers to objects
 
 1. Could you explain what each of these lines do? And where is this?
    #+begin_example sh
@@ -2305,7 +2373,7 @@ n   To free the dynamically allocated memory and avoid memory leaks.
    time*.
    #+end_quote
 
-** TODO Review: C++ STL
+** Review: C++ STL
 
 1. What is the Standard Template Library (STL)?
    #+begin_quote
@@ -2344,7 +2412,7 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      #include <string>
      int main() {
        std::map<std::string,int> m {{"A",1}}; // use STL's map class
-       return 0;
+       return 0;g
      }
    #+end_src
 
@@ -2363,6 +2431,9 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      }
    #+end_src
 
+   #+RESULTS:
+   : Jim Jones
+
 6. What is a *container adapter*?
    #+begin_quote
    A class that adapts another container for a specific purpose (e.g.,
@@ -2371,7 +2442,6 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 
    #+begin_src C++ :main no :includes <iostream> :results output
      #include <queue>
-     #include <string>
 
      int main() {
        std::priority_queue<int> pq; // uses vector<int> underneath
@@ -2383,9 +2453,12 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      }
    #+end_src
 
+   #+RESULTS:
+   : 50
+
 7. What do *iterators* do in STL?
    #+begin_quote
-   They act like pointers to access elements in a container (they are
+   They act like pointers to access elements in a containegr (they are
    not necessarily raw memory pointers but objects defined by STL
    classes that abstract access to container elements).
    #+end_quote
@@ -2394,9 +2467,11 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      #include <vector>
 
      int main() {
-       std::vector<int> v {10,20};
+       std::vector<int> v {10,20}; // define vector of two elements
        for (auto it=v.begin(); it!=v.end();it++)
+     //for (int   i=0;         i<N;       ; i++)
          std::cout << *it << " ";
+     //       cout << a[i];
        return 0;
      }
    #+end_src
@@ -2406,7 +2481,7 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 
      int main() {
        std::vector<int> v {10,20};
-       std::vector<int>::iterator it;
+       std::vector<int>::iterator it;g // instead of auto
        for (it=v.begin(); it!=v.end();it++)
          std::cout << *it << " ";
        return 0;
@@ -2425,13 +2500,13 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      int main() {
        std::list<int> lst {1,2,3};
        std::list<int>::iterator it = lst.begin();
-       std::cout << *lst.begin();
+       std::cout << *lst.end();
        return 0;
      }
    #+end_src
 
    #+RESULTS:
-   : 1
+   : 3
 
 9. What determines the type of iterator a container provides?
    #+begin_quote
@@ -2459,12 +2534,10 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 
        it_l++; // move forward in list
        std::cout << *it_l; // print list element pointed at
-       //std::cout << *(it_l + 2); // illegal for lists
+       // std::cout << *(it_l + 1); // illegal for lists
        return 0;
      }
    #+end_src
-
-   #+RESULTS:
 
 10. What is the role of *algorithms* in STL?
     #+begin_quote
@@ -2490,3 +2563,11 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 
     #+RESULTS:
     : 1234
+
+* Week 11: More about the STL ~vector~ class (Nov 11, 13)
+
+- [ ] Review: Song list manager (bonus)
+- [ ] Storing ~class~ objects in a ~vector~
+- [ ] Inserting elements with ~emplace~ and ~emplace_back~
+- [ ] Storage allocation functions for ~vector~
+- [ ] Next: The STL ~map~ class (associative container)
