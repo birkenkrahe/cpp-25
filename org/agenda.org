@@ -2564,11 +2564,166 @@ n   To free the dynamically allocated memory and avoid memory leaks.
     #+RESULTS:
     : 1234
 
-* Week 11: More about the STL ~vector~ class (Nov 11, 13)
+* DONE Week 11: More about the STL ~vector~ class (Nov 11, 13)
 
-- [X] Review: Song list manager (bonus)
+- [X] About learning math, computer and data science
+- [X] Review: Song list manager (bonus assignment)
 - [X] Storing ~class~ objects in a ~vector~
 - [X] Inserting elements with ~emplace~ and ~emplace_back~
 - [X] Storage allocation functions for ~vector~
+- [ ] Next week: Paper pepquiz in class (self-graded)
 - [ ] Next: The STL ~map~ class (associative container)
+
+** About learning & doing math, computer and data science
+
+- What do math, computer and data science have in common?
+  #+begin_quote
+  Math, computer and data science are sciences of
+  abstraction. 
+
+  Example: Whole numbers don't exist. Things exist, and can be
+  counted. The number is an abstract representation of the counting.
+  #+end_quote
+
+- How are these disciplines developed over human history?
+  #+begin_quote
+  In order to *preserve*, *develop*, and *apply* them, detail is
+  removed.
+
+  Example: By removing numbers themselves, like f(x)=x+1, or =i++= in
+  code, we abstract further. Counting is now an input-output
+  operation. You can build on it (move on from linear to
+  polynomials). You can use it to model problems in physics or
+  economics.
+  #+end_quote
+
+- What is the consequence of this for learning them?
+  #+begin_quote
+  This makes is hard to *remember* anything about them, and it makes it
+  very hard to *talk* about them (except with abstract symbols).
+
+  Abstractions are encapsulated in a language of their own (algebra,
+  analysis, C++ Standard Template Library, statistical distributions).
+
+  It took you *10 years* to learn a natural language in early childhood,
+  with dedicated support (parents), and everybody around you helping
+  you (by speaking).
+
+  It takes easily 10 years to learn abstract languages without this
+  level of support, mostly on your own, highly distracted by life.
+
+  That's why Malcolm Gladwell famously wrote that "the magic number
+  for true expertise is 10,000 hours" (Outliers: The Story of Success,
+  2008).
+  #+end_quote
+
+- If it's so hard to recall and communicate, what do we learn?
+  #+begin_quote
+  What you learn when you learn them is to recognize and apply
+  *patterns*. This is like learning to read facial expressions or the
+  weather.
+  #+end_quote
+
+- Do you have a personal example?
+  #+begin_quote
+  *Group Theory*. A mathematical group is a container abstraction just
+  like a vector, except larger because it can contain vectors and
+  other objects and member functions to manipulate group objects.
+
+  The feature or pattern that group theory allows you to detect and
+  use is symmetry. For some divine reason, symmetry is everywhere: In
+  nature, art, physics, and even data structures, symmetry provides a
+  unifying principle.
+
+  How can you make use of it? If you found a truth about symmetry that
+  you can express in the language of group theory, you can apply it to
+  100 different fields and within these fields, 100,000 problems and
+  solve them in a fraction of time - often with computers, because
+  symmetries reduce the problem dimension - think of a symmetric face:
+  If you know half the face, you know the whole face!
+
+  It took me 10 years from my first class in physics to the end of my
+  first postdoctoral appointment, to really understand group
+  theory. And today I have forgotten every single detail about it but
+  I still use it.
+  #+end_quote
+
+- How is this relevant to data structures?
+  #+begin_quote
+  A *stack* (Last-In-First-Out data structure like a cookie jar) can be
+  considered a group where *push* and *pop* operations form a symmetry:
+  Pushing to and then popping an element from the top returns the
+  system to its state (identity element/inversion). This reduces the
+  complexity (you only need to control the top).
+
+  An even simpler example: Double bracket operators ~[]~ (subscripting)
+  and ~{~}~ (scope) are symmetrical. ~[]~ enters and leaves a container, ~{}~
+  enters and leaves a scope. An empty ~vector[]~ is the neutral
+  subscripting element, an empty scope ~{}~ is the neutral scope
+  operation (e.g. when initializing a constructor with a list).
+  #+end_quote
+
+- Summary:
+  #+begin_quote
+  1) Math, computer, and data science are about abstraction, e.g.,
+     whole numbers represent counting without real objects.
+  2) Details are removed to preserve, develop, and apply ideas, like
+     turning numbers into functions f(x) = x + 1 for broader use.
+  3) Hard to remember or discuss due to abstract languages; takes ~10
+     years (10,000 hours, per Gladwell’s Outliers).
+  4) Recognize and apply patterns, like reading faces or weather.
+  5) Group theory taught me symmetry — a pattern I use across fields,
+     mastered over 10 years, despite forgetting most of the details.
+  6) A stack’s push/pop and ~[]/{~}~ symmetry simplify control and
+     access.
+  #+end_quote
+
+*** References
+
+- Frege, G. (1884). Die Grundlagen der Arithmetik [The Foundations of
+  Arithmetic]. Oxford: Blackwell.
+- Kline, M. (1972). Mathematical Thought from Ancient to Modern
+  Times. New York: Oxford University Press.
+- Gladwell, M. (2008). Outliers: The Story of Success. New York:
+  Little, Brown and Company.
+- Norman, D. A. (1993). Things That Make Us Smart: Defending Human
+  Attributes in the Age of the Machine. Reading, MA: Addison-Wesley.
+- Schrödinger, E. (1944). What Is Life?. Cambridge: Cambridge
+  University Press.
+- Simon, H. A. (1996). The Sciences of the Artificial (3rd
+  ed.). Cambridge, MA: MIT Press.
+  
+
+** Post-mortem: Using reverse iterators with it++ instead of it--
+
+Post-mortem on @Matthew Younger 's question on iterating forward with
+=it++= and backward with ~rbegin()~ / ~rend()~ with =vector<T>::iterator it=:
+Using the iterator functions is preferred to iterating backwards with
+=--it= or =it--= because it's clearer, safer and more efficient:
+
+1. *Clarity:* ~rbegin()~ and ~rend()~ explicitly state that you're iterating
+   in reverse order - you don't have to go to the end of the for
+   statement like in a German sentence to see what's what...
+
+2. *Correctness*: ~end()~ points one past the last element, so =it--= can
+   easily lead to undefined behavior if you start from ~end()~ without
+   first decrementing safely.
+
+3. *Efficiency:* Postfix ~it++~ can be slightly less efficient than prefix
+   =++it= for complex iterators like those in STL containers, but using
+   reverse iterators avoids the issue altogether (why is interesting
+   though: =it++= makes a copy to increment, while =++it= increments the
+   iterator and returns a reference to itself without copy).
+
+
+* Week 12: Pepquiz / STL ~map~ class (Nov 18, 20)
+
+- [ ] Pepquiz: STL ~vector~ class
+- [ ] STL ~map~ class
+
+** TODO Pepquiz (in class, self-graded, 30 minutes)
+
+- Write little code fragments (don't worry about `main()` etc.).
+- Use range-based loops if possible and iterators when necessary.
+- You can talk to each other about the best solution during the test.
 
