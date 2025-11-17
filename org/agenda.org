@@ -2566,8 +2566,9 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 
 * Week 11: More about the STL ~vector~ class (Nov 11, 13)
 
-- [ ] Review: Song list manager (bonus)
-- [ ] Storing ~class~ objects in a ~vector~
-- [ ] Inserting elements with ~emplace~ and ~emplace_back~
-- [ ] Storage allocation functions for ~vector~
+- [X] Review: Song list manager (bonus)
+- [X] Storing ~class~ objects in a ~vector~
+- [X] Inserting elements with ~emplace~ and ~emplace_back~
+- [X] Storage allocation functions for ~vector~
 - [ ] Next: The STL ~map~ class (associative container)
+
