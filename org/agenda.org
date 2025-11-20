@@ -2715,13 +2715,14 @@ Using the iterator functions is preferred to iterating backwards with
    though: =it++= makes a copy to increment, while =++it= increments the
    iterator and returns a reference to itself without copy).
 
-
 * Week 12: Pepquiz / STL ~map~ class (Nov 18, 20)
 
-- [ ] Pepquiz: STL ~vector~ class
-- [ ] STL ~map~ class
+- [X] Pepquiz: STL ~vector~ class
+- [ ] STL ~map~ class - lecture and practice
+- [ ] Thanksgiving test 9 - vectors, iterators, maps (TBD)
+- [ ] Thanksgiving programming assignment (TBD)
 
-** TODO Pepquiz (in class, self-graded, 30 minutes)
+** DONE Pepquiz (in class, self-graded, 30 minutes)
 
 - Write little code fragments (don't worry about `main()` etc.).
 - Use range-based loops if possible and iterators when necessary.
