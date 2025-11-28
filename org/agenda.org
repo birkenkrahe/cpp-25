@@ -2730,7 +2730,8 @@ Using the iterator functions is preferred to iterating backwards with
 
 * Week 14: STL Map class II (Dec 2, 4)
 
-- [ ] Review ~map~ class
+- [ ] Test 9 is available now (~map~ class) - 20 questions
+- [ ] Review ~map~ class from before Thanksgiving
 - [ ] STL ~map~ class: insert, find, retrieve, delete
 - [ ] Lecture, code along and practice exercises (20)
 - [ ] A last test perhaps (12)
