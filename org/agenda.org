@@ -2571,8 +2571,8 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 - [X] Storing ~class~ objects in a ~vector~
 - [X] Inserting elements with ~emplace~ and ~emplace_back~
 - [X] Storage allocation functions for ~vector~
-- [ ] Next week: Paper pepquiz in class (self-graded)
-- [ ] Next: The STL ~map~ class (associative container)
+- [X] Next week: Paper pepquiz in class (self-graded)
+- [X] Next: The STL ~map~ class (associative container)
 
 ** About learning & doing math, computer and data science
 
@@ -2715,16 +2715,97 @@ Using the iterator functions is preferred to iterating backwards with
    though: =it++= makes a copy to increment, while =++it= increments the
    iterator and returns a reference to itself without copy).
 
-* Week 12: Pepquiz / STL ~map~ class (Nov 18, 20)
+* DONE Week 12: Pepquiz / STL ~map~ class (Nov 18, 20)
 
-- [X] Pepquiz: STL ~vector~ class
-- [ ] STL ~map~ class - lecture and practice
-- [ ] Thanksgiving test 9 - vectors, iterators, maps (TBD)
-- [ ] Thanksgiving programming assignment (TBD)
+- [X] Pepquiz: STL ~vector~ class (Bonus)
+- [X] STL ~map~ class - lecture and practice
+- [X] Thanksgiving test 9 - vectors, iterators, maps (TBD)
+- [X] Thanksgiving programming assignment (TBD)
 
-** DONE Pepquiz (in class, self-graded, 30 minutes)
+** Pepquiz (in class, self-graded, 30 minutes)
 
 - Write little code fragments (don't worry about `main()` etc.).
 - Use range-based loops if possible and iterators when necessary.
 - You can talk to each other about the best solution during the test.
+
+* Week 14: STL Map class II (Dec 2, 4)
+
+- [ ] Review ~map~ class
+- [ ] STL ~map~ class: insert, find, retrieve, delete
+- [ ] Lecture, code along and practice exercises (20)
+- [ ] A last test perhaps (12)
+- [ ] And a last programming home assignment perhaps (13)
+
+** Review: ~map~ class
+
+1. What is a *map* in C++?
+   #+begin_quote
+   An associative container storing *key–value* pairs with fast lookup
+   by key.
+   #+end_quote
+
+2. How do you include the map library?
+   #+begin_example cpp
+   #include <map>
+   #+end_example
+
+3. How do you declare a map from ~int~ keys to ~string~ values?
+   #+begin_example cpp
+   std::map<int,string> m;
+   #+end_example
+
+4. How would you insert a value into a map using the ~[]~ operator.
+   #+begin_example cpp
+   m[101] = "Alice";
+   #+end_example
+
+5. What happens if you access =m[500]= when key =500= does not exist?
+   #+begin_quote
+   It inserts a new element with key =500= and a default value. For
+   example =""= for ~string~ because ~string()~ is 0, or =0= for ~int~ because
+   ~int()~ is 0.
+   #+end_quote
+
+   #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
+     cout << string() << endl;
+     cout << int();
+   #+end_src
+
+   #+RESULTS:
+   : 
+   : 0
+
+6. How would you iterate through a map using an iterator.
+   #+begin_example cpp
+   for (auto it = m.begin(); it != m.end(); it++)
+       cout << it->first << " " << it->second; // first: key, second: value
+
+   // where `auto` is `map<T1,T2>::iterator`
+   #+end_example
+
+7. How do you check whether a key exists?
+   #+begin_example cpp
+   m.count(key)  // returns 0 or 1
+   #+end_example
+
+8. What does =find(key)= return if the key is missing?
+   #+begin_example cpp
+   m.end()
+   #+end_example
+
+9. How would you initialize a map with an initializer list?
+   #+begin_example cpp
+   map<string,string> caps {
+       {"France","Paris"},
+       {"Italy","Rome"}
+   };
+   #+end_example
+
+10. What happens when two entries in an initializer list have the same key?
+   #+begin_quote
+   Only the *first* occurrence is inserted; the rest are ignored.
+   #+end_quote
+
+
+* Week 15: Lists, queues, stacks, and a summary (Dec 9, 11)
 
