@@ -2730,6 +2730,7 @@ Using the iterator functions is preferred to iterating backwards with
 
 * Week 14: STL Map class II (Dec 2, 4)
 
+- [ ] *Please fill in the course evaluation now! (5 min)*  
 - [ ] Test 9 is available now (~map~ class) - 20 questions
 - [ ] Review ~map~ class from before Thanksgiving
 - [ ] STL ~map~ class: insert, find, retrieve, delete
@@ -2737,7 +2738,7 @@ Using the iterator functions is preferred to iterating backwards with
 - [ ] A last test perhaps (12)
 - [ ] And a last programming home assignment perhaps (13)
 
-** Review: ~map~ class
+** Review: STL ~map~ class
 
 1. What is a *map* in C++?
    #+begin_quote
@@ -2772,10 +2773,6 @@ Using the iterator functions is preferred to iterating backwards with
      cout << int();
    #+end_src
 
-   #+RESULTS:
-   : 
-   : 0
-
 6. How would you iterate through a map using an iterator.
    #+begin_example cpp
    for (auto it = m.begin(); it != m.end(); it++)
@@ -2806,7 +2803,6 @@ Using the iterator functions is preferred to iterating backwards with
    #+begin_quote
    Only the *first* occurrence is inserted; the rest are ignored.
    #+end_quote
-
 
 * Week 15: Lists, queues, stacks, and a summary (Dec 9, 11)
 
