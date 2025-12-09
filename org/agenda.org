@@ -2871,4 +2871,10 @@ Using the iterator functions is preferred to iterating backwards with
 
 
 * Week 15: End of maps, lists, queues, stacks, and a summary (Dec 9, 11)
+#+attr_html: :width 600px :float nil:
+[[../img/end_of_the_road.jpg]]
+
+- [ ] No more tests, no more assignments. Enjoy finals week.
+- [ ] Tuesday: Discuss "Inventory Prices". Finish the ~map~ STL ~class~.
+- [ ] Thursday: Wrap-up with a summary and data structures outlook.
 
