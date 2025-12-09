@@ -2346,7 +2346,7 @@ Barchart overview:
 
 2. Why must you call ~delete~ after using ~new~ on a class object?
    #+begin_quote
-n   To free the dynamically allocated memory and avoid memory leaks.
+   n   To free the dynamically allocated memory and avoid memory leaks.
    #+end_quote
 
 3. What does =Rectangle *rectPtr = nullptr;= do?
@@ -2413,7 +2413,7 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      int main() {
        std::map<std::string,int> m {{"A",1}}; // use STL's map class
        return 0;g
-     }
+             }
    #+end_src
 
 5. Why is *string* not listed as a sequence container?
@@ -2469,9 +2469,9 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      int main() {
        std::vector<int> v {10,20}; // define vector of two elements
        for (auto it=v.begin(); it!=v.end();it++)
-     //for (int   i=0;         i<N;       ; i++)
+         //for (int   i=0;         i<N;       ; i++)
          std::cout << *it << " ";
-     //       cout << a[i];
+       //       cout << a[i];
        return 0;
      }
    #+end_src
@@ -2482,8 +2482,8 @@ n   To free the dynamically allocated memory and avoid memory leaks.
      int main() {
        std::vector<int> v {10,20};
        std::vector<int>::iterator it;g // instead of auto
-       for (it=v.begin(); it!=v.end();it++)
-         std::cout << *it << " ";
+                                  for (it=v.begin(); it!=v.end();it++)
+                                    std::cout << *it << " ";
        return 0;
      }
    #+end_src
@@ -2553,10 +2553,10 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 
         std::vector<int> v {3, 1, 4, 2}; // integer vector
         sort(v.begin(), v.end()); // sort vector in place
-        
+
         for (auto it=v.begin(); it!=v.end();it++) // iterate
           std::cout << *it; // print vector elements
-        
+
         return 0;
       }
     #+end_src
@@ -2579,7 +2579,7 @@ n   To free the dynamically allocated memory and avoid memory leaks.
 - What do math, computer and data science have in common?
   #+begin_quote
   Math, computer and data science are sciences of
-  abstraction. 
+  abstraction.
 
   Example: Whole numbers don't exist. Things exist, and can be
   counted. The number is an abstract representation of the counting.
@@ -2692,7 +2692,7 @@ n   To free the dynamically allocated memory and avoid memory leaks.
   University Press.
 - Simon, H. A. (1996). The Sciences of the Artificial (3rd
   ed.). Cambridge, MA: MIT Press.
-  
+
 
 ** Post-mortem: Using reverse iterators with it++ instead of it--
 
@@ -2728,22 +2728,22 @@ Using the iterator functions is preferred to iterating backwards with
 - Use range-based loops if possible and iterators when necessary.
 - You can talk to each other about the best solution during the test.
 
-* Week 14: STL Map class II (Dec 2, 4)
+* DONE Week 14: STL Map class II (Dec 2, 4)
 
-- [ ] *Please fill in the course evaluation now! (5 min)*  
-- [ ] Test 9 is available now (~map~ class) - 20 questions
-- [ ] Review ~map~ class from before Thanksgiving
-- [ ] STL ~map~ class: insert, find, retrieve, delete
-- [ ] Lecture, code along and practice exercises (20)
-- [ ] A last test perhaps (12)
-- [ ] And a last programming home assignment perhaps (13)
+- [X] *Please fill in the course evaluation now! (5 min)*
+- [X] Test 9 is available now (~map~ class) - 20 questions
+- [X] Review ~map~ class from before Thanksgiving
+- [X] STL ~map~ class: insert, find, retrieve, delete
+- [X] Lecture, code along and practice exercises (20)
+- [X] A last test perhaps (12)
+- [X] And a last programming home assignment perhaps (13)
 
 ** Review: STL ~map~ class
 
 1. What is a *map* in C++?
    #+begin_quote
    An associative container storing *key–value* pairs with fast lookup
-   by key.
+   by key - think "dictionary".
    #+end_quote
 
 2. How do you include the map library?
@@ -2753,7 +2753,7 @@ Using the iterator functions is preferred to iterating backwards with
 
 3. How do you declare a map from ~int~ keys to ~string~ values?
    #+begin_example cpp
-   std::map<int,string> m;
+   std::map<int,string> m;  // creates an empty map container
    #+end_example
 
 4. How would you insert a value into a map using the ~[]~ operator.
@@ -2769,12 +2769,17 @@ Using the iterator functions is preferred to iterating backwards with
    #+end_quote
 
    #+begin_src C++ :main yes :includes <iostream> <cstdlib> <string> <fstream> <vector> :namespaces std :results output :exports both :noweb yes
-     cout << string() << endl;
-     cout << int();
+     cout << string() << endl; // show string default
+     cout << int();            // show int default
    #+end_src
+
+   #+RESULTS:
+   :
+   : 0
 
 6. How would you iterate through a map using an iterator.
    #+begin_example cpp
+   // assuming m is a map<T1,T2>
    for (auto it = m.begin(); it != m.end(); it++)
        cout << it->first << " " << it->second; // first: key, second: value
 
@@ -2800,9 +2805,70 @@ Using the iterator functions is preferred to iterating backwards with
    #+end_example
 
 10. What happens when two entries in an initializer list have the same key?
+    #+begin_quote
+    Only the *first* occurrence is inserted; the rest are ignored.
+    #+end_quote
+
+** Review: STL ~map~ class II
+
+1. What type does a map store for each element, and what are the names
+   of its two members?
    #+begin_quote
-   Only the *first* occurrence is inserted; the rest are ignored.
+   A map stores elements as ~std::pair<key,value>~ with members ~first~
+   (key) and ~second~ (value).
    #+end_quote
 
-* Week 15: Lists, queues, stacks, and a summary (Dec 9, 11)
+2. What does =insert(make_pair(k,v))= do when the key =k= already exists
+   in the ~map~?
+   #+begin_quote
+   It ignores the insertion (the existing element is kept).
+   #+end_quote
+
+3. Show how to add the pair =(200, "Alice")= to a =map<int,string> m=
+   using ~insert~.
+   #+begin_example cpp
+   m.insert(make_pair(200, "Alice"));
+   #+end_example
+
+4. Show how to add the same pair using ~emplace~.
+   #+begin_quote
+   =m.emplace(200, "Alice");=
+   #+end_quote
+
+5. Write a line of code that checks whether key =105= exists in a ~map~ =m=
+   using ~find~.
+   #+begin_example cpp
+   auto it = m.find(105); // auto = map<int,T> where T is a type.
+   #+end_example
+
+6. What should you compare the iterator from ~find~ against to test for
+   failure?
+   #+begin_quote
+   Compare it to =m.end()= because that's also an iterator (pointer).
+   #+end_quote
+
+7. Write a line that safely retrieves =m.at(10)= only if the key exists.
+   #+begin_example cpp
+   if (m.count(10)) cout << m.at(10);
+   #+end_example
+
+8. What happens if you call =m.at(k)= and =k= is not in the map?
+   #+begin_quote
+   ~map::at~ throws an ~out_of_range~ exception (a controlled abort).
+   #+end_quote
+
+9. How do you delete the element with key =300= from ~map~ =m=? What exactly
+   is erased now?
+   #+begin_example cpp
+   m.erase(300); // remove key 305, remove its value, destroy pair object, free memory
+   #+end_example
+
+10. Given =map<int,string> m=, write a loop header that iterates through
+    all elements in *descending* key order.
+    #+begin_example cpp
+    for (auto it = m.rbegin(); it != m.rend(); it++)
+    #+end_example
+
+
+* Week 15: End of maps, lists, queues, stacks, and a summary (Dec 9, 11)
 
