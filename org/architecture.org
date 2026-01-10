@@ -17,7 +17,7 @@ Illustration:
 * 1. Load Balancing (Round Robin)
 ** Concept
 Distributing traffic across multiple servers to prevent overload.
-** Data Structure: Vector (`std::vector`)
+** Data Structure: Vector (~std::vector~)
 Teaches: Iteration, Modular Arithmetic, Random Access.
 ** C++ Implementation
 #+begin_src cpp :results output
@@ -60,7 +60,7 @@ Teaches: Iteration, Modular Arithmetic, Random Access.
 * 2. Caching
 ** Concept
 Storing the result of expensive operations to speed up future reads.
-** Data Structure: Hash Map (`std::unordered_map`)
+** Data Structure: Hash Map (~std::unordered_map~)
 Teaches: O(1) Lookup, Key-Value pairs.
 ** C++ Implementation
 #+begin_src cpp :results output
@@ -108,7 +108,7 @@ Teaches: O(1) Lookup, Key-Value pairs.
 * 3. Content Delivery Network (CDN)
 ** Concept
 Serving static assets from a server geographically closer to the user.
-** Data Structure: Hash Map (`std::unordered_map`)
+** Data Structure: Hash Map (~std::unordered_map~)
 Teaches: Multiple Map logic, Check-then-Fetch patterns.
 ** C++ Implementation
 #+begin_src cpp :results output
@@ -154,7 +154,7 @@ Teaches: Multiple Map logic, Check-then-Fetch patterns.
 * 4. Message Queue
 ** Concept
 Decoupling producers and consumers. The producer doesn't wait for the consumer.
-** Data Structure: Queue (`std::queue`) + Mutex
+** Data Structure: Queue (~std::queue~) + Mutex
 Teaches: FIFO (First-In-First-Out), Concurrency, Locks.
 ** C++ Implementation
 #+begin_src cpp :results output
@@ -211,7 +211,7 @@ Teaches: FIFO (First-In-First-Out), Concurrency, Locks.
 * 5. Publish-Subscribe (Pub/Sub)
 ** Concept
 One publisher sends a message to many subscribers.
-** Data Structure: Vector of Functions (`std::vector<std::function>`)
+** Data Structure: Vector of Functions (~std::vector<std::function>~)
 Teaches: Function Pointers, Callbacks, Observer Pattern.
 ** C++ Implementation
 #+begin_src cpp :results output
@@ -341,7 +341,7 @@ Teaches: Enums, State Management, Threshold logic.
 * 8. Service Discovery
 ** Concept
 Automatically detecting devices/services on a network.
-** Data Structure: Map (`std::map` or `std::unordered_map`)
+** Data Structure: Map (~std::map~ or ~std::unordered_map~)
 Teaches: Registry patterns, Key-Value lookup.
 ** C++ Implementation
 #+begin_src cpp :results output
@@ -419,7 +419,7 @@ Teaches: Hashing (Modulo operator) for distribution.
 ** Concept
 Restricting the number of requests a user can make in a given timeframe.
 ** Data Structure: Counters & Timers (or Queue for Sliding Window)
-Teaches: Time handling (`std::chrono`), conditional logic.
+Teaches: Time handling (~std::chrono~), conditional logic.
 ** C++ Implementation
 #+begin_src cpp :results output
   #include <iostream>
@@ -476,8 +476,8 @@ Teaches: Time handling (`std::chrono`), conditional logic.
 * 11. Consistent Hashing
 ** Concept
 Distributing data across nodes such that adding/removing a node minimizes movement.
-** Data Structure: Ordered Map / BST (`std::map`)
-Teaches: Tree Maps (Red-Black Tree), Binary Search (`upper_bound`), Circular logic.
+** Data Structure: Ordered Map / BST (~std::map~)
+Teaches: Tree Maps (Red-Black Tree), Binary Search (~upper_bound~), Circular logic.
 ** C++ Implementation
 #+begin_src cpp :results output
   #include <iostream>
@@ -525,7 +525,7 @@ Teaches: Tree Maps (Red-Black Tree), Binary Search (`upper_bound`), Circular log
 ** Concept
 Adding or removing resources based on current load.
 ** Data Structure: Vector (Dynamic Array)
-Teaches: Dynamic resizing (`push_back`, `pop_back`).
+Teaches: Dynamic resizing (~push_back~, ~pop_back~).
 ** C++ Implementation
 #+begin_src cpp :results output
   #include <iostream>
