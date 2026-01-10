@@ -14,6 +14,7 @@ Illustration:
 #+caption: Image source: ByteByteGo
 [[../img/architecture.jpg]]
 
+
 * 1. Load Balancing (Round Robin)
 ** Concept
 Distributing traffic across multiple servers to prevent overload.
@@ -21,34 +22,42 @@ Distributing traffic across multiple servers to prevent overload.
 Teaches: Iteration, Modular Arithmetic, Random Access.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <vector>
-  #include <string>
+// 01_load_balancer.cpp
+// Demonstrates Round Robin selection using a vector and modulo operator.
 
-  class LoadBalancer {
+#include <iostream>
+#include <vector>
+#include <string>
+
+class LoadBalancer {
     std::vector<std::string> servers;
     int current_index = 0;
 
-  public:
+public:
+    // Constructor: Initialize with a list of server names
     LoadBalancer(std::vector<std::string> s) : servers(s) {}
 
     std::string get_server() {
-      std::string server = servers[current_index];
-      // Modulo operator % wraps the index back to 0
-      current_index = (current_index + 1) % servers.size();
-      return server;
+        std::string server = servers[current_index];
+        
+        // Modulo operator % ensures we wrap around to 0 when we reach the end
+        // e.g., if size is 3, index goes: 0 -> 1 -> 2 -> 0 -> ...
+        current_index = (current_index + 1) % servers.size();
+        
+        return server;
     }
-  };
+};
 
-  int main() {
+int main() {
     LoadBalancer lb({"Server A", "Server B", "Server C"});
-
-    // Simulate 4 requests
+    
+    // Simulate 4 sequential requests
+    // Notice how the 4th request wraps back to "Server A"
     for(int i=0; i<4; i++) {
-      std::cout << "Request " << i+1 << " handled by: " << lb.get_server() << "\n";
+        std::cout << "Request " << i+1 << " handled by: " << lb.get_server() << "\n";
     }
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
@@ -64,45 +73,51 @@ Storing the result of expensive operations to speed up future reads.
 Teaches: O(1) Lookup, Key-Value pairs.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <unordered_map>
-  #include <string>
-  #include <thread> // For sleep
+// 02_caching.cpp
+// Simulates a slow database fetch vs. a fast cache hit using a Hash Map.
 
-  std::unordered_map<std::string, std::string> cache;
+#include <iostream>
+#include <unordered_map>
+#include <string>
+#include <thread> // For sleep simulation
 
-  std::string get_data(std::string key) {
-    // 1. Check Cache (O(1))
+// The Cache: Stores Key (User ID) -> Value (Data)
+std::unordered_map<std::string, std::string> cache;
+
+std::string get_data(std::string key) {
+    // 1. Check Cache (O(1) complexity)
     if (cache.find(key) != cache.end()) {
-      return "Cache Hit: " + cache[key];
+        return "Cache Hit: " + cache[key];
     }
 
-    // 2. Simulate DB fetch (expensive)
-    std::cout << "Fetching from DB (Slow)...\n";
+    // 2. Simulate DB fetch (expensive operation)
+    std::cout << "Fetching from DB (Slow operation in progress)...\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     std::string result = "Data for " + key;
 
-    // 3. Store in Cache
+    // 3. Store result in Cache for next time
     cache[key] = result;
     return "DB Hit: " + result;
-  }
+}
 
-  int main() {
-    std::cout << "--- First Call (Cold) ---\n";
+int main() {
+    std::cout << "--- First Call (Cold Cache) ---\n";
+    // This will trigger the "DB fetch"
     std::cout << get_data("user_1") << "\n\n";
 
-    std::cout << "--- Second Call (Cached) ---\n";
+    std::cout << "--- Second Call (Warm Cache) ---\n";
+    // This will return immediately from the map
     std::cout << get_data("user_1") << "\n";
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: --- First Call (Cold) ---
-: Fetching from DB (Slow)...
+: --- First Call (Cold Cache) ---
+: Fetching from DB (Slow operation in progress)...
 : DB Hit: Data for user_1
-:
-: --- Second Call (Cached) ---
+: 
+: --- Second Call (Warm Cache) ---
 : Cache Hit: Data for user_1
 
 * 3. Content Delivery Network (CDN)
@@ -112,44 +127,54 @@ Serving static assets from a server geographically closer to the user.
 Teaches: Multiple Map logic, Check-then-Fetch patterns.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <unordered_map>
-  #include <string>
+// 03_cdn.cpp
+// Simulates checking an "Edge" server before falling back to "Origin".
 
-  std::unordered_map<std::string, std::string> origin = {{"img.png", "Image_Bytes"}};
-  std::unordered_map<std::string, std::string> edge_server;
+#include <iostream>
+#include <unordered_map>
+#include <string>
 
-  std::string get_asset(std::string file) {
+// Origin: The central source of truth (slow/distant)
+std::unordered_map<std::string, std::string> origin = {{"img.png", "Image_Bytes_XYZ"}};
+
+// Edge: The local server near the user (fast)
+std::unordered_map<std::string, std::string> edge_server;
+
+std::string get_asset(std::string file) {
+    // 1. Check Edge Server first
     if (edge_server.count(file)) {
-      return "Served from Edge: " + edge_server[file];
+        return "Served from Edge (Fast): " + edge_server[file];
     }
 
-    // Fetch from Origin
+    // 2. Fetch from Origin if missing
     if (origin.count(file)) {
-      std::cout << "[!] Not in Edge. Fetching from Origin...\n";
-      edge_server[file] = origin[file]; // Cache it
-      return "Served from Origin: " + origin[file];
+        std::cout << "[!] Not in Edge. Fetching from Origin...\n";
+        
+        // 3. "Cache" it at the edge for future requests
+        edge_server[file] = origin[file]; 
+        
+        return "Served from Origin: " + origin[file];
     }
     return "404 Not Found";
-  }
+}
 
-  int main() {
-    std::cout << "--- User 1 (Miss) ---\n";
+int main() {
+    std::cout << "--- User 1 Request (Miss) ---\n";
     std::cout << get_asset("img.png") << "\n\n";
-
-    std::cout << "--- User 2 (Hit) ---\n";
+    
+    std::cout << "--- User 2 Request (Hit) ---\n";
     std::cout << get_asset("img.png") << "\n";
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: --- User 1 (Miss) ---
+: --- User 1 Request (Miss) ---
 : [!] Not in Edge. Fetching from Origin...
-: Served from Origin: Image_Bytes
-:
-: --- User 2 (Hit) ---
-: Served from Edge: Image_Bytes
+: Served from Origin: Image_Bytes_XYZ
+: 
+: --- User 2 Request (Hit) ---
+: Served from Edge (Fast): Image_Bytes_XYZ
 
 * 4. Message Queue
 ** Concept
@@ -158,55 +183,60 @@ Decoupling producers and consumers. The producer doesn't wait for the consumer.
 Teaches: FIFO (First-In-First-Out), Concurrency, Locks.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <queue>
-  #include <mutex>
-  #include <string>
+// 04_message_queue.cpp
+// Demonstrates FIFO processing with a standard queue.
 
-  class MessageQueue {
+#include <iostream>
+#include <queue>
+#include <mutex>
+#include <string>
+
+class MessageQueue {
     std::queue<std::string> q;
-    std::mutex mtx; // Thread safety
+    std::mutex mtx; // Ensures thread safety during push/pop
 
-  public:
+public:
+    // PRODUCER: Adds messages to the back of the queue
     void send(std::string msg) {
-      std::lock_guard<std::mutex> lock(mtx);
-      q.push(msg);
-      std::cout << "Producer: Enqueued -> " << msg << "\n";
+        std::lock_guard<std::mutex> lock(mtx); // Auto-locks/unlocks scope
+        q.push(msg);
+        std::cout << "Producer: Enqueued -> " << msg << "\n";
     }
 
+    // CONSUMER: Removes messages from the front of the queue
     void consume() {
-      std::lock_guard<std::mutex> lock(mtx);
-      if (!q.empty()) {
-        std::cout << "Consumer: Processing -> " << q.front() << "\n";
-        q.pop();
-      } else {
-        std::cout << "Consumer: Queue is empty.\n";
-      }
+        std::lock_guard<std::mutex> lock(mtx);
+        if (!q.empty()) {
+            std::cout << "Consumer: Processing -> " << q.front() << "\n";
+            q.pop(); // Remove from front
+        } else {
+            std::cout << "Consumer: Queue is empty.\n";
+        }
     }
-  };
+};
 
-  int main() {
+int main() {
     MessageQueue mq;
-
-    std::cout << "--- Step 1: Producing ---\n";
-    mq.send("Task 1");
-    mq.send("Task 2");
-
-    std::cout << "\n--- Step 2: Consuming ---\n";
-    mq.consume(); // Process Task 1
-    mq.consume(); // Process Task 2
+    
+    std::cout << "--- Step 1: Producing Tasks ---\n";
+    mq.send("Task 1 (Email)");
+    mq.send("Task 2 (Log)");
+    
+    std::cout << "\n--- Step 2: Consuming Tasks ---\n";
+    mq.consume(); // Should process Task 1
+    mq.consume(); // Should process Task 2
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: --- Step 1: Producing ---
-: Producer: Enqueued -> Task 1
-: Producer: Enqueued -> Task 2
-:
-: --- Step 2: Consuming ---
-: Consumer: Processing -> Task 1
-: Consumer: Processing -> Task 2
+: --- Step 1: Producing Tasks ---
+: Producer: Enqueued -> Task 1 (Email)
+: Producer: Enqueued -> Task 2 (Log)
+: 
+: --- Step 2: Consuming Tasks ---
+: Consumer: Processing -> Task 1 (Email)
+: Consumer: Processing -> Task 2 (Log)
 
 * 5. Publish-Subscribe (Pub/Sub)
 ** Concept
@@ -215,43 +245,52 @@ One publisher sends a message to many subscribers.
 Teaches: Function Pointers, Callbacks, Observer Pattern.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <vector>
-  #include <functional>
+// 05_pub_sub.cpp
+// Demonstrates broadcasting events to multiple listeners.
 
-  class PubSub {
+#include <iostream>
+#include <vector>
+#include <functional>
+
+class PubSub {
+    // Stores a list of callback functions
     std::vector<std::function<void(std::string)>> subscribers;
 
-  public:
+public:
+    // Add a new function to the subscriber list
     void subscribe(std::function<void(std::string)> callback) {
-      subscribers.push_back(callback);
+        subscribers.push_back(callback);
     }
 
+    // Iterate through all subscribers and call them
     void publish(std::string msg) {
-      for (auto& sub : subscribers) {
-        sub(msg);
-      }
+        for (auto& sub : subscribers) {
+            sub(msg);
+        }
     }
-  };
+};
 
-  void service_a(std::string msg) { std::cout << "Service A: " << msg << "\n"; }
-  void service_b(std::string msg) { std::cout << "Service B: " << msg << "\n"; }
+// Subscriber Functions
+void service_a(std::string msg) { std::cout << "Service A received: " << msg << "\n"; }
+void service_b(std::string msg) { std::cout << "Service B received: " << msg << "\n"; }
 
-  int main() {
+int main() {
     PubSub channel;
+    
+    // Register the listeners
     channel.subscribe(service_a);
     channel.subscribe(service_b);
-
-    std::cout << "--- Broadcasting Event ---\n";
+    
+    std::cout << "--- Broadcasting 'System Update' ---\n";
     channel.publish("System Update Available");
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: --- Broadcasting Event ---
-: Service A: System Update Available
-: Service B: System Update Available
+: --- Broadcasting 'System Update' ---
+: Service A received: System Update Available
+: Service B received: System Update Available
 
 * 6. API Gateway
 ** Concept
@@ -260,27 +299,35 @@ A single entry point that routes requests to appropriate backend services.
 Teaches: String parsing, Branching logic.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
+// 06_api_gateway.cpp
+// Simulates routing paths (strings) to different functions.
 
-  std::string user_service() { return "User Data"; }
-  std::string order_service() { return "Order Data"; }
+#include <iostream>
+#include <string>
 
-  std::string api_gateway(std::string path) {
+// Mock Microservices
+std::string user_service() { return "User Data JSON"; }
+std::string order_service() { return "Order Data JSON"; }
+
+// The Gateway: Decides where to go based on the path
+std::string api_gateway(std::string path) {
     if (path == "/users") return user_service();
     if (path == "/orders") return order_service();
     return "404 Not Found";
-  }
+}
 
-  int main() {
-    std::cout << "GET /users: " << api_gateway("/users") << "\n";
-    std::cout << "GET /admin: " << api_gateway("/admin") << "\n";
+int main() {
+    std::cout << "GET /users  -> " << api_gateway("/users") << "\n";
+    std::cout << "GET /orders -> " << api_gateway("/orders") << "\n";
+    std::cout << "GET /admin  -> " << api_gateway("/admin") << "\n";
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: GET /users: User Data
-: GET /admin: 404 Not Found
+: GET /users  -> User Data JSON
+: GET /orders -> Order Data JSON
+: GET /admin  -> 404 Not Found
 
 * 7. Circuit Breaker
 ** Concept
@@ -289,54 +336,60 @@ Stop calling a failing service to prevent cascading failures.
 Teaches: Enums, State Management, Threshold logic.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
+// 07_circuit_breaker.cpp
+// Simulates a state machine that 'trips' after too many failures.
 
-  class CircuitBreaker {
-    enum State { CLOSED, OPEN };
+#include <iostream>
+
+class CircuitBreaker {
+    enum State { CLOSED, OPEN }; // CLOSED = Good, OPEN = Bad
     State state = CLOSED;
     int failures = 0;
     int threshold = 3;
 
-  public:
+public:
     void call_service() {
-      if (state == OPEN) {
-        std::cout << "[BLOCK] Circuit is OPEN.\n";
-        return;
-      }
+        // 1. Safety Check: If Open, fail fast without trying
+        if (state == OPEN) {
+            std::cout << "[BLOCK] Circuit is OPEN. Request blocked locally.\n";
+            return;
+        }
 
-      // Simulate Failure
-      failures++;
-      std::cout << "Service Call Failed (" << failures << ")\n";
+        // 2. Simulate attempting the service (Assume it fails for demo)
+        failures++;
+        std::cout << "Service Call Failed... (Count: " << failures << ")\n";
 
-      if (failures >= threshold) {
-        state = OPEN;
-        std::cout << "!!! Threshold reached. Opening Circuit !!!\n";
-      }
+        // 3. Check if we reached the limit
+        if (failures >= threshold) {
+            state = OPEN;
+            std::cout << "!!! Threshold reached. Circuit is now OPEN !!!\n";
+        }
     }
-  };
+};
 
-  int main() {
+int main() {
     CircuitBreaker cb;
-    std::cout << "--- 3 Failures allowed ---\n";
+    
+    std::cout << "--- Allowing 3 Failures ---\n";
     cb.call_service(); // Fail 1
     cb.call_service(); // Fail 2
-    cb.call_service(); // Fail 3 -> Open
-
-    std::cout << "\n--- 4th Attempt Blocked ---\n";
-    cb.call_service(); // Blocked
+    cb.call_service(); // Fail 3 -> State changes to OPEN
+    
+    std::cout << "\n--- 4th Attempt (Should be blocked) ---\n";
+    cb.call_service(); 
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: --- 3 Failures allowed ---
-: Service Call Failed (1)
-: Service Call Failed (2)
-: Service Call Failed (3)
-: !!! Threshold reached. Opening Circuit !!!
-:
-: --- 4th Attempt Blocked ---
-: [BLOCK] Circuit is OPEN.
+: --- Allowing 3 Failures ---
+: Service Call Failed... (Count: 1)
+: Service Call Failed... (Count: 2)
+: Service Call Failed... (Count: 3)
+: !!! Threshold reached. Circuit is now OPEN !!!
+: 
+: --- 4th Attempt (Should be blocked) ---
+: [BLOCK] Circuit is OPEN. Request blocked locally.
 
 * 8. Service Discovery
 ** Concept
@@ -345,68 +398,88 @@ Automatically detecting devices/services on a network.
 Teaches: Registry patterns, Key-Value lookup.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <map>
+// 08_service_discovery.cpp
+// Using a Map to act as a "Phonebook" for services.
 
-  std::map<std::string, std::string> registry;
+#include <iostream>
+#include <map>
+#include <string>
 
-  void register_service(std::string name, std::string ip) {
+// The Registry: Name -> IP Address
+std::map<std::string, std::string> registry;
+
+void register_service(std::string name, std::string ip) {
     registry[name] = ip;
-  }
+    std::cout << "Registered '" << name << "' at " << ip << "\n";
+}
 
-  std::string discover(std::string name) {
+std::string discover(std::string name) {
+    // Check if the key exists in the map
     if (registry.count(name)) return registry[name];
     return "Unknown Service";
-  }
+}
 
-  int main() {
+int main() {
+    // Service startup phase
     register_service("Auth", "10.0.0.1");
-    std::cout << "Auth Service IP: " << discover("Auth") << "\n";
+    register_service("Payment", "10.0.0.2");
+
+    std::cout << "\n--- Client Lookup ---\n";
+    std::cout << "Looking up 'Auth': " << discover("Auth") << "\n";
+    std::cout << "Looking up 'Logs': " << discover("Logs") << "\n";
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: Auth Service IP: 10.0.0.1
+: Registered 'Auth' at 10.0.0.1
+: Registered 'Payment' at 10.0.0.2
+: 
+: --- Client Lookup ---
+: Looking up 'Auth': 10.0.0.1
+: Looking up 'Logs': Unknown Service
 
 * 9. Sharding
 ** Concept
-Splitting a large database into smaller chunks based on a key (e.g. ID).
+Splitting a large database into smaller chunks based on a key (e.g., ID).
 ** Data Structure: Multiple Vectors
 Teaches: Hashing (Modulo operator) for distribution.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <vector>
-  #include <string>
+// 09_sharding.cpp
+// Distributing data to different containers (Shards) based on ID parity.
 
-  // We simulate 2 separate "Servers" using vectors
-  std::vector<std::string> shard1; // For EVEN IDs
-  std::vector<std::string> shard2; // For ODD IDs
+#include <iostream>
+#include <vector>
+#include <string>
 
-  void insert_data(int id, std::string data) {
-    // Determine which shard owns this data
+// We simulate 2 separate "Servers" using vectors
+std::vector<std::string> shard1; // For EVEN IDs
+std::vector<std::string> shard2; // For ODD IDs
+
+void insert_data(int id, std::string data) {
+    // Sharding Logic: ID % 2
     if (id % 2 == 0) {
-      shard1.push_back(data);
-      std::cout << "[Shard 1] Saved " << data << " (ID: " << id << ")\n";
+        shard1.push_back(data);
+        std::cout << "[Shard 1] Saved " << data << " (ID: " << id << ")\n";
     } else {
-      shard2.push_back(data);
-      std::cout << "[Shard 2] Saved " << data << " (ID: " << id << ")\n";
+        shard2.push_back(data);
+        std::cout << "[Shard 2] Saved " << data << " (ID: " << id << ")\n";
     }
-  }
+}
 
-  int main() {
+int main() {
     std::cout << "--- Inserting Data ---\n";
     // ID 100 is Even -> Goes to Shard 1
     insert_data(100, "User_Alice");
 
     // ID 101 is Odd -> Goes to Shard 2
     insert_data(101, "User_Bob");
-
+    
     // ID 102 is Even -> Goes to Shard 1
     insert_data(102, "User_Charlie");
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
@@ -418,59 +491,63 @@ Teaches: Hashing (Modulo operator) for distribution.
 * 10. Rate Limiting
 ** Concept
 Restricting the number of requests a user can make in a given timeframe.
-** Data Structure: Counters & Timers (or Queue for Sliding Window)
+** Data Structure: Counters & Timers
 Teaches: Time handling (~std::chrono~), conditional logic.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <chrono>
-  #include <thread>
+// 10_rate_limiter.cpp
+// Simulates a Token Bucket algorithm.
 
-  class RateLimiter {
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+class RateLimiter {
     int tokens;
     int max_tokens;
     std::chrono::steady_clock::time_point last_refill;
 
-  public:
+public:
     RateLimiter(int max) : tokens(max), max_tokens(max) {
-      last_refill = std::chrono::steady_clock::now();
+        last_refill = std::chrono::steady_clock::now();
     }
 
     bool allow_request() {
-      auto now = std::chrono::steady_clock::now();
-      // Simple refill: if 1 second passed, reset tokens
-      if (std::chrono::duration_cast<std::chrono::seconds>(now - last_refill).count() >= 1) {
-        tokens = max_tokens;
-        last_refill = now;
-        std::cout << "(Refilled Tokens)\n";
-      }
+        auto now = std::chrono::steady_clock::now();
+        
+        // Logic: If 1 second has passed, refill the bucket
+        if (std::chrono::duration_cast<std::chrono::seconds>(now - last_refill).count() >= 1) {
+            tokens = max_tokens;
+            last_refill = now;
+            std::cout << ">>> (1 second passed: Tokens Refilled) <<<\n";
+        }
 
-      if (tokens > 0) {
-        tokens--;
-        return true;
-      }
-      return false;
+        if (tokens > 0) {
+            tokens--;
+            return true; // Allowed
+        }
+        return false; // Blocked
     }
-  };
+};
 
-  int main() {
-    RateLimiter limiter(1); // 1 request per second
-
+int main() {
+    RateLimiter limiter(1); // Limit: 1 request per second
+    
     std::cout << "Request 1: " << (limiter.allow_request() ? "Allowed" : "Blocked") << "\n";
     std::cout << "Request 2: " << (limiter.allow_request() ? "Allowed" : "Blocked") << "\n";
-
+    
     // Wait so token refills
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::cout << "Request 3: " << (limiter.allow_request() ? "Allowed" : "Blocked") << "\n";
 
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
 : Request 1: Allowed
 : Request 2: Blocked
-: Request 3: (Refilled Tokens)
+: Request 3: >>> (1 second passed: Tokens Refilled) <<<
 : Allowed
 
 * 11. Consistent Hashing
@@ -480,46 +557,52 @@ Distributing data across nodes such that adding/removing a node minimizes moveme
 Teaches: Tree Maps (Red-Black Tree), Binary Search (~upper_bound~), Circular logic.
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <map>
-  #include <string>
+// 11_consistent_hashing.cpp
+// Using an Ordered Map to simulate a "Ring" of servers.
 
-  class ConsistentHash {
-    std::map<int, std::string> ring; // Hash -> Node Name
+#include <iostream>
+#include <map>
+#include <string>
 
-  public:
+class ConsistentHash {
+    // std::map is sorted by Key (int) automatically.
+    // This represents the ring: 0...100...200...MAX
+    std::map<int, std::string> ring; 
+
+public:
     void add_node(int hash, std::string name) {
-      ring[hash] = name;
+        ring[hash] = name;
     }
 
     std::string get_node(int key_hash) {
-      if (ring.empty()) return "";
+        if (ring.empty()) return "";
 
-      // Find first node with hash > key_hash (Binary Search in BST)
-      auto it = ring.upper_bound(key_hash);
+        // upper_bound returns an iterator to the first element *greater* than key_hash.
+        // This simulates moving clockwise on the ring.
+        auto it = ring.upper_bound(key_hash);
 
-      // If we reach the end, wrap around to the first node (Circle)
-      if (it == ring.end()) {
-        return ring.begin()->second;
-      }
-      return it->second;
+        // If we reach the end of the map, wrap around to the beginning (Circle behavior)
+        if (it == ring.end()) {
+            return ring.begin()->second;
+        }
+        return it->second;
     }
-  };
+};
 
-  int main() {
+int main() {
     ConsistentHash ch;
     ch.add_node(100, "Node A");
     ch.add_node(200, "Node B");
 
-    std::cout << "Key 150 -> " << ch.get_node(150) << " (Next is 200)\n";
-    std::cout << "Key 250 -> " << ch.get_node(250) << " (Wraps to 100)\n";
+    std::cout << "Key 150 -> " << ch.get_node(150) << " (Next highest is 200)\n"; 
+    std::cout << "Key 250 -> " << ch.get_node(250) << " (Wraps around to 100)\n"; 
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: Key 150 -> Node B (Next is 200)
-: Key 250 -> Node A (Wraps to 100)
+: Key 150 -> Node B (Next highest is 200)
+: Key 250 -> Node A (Wraps around to 100)
 
 * 12. Auto Scaling
 ** Concept
@@ -528,35 +611,43 @@ Adding or removing resources based on current load.
 Teaches: Dynamic resizing (~push_back~, ~pop_back~).
 ** C++ Implementation
 #+begin_src cpp :results output
-  #include <iostream>
-  #include <vector>
+// 12_auto_scaling.cpp
+// Simulates a monitoring loop that adds/removes resources based on traffic.
 
-  std::vector<int> cpu_cores = {1}; // Start with 1 core
+#include <iostream>
+#include <vector>
 
-  void monitor(int traffic) {
-    if (traffic > 80) {
-      cpu_cores.push_back(1);
-      std::cout << "High Traffic! Scaled up to " << cpu_cores.size() << " cores.\n";
-    } else if (traffic < 10 && cpu_cores.size() > 1) {
-      cpu_cores.pop_back();
-      std::cout << "Low Traffic. Scaled down to " << cpu_cores.size() << " cores.\n";
-    } else {
-      std::cout << "Traffic Stable. Cores: " << cpu_cores.size() << "\n";
+// Represents active CPU cores
+std::vector<int> cpu_cores = {1}; // Start with 1 core
+
+void monitor(int traffic_load) {
+    // If load > 80, Add a core
+    if (traffic_load > 80) {
+        cpu_cores.push_back(1);
+        std::cout << "[Alert] High Traffic (" << traffic_load << ")! Scaled UP to " << cpu_cores.size() << " cores.\n";
+    } 
+    // If load < 10, Remove a core (but keep at least 1)
+    else if (traffic_load < 10 && cpu_cores.size() > 1) {
+        cpu_cores.pop_back();
+        std::cout << "[Alert] Low Traffic (" << traffic_load << "). Scaled DOWN to " << cpu_cores.size() << " cores.\n";
+    } 
+    else {
+        std::cout << "[Info] Traffic Stable (" << traffic_load << "). Cores active: " << cpu_cores.size() << "\n";
     }
-  }
+}
 
-  int main() {
-    monitor(90); // Scale Up
-    monitor(95); // Scale Up Again
-    monitor(5);  // Scale Down
+int main() {
+    monitor(90); // Trigger Scale Up
+    monitor(95); // Trigger Scale Up Again
+    monitor(5);  // Trigger Scale Down
     return 0;
-  }
+}
 #+end_src
 
 #+RESULTS:
-: High Traffic! Scaled up to 2 cores.
-: High Traffic! Scaled up to 3 cores.
-: Low Traffic. Scaled down to 2 cores.
+: [Alert] High Traffic (90)! Scaled UP to 2 cores.
+: [Alert] High Traffic (95)! Scaled UP to 3 cores.
+: [Alert] Low Traffic (5). Scaled DOWN to 2 cores.
 
 * Glossary
 
