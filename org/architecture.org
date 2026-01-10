@@ -4,10 +4,18 @@
 #+STARTUP: overview hideblocks indent entitiespretty:
 * Introduction
 This document outlines 12 system architecture concepts and how they
-map to fundamental C++ data structures. These examples are suitable
-for an intermediate C++ course, bridging the gap between theoretical
-data structures (Map, Queue, Vector) and real-world application
-(Caching, Message Queues, Load Balancing).
+map to fundamental C++ data structures. These examples bridge the gap
+between theoretical data structures (Map, Queue, Vector) and
+real-world application in distributed computing (Caching, Message
+Queues, Load Balancing).
+
+I developed this for an update of my operating systems course (not
+sure if I will use it there - depends a little on the C++ skills of
+the participants: but you should be fine!).
+
+This also shows how C++ maps effortlessly to network objects. This can
+be done in Python, too (the libraries are there) but perhaps less
+safely.
 
 Illustration:
 #+attr_html: :width 400px :float nil:
